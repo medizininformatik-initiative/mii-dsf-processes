@@ -1,0 +1,80 @@
+<ActivityDefinition xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<extension
+		url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
+		<extension url="message-name">
+			<valueString value="startDataSendMii" />
+		</extension>
+		<extension url="task-profile">
+			<valueCanonical
+					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|${version}" />
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-type" />
+							<code value="MeDIC" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+		<extension url="recipient">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-type" />
+							<code value="MeDIC" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+	</extension>
+	<url
+		value="http://medizininformatik-initiative.de/bpe/Process/dataSend" />
+	<!-- version managed by bpe -->
+	<version value="${version}" />
+	<name value="dataSend" />
+	<title value="Data Send Process" />
+	<subtitle value="Data Send to Coordinating Site Process" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<date value="2022-02-19" />
+	<publisher value="Medizininformatik-Initiative" />
+	<contact>
+		<name value="Medizininformatik-Initiative" />
+		<telecom>
+			<system value="email" />
+			<value value="info@medizininformatik-initiative.de" />
+		</telecom>
+	</contact>
+	<description
+		value="Process to read, validate, encrypt and send datasets to a coordinating site" />
+	<kind value="Task" />
+</ActivityDefinition>

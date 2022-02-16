@@ -1,0 +1,64 @@
+<Task xmlns="http://hl7.org/fhir">
+   <meta>
+      <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|0.1.0" />
+   </meta>
+   <instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/dataSend/0.1.0" />
+   <status value="requested" />
+   <intent value="order" />
+   <authoredOn value="<REPLACE-WITH-DATE-AND-TIME>" />
+   <requester>
+      <type value="Organization" />
+      <identifier>
+         <system value="http://highmed.org/sid/organization-identifier" />
+         <value value="<REPLACE-WITH-YOUR-ORGANIZATION-IDENTIFIER>" />
+      </identifier>
+   </requester>
+   <restriction>
+      <recipient>
+         <type value="Organization" />
+         <identifier>
+            <system value="http://highmed.org/sid/organization-identifier" />
+            <value value="<REPLACE-WITH-YOUR-ORGANIZATION-IDENTIFIER>" />
+         </identifier>
+      </recipient>
+   </restriction>
+   <input>
+      <type>
+         <coding>
+            <system value="http://highmed.org/fhir/CodeSystem/bpmn-message" />
+            <code value="message-name" />
+         </coding>
+      </type>
+      <valueString value="startDataSendMii" />
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
+            <code value="coordinating-site-identifier" />
+         </coding>
+      </type>
+      <valueReference>
+         <type value="Organization" />
+         <identifier>
+            <system value="http://highmed.org/sid/organization-identifier" />
+            <value value="uniklinikum-leipzig.de" />
+         </identifier>
+      </valueReference>
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
+            <code value="project-identifier" />
+         </coding>
+      </type>
+      <valueReference>
+         <type value="DocumentReference" />
+         <identifier>
+            <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
+            <value value="NT-proBNP" />
+         </identifier>
+      </valueReference>
+   </input>
+</Task>

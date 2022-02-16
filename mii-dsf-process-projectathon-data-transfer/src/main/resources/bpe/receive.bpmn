@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_18azqkl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <bpmn:process id="medizininformatik-initiativede_dataReceive" isExecutable="true" camunda:versionTag="0.1.0">
+    <bpmn:startEvent id="DataReceiveMessageStartEvent" name="start data receive process">
+      <bpmn:outgoing>Flow_1gyqorb</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1qwi1k6" messageRef="Message_157qpi8" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1gyqorb" sourceRef="DataReceiveMessageStartEvent" targetRef="DownloadDataFromDic" />
+    <bpmn:serviceTask id="DownloadDataFromDic" name="download data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DownloadData">
+      <bpmn:incoming>Flow_1gyqorb</bpmn:incoming>
+      <bpmn:outgoing>Flow_064nbas</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_064nbas" sourceRef="DownloadDataFromDic" targetRef="DecryptData" />
+    <bpmn:serviceTask id="DecryptData" name="decrypt data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DecryptData">
+      <bpmn:incoming>Flow_064nbas</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c3t0x1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="DataReceiveEndEvent" name="end data receive process">
+      <bpmn:incoming>Flow_1w6vljw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1w6vljw" sourceRef="InsertDataIntoProjectathon" targetRef="DataReceiveEndEvent" />
+    <bpmn:serviceTask id="InsertDataIntoProjectathon" name="insert data into projectathon" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.InsertData">
+      <bpmn:incoming>Flow_0j6v09z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w6vljw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1c3t0x1" sourceRef="DecryptData" targetRef="validateData" />
+    <bpmn:serviceTask id="validateData" name="validate data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.ValidateDataCos">
+      <bpmn:incoming>Flow_1c3t0x1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j6v09z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0j6v09z" sourceRef="validateData" targetRef="InsertDataIntoProjectathon" />
+  </bpmn:process>
+  <bpmn:message id="Message_157qpi8" name="startDataReceiveMii" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_dataReceive">
+      <bpmndi:BPMNEdge id="Flow_0j6v09z_di" bpmnElement="Flow_0j6v09z">
+        <di:waypoint x="670" y="117" />
+        <di:waypoint x="720" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c3t0x1_di" bpmnElement="Flow_1c3t0x1">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="570" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w6vljw_di" bpmnElement="Flow_1w6vljw">
+        <di:waypoint x="820" y="117" />
+        <di:waypoint x="882" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_064nbas_di" bpmnElement="Flow_064nbas">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gyqorb_di" bpmnElement="Flow_1gyqorb">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0kx3ho7_di" bpmnElement="DataReceiveMessageStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="142" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l9pati_di" bpmnElement="DownloadDataFromDic">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09bdctd_di" bpmnElement="DecryptData">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_059mi3g_di" bpmnElement="DataReceiveEndEvent">
+        <dc:Bounds x="882" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="859" y="142" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pau3xo_di" bpmnElement="InsertDataIntoProjectathon">
+        <dc:Bounds x="720" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sah8ee_di" bpmnElement="validateData">
+        <dc:Bounds x="570" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

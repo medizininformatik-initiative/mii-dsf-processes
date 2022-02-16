@@ -1,0 +1,43 @@
+<CodeSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
+	<!-- version managed by bpe -->
+	<version value="${version}" />
+	<name value="MiiDataTransfer" />
+	<title value="MII Data Transfer" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<date value="2022-02-19" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="CodeSystem with standard values for the MII data-transfer processes" />
+	<caseSensitive value="true" />
+	<hierarchyMeaning value="grouped-by" />
+	<versionNeeded value="false" />
+	<content value="complete" />
+	<concept>
+		<code value="coordinating-site-identifier" />
+		<display value="Coordinating Site Identifier" />
+		<definition value="Organization identifier of a coordinating site" />
+	</concept>
+	<concept>
+		<code value="project-identifier" />
+		<display value="Project Identifier" />
+		<definition value="Project identifier for which a Data Set should be transmitted" />
+	</concept>
+	<concept>
+		<code value="data-set-reference" />
+		<display value="Data Set Reference" />
+		<definition value="Reference to a Binary Data Set on a DSF FHIR server" />
+	</concept>
+	<concept>
+		<code value="document-reference-location" />
+		<display value="Document Reference Location" />
+		<definition value="Canonical location of a DocumentReference on a KDS FHIR server" />
+	</concept>
+</CodeSystem> 

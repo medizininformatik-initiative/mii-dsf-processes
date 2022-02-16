@@ -1,0 +1,40 @@
+###
+# mii processes projectathon common ignores
+###
+**/.classpath
+**/.project
+**/.idea/
+**/.settings/
+**/target/
+
+**/*.iml
+
+###
+# test data generator ignores
+###
+mii-dsf-processes-test-data-generator/cert/**/*.pem
+mii-dsf-processes-test-data-generator/cert/**/*.csr
+mii-dsf-processes-test-data-generator/cert/**/*.p12
+mii-dsf-processes-test-data-generator/cert/thumbprints.txt
+
+mii-dsf-processes-test-data-generator/bundle/*.xml
+
+mii-dsf-processes-test-data-generator/config/*.properties
+
+mii-dsf-processes-test-data-generator/rsa/*.pem
+
+###
+# docker test setup ignores
+###
+mii-dsf-processes-docker-test-setup/**/bpe/log/*.log
+mii-dsf-processes-docker-test-setup/**/bpe/log/*.log.gz
+mii-dsf-processes-docker-test-setup/**/bpe/last_event/time.file
+mii-dsf-processes-docker-test-setup/**/bpe/plugin/*.jar
+mii-dsf-processes-docker-test-setup/**/bpe/process/*.jar
+
+mii-dsf-processes-docker-test-setup/**/fhir/conf/bundle.xml
+mii-dsf-processes-docker-test-setup/**/fhir/log/*.log
+mii-dsf-processes-docker-test-setup/**/fhir/log/*.log.gz
+
+mii-dsf-processes-docker-test-setup/secrets/*.pem
+mii-dsf-processes-docker-test-setup/.env

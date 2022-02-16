@@ -1,0 +1,20 @@
+<NamingSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<name value="MII_Project_Identifier"/>
+	<status value="active" />
+	<kind value="identifier"/>
+	<date value="2022-02-19" />
+	<publisher value="Medizininformatik-Initiative" />
+	<responsible value="Medizininformatik-Initiative"/>
+	<description value="MII project identifier"/>
+	<usage value="Used within MII data transfers for identification of projects"/>
+	<uniqueId>
+		<type value="other"/>
+		<value value="http://medizininformatik-initiative.de/sid/project-identifier"/>
+	</uniqueId>
+</NamingSystem>

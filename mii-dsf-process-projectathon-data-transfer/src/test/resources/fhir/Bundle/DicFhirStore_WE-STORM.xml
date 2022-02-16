@@ -1,0 +1,47 @@
+<Bundle xmlns="http://hl7.org/fhir">
+	<type value="transaction"/>
+	<entry>
+		<fullUrl value="urn:uuid:76e62d33-4d93-4684-9a2c-58939d2a7ade"/>
+		<resource>
+			<DocumentReference xmlns="http://hl7.org/fhir">
+				<masterIdentifier>
+					<system value="http://medizininformatik-initiative.de/sid/project-identifier"/>
+					<value value="WE-STORM"/>
+				</masterIdentifier>
+				<status value="current"/>
+				<docStatus value="final"/>
+				<author>
+					<type value="Organization"/>
+					<identifier>
+						<system value="http://highmed.org/sid/organization-identifier"/>
+						<value value="<REPLACE-WITH-YOUR-ORGANIZATION-IDENTIFIER>"/>
+					</identifier>
+				</author>
+				<date value="<REPLACE-WITH-DATE-AND-TIME>"/>
+				<content>
+					<attachment>
+						<contentType value="text/csv"/>
+						<url value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi"/>
+					</attachment>
+				</content>
+			</DocumentReference>
+		</resource>
+		<request>
+			<method value="PUT" />
+			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|WE_STORM&amp;date=<REPLACE-WITH-DATE-AND-TIME>" />
+		</request>
+	</entry>
+	<entry>
+		<fullUrl value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi" />
+		<resource>
+			<Binary xmlns="http://hl7.org/fhir">
+				<contentType value="text/csv"/>
+				<data value="<REPLACE-WITH-BASE64-ENCODED-CSV-FILE>"/>
+			</Binary>
+		</resource>
+		<request>
+			<method value="POST" />
+			<url value="Binary" />
+		</request>
+	</entry>
+</Bundle>
