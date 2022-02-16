@@ -2,8 +2,8 @@
 
 Business processes for the Medical Informatics Initiative as plugins for the [HiGHmed Data Sharing Framework][1].
 
-The [Projectathon Data-Transfer process](https://github.com/medizininformatik-initiative/mii-process-projectathon/tree/main/mii-process-projectathon-data-transfer)
-is greatly influenced by the [NUM-CODEX AP1 Data-Transfer process](https://github.com/num-codex/codex-processes-ap1) and
+The [Projectathon Data Transfer process](https://github.com/medizininformatik-initiative/mii-dsf-processes/tree/main/mii-dsf-process-projectathon-data-transfer)
+is greatly influenced by the [NUM-CODEX AP1 Data Transfer process](https://github.com/num-codex/codex-processes-ap1) and
 reuses some of its code.
 
 ## Build
