@@ -62,7 +62,7 @@ services:
 
 
   dic-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.5.4
     restart: on-failure
     ports:
       - 127.0.0.1:5000:5000
@@ -109,7 +109,7 @@ services:
       - db
       - proxy
   dic-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.5.4
     restart: on-failure
     ports:
       - 127.0.0.1:5003:5003
@@ -178,7 +178,7 @@ services:
 
 
   cos-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.5.4
     restart: on-failure
     ports:
       - 127.0.0.1:5001:5001
@@ -225,7 +225,7 @@ services:
       - db
       - proxy
   cos-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.5.4
     restart: on-failure
     ports:
       - 127.0.0.1:5004:5004
