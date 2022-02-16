@@ -78,7 +78,7 @@ public class DocumentationGenerator
 				.split(":");
 
 		return String.format(
-				"### %s \n **Property:** %s \n **Required:** %s \n **Processes:** %s \n **Description:** %s \n **Example:** %s \n **Recommendation:** %s \n **Default:** %s \n",
+				"### %s\n- **Property:** %s\n- **Required:** %s\n- **Processes:** %s\n- **Description:** %s\n- **Example:** %s\n- **Recommendation:** %s\n- **Default:** %s\n\n",
 				documentation.environmentVariables(), valueSplit[0], documentation.required(),
 				documentation.processNames(), documentation.description(), documentation.example(),
 				documentation.recommendation(),
