@@ -26,6 +26,14 @@ public class StartReceiveProcess extends AbstractTaskMessageSend
 		super(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext);
 	}
 
+	/*
+	 * TODO we should send the http://medizininformatik-initiative.de/sid/project-identifier as an input parameter (Task
+	 * profile would require modification). On the receiving end, the identifier should be validated against current
+	 * active projects. Maybe check if an active ResearchStudy resource with the same project identifier exists. The
+	 * ResearchStudy could also reference sending organizations, to not except data from every one. The ResearchStudy
+	 * active and sending organization expected status should be checked as part of a validate Task before downloading
+	 * the Binary step.
+	 */
 	@Override
 	protected Stream<ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
