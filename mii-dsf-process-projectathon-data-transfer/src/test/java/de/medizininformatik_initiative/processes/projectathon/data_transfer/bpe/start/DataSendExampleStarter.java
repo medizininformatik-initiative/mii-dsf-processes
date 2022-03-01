@@ -24,8 +24,6 @@ import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.Task.TaskIntent;
 import org.hl7.fhir.r4.model.Task.TaskStatus;
 
-import ca.uhn.fhir.context.FhirContext;
-
 public class DataSendExampleStarter
 {
 	public static void main(String[] args) throws Exception

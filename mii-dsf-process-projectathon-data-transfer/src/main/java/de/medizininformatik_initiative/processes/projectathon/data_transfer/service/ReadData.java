@@ -119,28 +119,50 @@ public class ReadData extends AbstractServiceDelegate
 
 		if (documentReferences.size() > 1)
 			logger.warn(
-					"Found > 1 DocumentReferences ({}) for project-identifier='{}' referenced in task with id='{}', using only the first",
-					documentReferences.size(), projectIdentifier, taskId);
+					"Found {} DocumentReferences for project-identifier='{}' referenced in task with id='{}', using first ({})",
+					documentReferences.size(), projectIdentifier, taskId,
+					documentReferences.get(0).getIdElement().getValue());
 
 		return documentReferences.get(0);
 	}
 
 	private Binary readBinary(DocumentReference documentReference, String taskId)
 	{
-		List<Binary> binaries = Stream.of(documentReference).filter(DocumentReference::hasContent)
-				.flatMap(dr -> dr.getContent().stream()).map(c -> c.getAttachment().getUrl()).map(this::readBinary)
-				.collect(toList());
+		List<String> urls = Stream.of(documentReference).filter(DocumentReference::hasContent)
+				.flatMap(dr -> dr.getContent().stream()).map(c -> c.getAttachment().getUrl()).collect(toList());
 
-		if (binaries.size() < 1)
-			throw new IllegalArgumentException("Could not find any Binary from DocumentReference with id='"
+		if (urls.size() < 1)
+			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id='"
 					+ documentReference.getId() + "' belonging to task with id='" + taskId + "'");
 
-		if (binaries.size() > 1)
+		if (urls.size() > 1)
 			logger.warn(
-					"Found > 1 Binaries ({}) from DocumentReference with id='{}' belonging to task with id='{}', using only the first",
-					binaries.size(), documentReference.getId(), taskId);
+					"Found {} attachment URLs in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					urls.size(), documentReference.getId(), taskId, urls.get(0));
 
-		return binaries.get(0);
+		if (!validBinaryUrl(urls.get(0)))
+		{
+			logger.warn(
+					"Attachment URL {} in DocumentReference with id='{}' belonging to task with id='{}', not a valid Binary reference,"
+							+ " should be a relative Binary reference or an absloute Binary reference to KDS FHIR server at {}",
+					urls.get(0), documentReference.getId(), taskId, kdsClientFactory.getKdsClient().getFhirBaseUrl());
+			throw new IllegalArgumentException(
+					"Attachment URL " + urls.get(0) + " in DocumentReference with id='" + documentReference.getId()
+							+ "' belonging to task with id='" + taskId + "' not a valid Binary reference");
+		}
+
+		return readBinary(urls.get(0));
+	}
+
+	private boolean validBinaryUrl(String url)
+	{
+		/*
+		 * TODO implement URL validation.
+		 * 
+		 * URL must be either relative Binary reference or, relative Binary reference with Base URL equal to KDS client
+		 * base URL.
+		 */
+		return true;
 	}
 
 	private Binary readBinary(String url)

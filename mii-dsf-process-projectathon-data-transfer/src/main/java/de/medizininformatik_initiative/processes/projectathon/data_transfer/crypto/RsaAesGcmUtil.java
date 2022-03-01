@@ -24,11 +24,25 @@ public class RsaAesGcmUtil
 	private static final String RSA_CIPHER = "RSA/ECB/PKCS1Padding";
 	private static final int RSA_KEY_LENGTH = 4096;
 	private static final int ENCRYPTED_AES_KEY_LENGTH = 512;
+	/*
+	 * TODO remove AAD constant. Since the sending Organization is known to the COS, we can use meaningful Additional
+	 * Authentication Data (AAD). I would suggest using the DSF organization identifier of the sending organization
+	 * instead of this static value. On the decryption end, the identifier could be extracted from the Task that started
+	 * the receive process: Task.requester
+	 * 
+	 * Additionally the receiving organizations identifier could be added as AAD. In general AAD does not improve
+	 * security, but in our case it might guard against configuration errors, since the sending and receiving
+	 * organizations would be pinned to the encrypted binary. It might be important to remind people that the data
+	 * transfer is not secure because we are encrypting the Bundle before transferring it. The data transfer itself is
+	 * secure by using TLS, but we want the data to stay secure in case a DICs DSF FHIR server gets hacked, before the
+	 * Bundle is deleted.
+	 */
 	/**
 	 * AAD: some random bytes
 	 */
 	private static final byte[] AAD = "JLCbSbIk5VAvBtKs4ypnDw3AJRfSBWXFHUxl78WBJw".getBytes(StandardCharsets.UTF_8);
 
+	// TODO add sending org identifier parameter and use as AAD
 	public static byte[] encrypt(PublicKey publicKey, byte[] data)
 			throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ShortBufferException
@@ -48,6 +62,7 @@ public class RsaAesGcmUtil
 		return output;
 	}
 
+	// TODO add sending org identifier parameter and use as AAD
 	public static byte[] decrypt(PrivateKey privateKey, byte[] encrypted)
 			throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException,
 			NoSuchAlgorithmException, InvalidAlgorithmParameterException

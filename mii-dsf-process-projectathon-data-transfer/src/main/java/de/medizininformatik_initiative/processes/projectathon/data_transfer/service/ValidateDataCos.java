@@ -79,5 +79,12 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 		{
 			throw new RuntimeException("Bundle contains < 1 or > 1 of Binaries (" + countB + ")");
 		}
+
+		/*
+		 * TODO validate binary declared mime-type = text/csv, if possible validate actual mime-type of data for example
+		 * using Apache Tika -> https://tika.apache.org/1.21/detection.html
+		 * 
+		 * ...possible transfer of malicious binary data
+		 */
 	}
 }
