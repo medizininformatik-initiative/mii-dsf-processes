@@ -164,7 +164,7 @@ public class TransferDataConfig
 		}
 	}
 
-	// miiProjectathonDataSend
+	// projectathonDataSend
 
 	@Bean
 	public ReadData readData()
@@ -181,7 +181,8 @@ public class TransferDataConfig
 	@Bean
 	public EncryptData encryptData()
 	{
-		return new EncryptData(fhirClientProvider, taskHelper, readAccessHelper, endpointProvider);
+		return new EncryptData(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean
@@ -203,7 +204,7 @@ public class TransferDataConfig
 		return new DeleteData(fhirClientProvider, taskHelper, readAccessHelper);
 	}
 
-	// miiProjectathonDataReceive
+	// projectathonDataReceive
 
 	@Bean
 	public DownloadData downloadData()
@@ -221,7 +222,7 @@ public class TransferDataConfig
 	@Bean
 	public DecryptData decryptData()
 	{
-		return new DecryptData(fhirClientProvider, taskHelper, readAccessHelper, keyProvider());
+		return new DecryptData(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider, keyProvider());
 	}
 
 	@Bean

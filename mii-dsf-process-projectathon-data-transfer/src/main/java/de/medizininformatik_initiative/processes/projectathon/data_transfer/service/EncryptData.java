@@ -26,6 +26,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
+import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Binary;
@@ -43,13 +44,16 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 {
 	private static final Logger logger = LoggerFactory.getLogger(EncryptData.class);
 
+	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
 	public EncryptData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
+		this.organizationProvider = organizationProvider;
 		this.endpointProvider = endpointProvider;
 	}
 
@@ -58,6 +62,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 	{
 		super.afterPropertiesSet();
 
+		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
 	}
 
@@ -66,10 +71,12 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 	{
 		String coordinatingSiteIdentifier = (String) execution
 				.getVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER);
+		String localOrganizationIdentifier = organizationProvider.getLocalIdentifierValue();
+
 		Bundle toEncrypt = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_DATA_SET);
 
 		PublicKey publicKey = readPublicKey(coordinatingSiteIdentifier);
-		byte[] encrypted = encrypt(publicKey, toEncrypt);
+		byte[] encrypted = encrypt(publicKey, toEncrypt, localOrganizationIdentifier, coordinatingSiteIdentifier);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, encrypted);
 	}
@@ -184,14 +191,16 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 							+ bundleId + "'");
 	}
 
-	private byte[] encrypt(PublicKey publicKey, Bundle bundle)
+	private byte[] encrypt(PublicKey publicKey, Bundle bundle, String sendingOrganizationIdentifier,
+			String receivingOrganizationIdentifier)
 	{
 		try
 		{
 			byte[] toEncrypt = FhirContext.forR4().newXmlParser().encodeResourceToString(bundle)
 					.getBytes(StandardCharsets.UTF_8);
 
-			return RsaAesGcmUtil.encrypt(publicKey, toEncrypt);
+			return RsaAesGcmUtil.encrypt(publicKey, toEncrypt, sendingOrganizationIdentifier,
+					receivingOrganizationIdentifier);
 		}
 		catch (Exception exception)
 		{
