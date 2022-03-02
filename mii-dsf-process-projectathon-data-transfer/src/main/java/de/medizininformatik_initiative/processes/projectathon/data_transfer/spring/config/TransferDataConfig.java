@@ -21,6 +21,7 @@ import de.medizininformatik_initiative.processes.projectathon.data_transfer.clie
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.crypto.KeyProviderImpl;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.message.StartReceiveProcess;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.service.CreateBundle;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DecryptData;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DeleteData;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DownloadData;
@@ -176,6 +177,12 @@ public class TransferDataConfig
 	public ValidateDataDic validateDataDic()
 	{
 		return new ValidateDataDic(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider);
+	}
+
+	@Bean
+	public CreateBundle createBundle()
+	{
+		return new CreateBundle(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider);
 	}
 
 	@Bean
