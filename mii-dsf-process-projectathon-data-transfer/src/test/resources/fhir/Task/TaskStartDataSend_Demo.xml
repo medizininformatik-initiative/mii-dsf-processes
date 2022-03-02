@@ -53,25 +53,9 @@
             <code value="project-identifier" />
          </coding>
       </type>
-      <!-- 
-
-      TODO Since no DocumentReference resource exists on the DSF FHIR server that could be referenced using this
-      identifier from 'http://medizininformatik-initiative.de/sid/project-identifier' we might want to use a
-      valueIdentifier without the enclosing DocumentReference reference.
-
       <valueIdentifier>
-         <system value="http://medizininformatik-initiative.de/sid/project-identifier"></system>
-         <value value="Test_PROJECT"></value>
-      </valueIdentifier>
-
-      ...other Task resources and StructureDefinition would require mods as well.
-       -->
-      <valueReference>
-         <type value="DocumentReference" />
-         <identifier>
             <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
             <value value="Test_PROJECT" />
-         </identifier>
-      </valueReference>
+      </valueIdentifier>
    </input>
 </Task>

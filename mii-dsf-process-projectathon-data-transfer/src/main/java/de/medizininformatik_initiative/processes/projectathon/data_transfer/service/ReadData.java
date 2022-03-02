@@ -25,7 +25,7 @@ import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
@@ -81,12 +81,13 @@ public class ReadData extends AbstractServiceDelegate
 
 	private String getProjectIdentifier(Task task)
 	{
-		List<String> identifiers = getTaskHelper()
-				.getInputParameterReferenceValues(task, CODESYSTEM_MII_DATA_TRANSFER,
-						CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER)
-				.filter(Reference::hasIdentifier)
-				.filter(i -> NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getIdentifier().getSystem()))
-				.map(i -> i.getIdentifier().getValue()).collect(toList());
+		List<String> identifiers = task.getInput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> CODESYSTEM_MII_DATA_TRANSFER.equals(c.getSystem())
+								&& CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER.equals(c.getCode())))
+				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
+				.filter(i -> NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getSystem())).map(Identifier::getValue)
+				.collect(toList());
 
 		if (identifiers.size() < 1)
 			throw new IllegalArgumentException("No project identifier present in task with id='" + task.getId() + "'");

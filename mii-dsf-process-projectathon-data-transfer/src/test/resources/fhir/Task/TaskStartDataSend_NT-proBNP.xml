@@ -53,12 +53,9 @@
             <code value="project-identifier" />
          </coding>
       </type>
-      <valueReference>
-         <type value="DocumentReference" />
-         <identifier>
+      <valueIdentifier>
             <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
             <value value="NT-proBNP" />
-         </identifier>
-      </valueReference>
+      </valueIdentifier>
    </input>
 </Task>

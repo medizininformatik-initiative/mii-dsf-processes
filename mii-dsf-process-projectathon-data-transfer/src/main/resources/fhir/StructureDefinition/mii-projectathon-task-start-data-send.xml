@@ -120,17 +120,17 @@
     <element id="Task.input:project-identifier.value[x]">
       <path value="Task.input.value[x]" />
       <type>
-        <code value="Reference" />
-        <targetProfile value="http://hl7.org/fhir/StructureDefinition/DocumentReference" />
+        <code value="Identifier" />
       </type>
     </element>
-    <element id="Task.input:project-identifier.value[x].reference">
-      <path value="Task.input.value[x].reference" />
-      <min value="0" />
+    <element id="Task.input:project-identifier.value[x].system">
+      <path value="Task.input.value[x].system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/sid/project-identifier" />
     </element>
-    <element id="Task.input:project-identifier.value[x].identifier">
-      <path value="Task.input.value[x].identifier" />
-      <max value="1" />
+    <element id="Task.input:project-identifier.value[x].value">
+      <path value="Task.input.value[x].value" />
+      <min value="1" />
     </element>
   </differential>
 </StructureDefinition>
