@@ -35,7 +35,7 @@ public class MimeTypeHelper
 			Metadata metadata = new Metadata();
 
 			// gives only a hint to the possible mime-type
-			// this needed because text/csv cannot be detected without any hint and would resolve to text/plain
+			// this is needed because text/csv cannot be detected without any hint and would resolve to text/plain
 			metadata.add(Metadata.CONTENT_TYPE, declaredMimeType.toString());
 
 			detectedMimeType = tika.getDetector().detect(input, metadata);
