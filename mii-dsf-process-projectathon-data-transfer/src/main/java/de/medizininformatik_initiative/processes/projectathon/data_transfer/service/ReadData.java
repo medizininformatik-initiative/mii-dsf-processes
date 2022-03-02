@@ -24,7 +24,9 @@ import org.highmed.dsf.fhir.variables.FhirResourceValues;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +146,7 @@ public class ReadData extends AbstractServiceDelegate
 		{
 			logger.warn(
 					"Attachment URL {} in DocumentReference with id='{}' belonging to task with id='{}', not a valid Binary reference,"
-							+ " should be a relative Binary reference or an absloute Binary reference to KDS FHIR server at {}",
+							+ " should be a relative Binary reference or an absolute Binary reference to KDS FHIR server at {}",
 					urls.get(0), documentReference.getId(), taskId, kdsClientFactory.getKdsClient().getFhirBaseUrl());
 			throw new IllegalArgumentException(
 					"Attachment URL " + urls.get(0) + " in DocumentReference with id='" + documentReference.getId()
@@ -156,13 +158,14 @@ public class ReadData extends AbstractServiceDelegate
 
 	private boolean validBinaryUrl(String url)
 	{
-		/*
-		 * TODO implement URL validation.
-		 * 
-		 * URL must be either relative Binary reference or, relative Binary reference with Base URL equal to KDS client
-		 * base URL.
-		 */
-		return true;
+		IdType idType = new IdType(url);
+		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
+
+		// expecting no Base URL or, Base URL equal to KDS client Base URL
+		boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
+		boolean isBinaryReference = ResourceType.Binary.name().equals(idType.getResourceType());
+
+		return hasValidBaseUrl && isBinaryReference;
 	}
 
 	private Binary readBinary(String url)
