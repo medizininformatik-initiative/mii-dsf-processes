@@ -21,6 +21,7 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
@@ -132,7 +133,10 @@ public class ReadData extends AbstractServiceDelegate
 	private Binary readBinary(DocumentReference documentReference, String taskId)
 	{
 		List<String> urls = Stream.of(documentReference).filter(DocumentReference::hasContent)
-				.flatMap(dr -> dr.getContent().stream()).map(c -> c.getAttachment().getUrl()).collect(toList());
+				.flatMap(dr -> dr.getContent().stream())
+				.filter(DocumentReference.DocumentReferenceContentComponent::hasAttachment)
+				.map(DocumentReference.DocumentReferenceContentComponent::getAttachment).filter(Attachment::hasUrl)
+				.map(Attachment::getUrl).collect(toList());
 
 		if (urls.size() < 1)
 			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id='"

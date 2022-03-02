@@ -20,6 +20,8 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.InitializingBean;
 
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.MimeTypeHelper;
+
 public class ValidateDataCos extends AbstractServiceDelegate implements InitializingBean
 {
 	public ValidateDataCos(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
@@ -74,17 +76,17 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 			throw new RuntimeException("DocumentReference contains < 1 or > 1 of projectIdentifiers (" + countMi + ")");
 		}
 
-		long countB = entries.stream().filter(e -> e.getResource() instanceof Binary).count();
+		List<Binary> binaries = entries.stream().map(Bundle.BundleEntryComponent::getResource)
+				.filter(r -> r instanceof Binary).map(r -> (Binary) r).collect(toList());
+
+		long countB = binaries.size();
 		if (countB != 1)
 		{
 			throw new RuntimeException("Bundle contains < 1 or > 1 of Binaries (" + countB + ")");
 		}
 
-		/*
-		 * TODO validate binary declared mime-type = text/csv, if possible validate actual mime-type of data for example
-		 * using Apache Tika -> https://tika.apache.org/1.21/detection.html
-		 * 
-		 * ...possible transfer of malicious binary data
-		 */
+		byte[] dataB = binaries.get(0).getData();
+		String mimeTypeB = binaries.get(0).getContentType();
+		MimeTypeHelper.validate(dataB, mimeTypeB);
 	}
 }

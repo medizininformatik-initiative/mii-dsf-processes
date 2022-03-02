@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>mii-process-projectathon-data-transfer</artifactId>
@@ -24,6 +24,11 @@
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>hapi-fhir-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -67,8 +72,11 @@
 					<arguments>
 						<argument>-classpath</argument>
 						<classpath/>
-						<argument>de.medizininformatik_initiative.processes.documentation.generator.DocumentationGenerator</argument>
-						<argument>de.medizininformatik_initiative.processes.projectathon.data_transfer.spring.config</argument>
+						<argument>
+							de.medizininformatik_initiative.processes.documentation.generator.DocumentationGenerator
+						</argument>
+						<argument>de.medizininformatik_initiative.processes.projectathon.data_transfer.spring.config
+						</argument>
 					</arguments>
 					<includeProjectDependencies>true</includeProjectDependencies>
 					<classpathScope>compile</classpathScope>
@@ -97,7 +105,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-hapi-fhir-client/dic</id>
+						<id>copy-dependencies/dic</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
@@ -108,6 +116,11 @@
 									<groupId>ca.uhn.hapi.fhir</groupId>
 									<artifactId>hapi-fhir-client</artifactId>
 									<version>${hapi.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.tika</groupId>
+									<artifactId>tika-core</artifactId>
+									<version>${apache.tika.version}</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>../mii-dsf-processes-docker-test-setup/dic/bpe/plugin</outputDirectory>
@@ -131,7 +144,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-hapi-fhir-client/cos</id>
+						<id>copy-dependencies/cos</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
@@ -142,6 +155,11 @@
 									<groupId>ca.uhn.hapi.fhir</groupId>
 									<artifactId>hapi-fhir-client</artifactId>
 									<version>${hapi.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.tika</groupId>
+									<artifactId>tika-core</artifactId>
+									<version>${apache.tika.version}</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>../mii-dsf-processes-docker-test-setup/cos/bpe/plugin</outputDirectory>
@@ -165,6 +183,7 @@
 							<directory>../mii-dsf-processes-docker-test-setup/dic/bpe/plugin</directory>
 							<includes>
 								<include>hapi-fhir-client-${hapi.version}.jar</include>
+								<include>tika-core-${apache.tika.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
@@ -179,6 +198,7 @@
 							<directory>../mii-dsf-processes-docker-test-setup/cos/bpe/plugin</directory>
 							<includes>
 								<include>hapi-fhir-client-${hapi.version}.jar</include>
+								<include>tika-core-${apache.tika.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
