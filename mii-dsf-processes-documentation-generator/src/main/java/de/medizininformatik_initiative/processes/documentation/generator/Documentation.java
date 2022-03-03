@@ -7,31 +7,39 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-/*
- * TODO add default values to properties where possible or a typical default value exists (required = false,
- * recommendation = null)
- */
 public @interface Documentation
 {
-	/*
-	 * TODO remove, should be generated using @Value annotation, if needed add a boolean property to configure that a
-	 * ..._PASSWORD_FILE env Variable is not supported (boolean filePropertySupported() default true;)
+	/**
+	 * @return <code>true</code> if this property is required for processes that are listed in
+	 *         {@link Documentation#processNames}
 	 */
-	String environmentVariables();
+	boolean required() default false;
 
-	boolean required();
-
-	/*
-	 * TODO change to String Array, default null -> all processes (Generator could use
-	 * ProcessPluginDefinition#getBpmnFiles to parse BPMN file and find process names)
-	 * 
-	 * Generator should validate process names against configured processes
+	/**
+	 * @return <code>true</code> if a docker secret file can be used to configure this property, else
+	 *         <code>false</code>, which means that a docker secret file <b>cannot</b> be used to configure this
+	 *         property
 	 */
-	String processNames();
+	boolean filePropertySupported() default false;
 
+	/**
+	 * @return an empty array if all processes use this property or an array of length >=1 containing only specific
+	 *         processes that use this property, but not all
+	 */
+	String[] processNames() default {};
+
+	/**
+	 * @return description helping to configure this property
+	 */
 	String description();
 
+	/**
+	 * @return example value helping to configure this property
+	 */
 	String example();
 
+	/**
+	 * @return recommendation helping to configure this property
+	 */
 	String recommendation();
 }

@@ -75,10 +75,12 @@
 						<argument>
 							de.medizininformatik_initiative.processes.documentation.generator.DocumentationGenerator
 						</argument>
-						<argument>de.medizininformatik_initiative.processes.projectathon.data_transfer.spring.config
+						<argument>
+							de.medizininformatik_initiative.processes.projectathon.data_transfer
 						</argument>
 					</arguments>
 					<includeProjectDependencies>true</includeProjectDependencies>
+					<addResourcesToClasspath>true</addResourcesToClasspath>
 					<classpathScope>compile</classpathScope>
 					<workingDirectory>${project.basedir}</workingDirectory>
 				</configuration>
