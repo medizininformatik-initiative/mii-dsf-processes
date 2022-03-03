@@ -46,7 +46,7 @@ public class MimeTypeHelper
 		}
 
 		if (!declaredMimeType.equals(detectedMimeType))
-			logger.warn("Declared mime-type='{}' does not match detected mime-type='{}'", declaredMimeType.toString(),
+			logger.warn("Declared mime-type {} does not match detected mime-type {}", declaredMimeType.toString(),
 					detectedMimeType.toString());
 
 		if (!declaredMimeType.getType().equals(detectedMimeType.getType()))
