@@ -11,16 +11,12 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Binary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.MimeTypeHelper;
 
 public class ValidateDataDic extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(ValidateDataDic.class);
-
 	private final OrganizationProvider organizationProvider;
 
 	public ValidateDataDic(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
