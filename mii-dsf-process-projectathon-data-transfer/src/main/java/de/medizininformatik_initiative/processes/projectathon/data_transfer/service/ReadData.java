@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 
 public class ReadData extends AbstractServiceDelegate
 {
@@ -68,11 +69,10 @@ public class ReadData extends AbstractServiceDelegate
 		String coordinatingSiteIdentifier = getCoordinatingSiteIdentifier(task);
 
 		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		logger.debug("Read DocumentReference: {}",
-				FhirContext.forR4().newXmlParser().encodeResourceToString(documentReference));
+		LoggingHelper.logDebugResource("Read DocumentReference", documentReference);
 
 		Binary binary = readBinary(documentReference, task.getId());
-		logger.debug("Read Binary: {}", FhirContext.forR4().newXmlParser().encodeResourceToString(binary));
+		LoggingHelper.logDebugBinary("Read Binary", binary);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER, projectIdentifier);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER, coordinatingSiteIdentifier);
@@ -94,8 +94,8 @@ public class ReadData extends AbstractServiceDelegate
 			throw new IllegalArgumentException("No project identifier present in task with id='" + task.getId() + "'");
 
 		if (identifiers.size() > 1)
-			logger.warn("Found > 1 project identifiers ({}) in task with id='{}', using only the first",
-					identifiers.size(), task.getId());
+			logger.warn("Found {} project identifiers in task with id='{}', using only the first", identifiers.size(),
+					task.getId());
 
 		return identifiers.get(0);
 	}

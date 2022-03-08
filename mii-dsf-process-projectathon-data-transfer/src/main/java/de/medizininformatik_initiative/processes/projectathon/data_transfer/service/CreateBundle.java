@@ -24,16 +24,12 @@ import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.ResourceType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 
 public class CreateBundle extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(CreateBundle.class);
-
 	private final OrganizationProvider organizationProvider;
 
 	public CreateBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
@@ -61,7 +57,8 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 		Binary binary = (Binary) execution.getVariable(BPMN_EXECUTION_VARIABLE_BINARY);
 
 		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, binary);
-		logger.debug("Created Bundle: {}", FhirContext.forR4().newXmlParser().encodeResourceToString(bundle));
+
+		LoggingHelper.logDebugBundle("Created Bundle", bundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET, FhirResourceValues.create(bundle));
 	}

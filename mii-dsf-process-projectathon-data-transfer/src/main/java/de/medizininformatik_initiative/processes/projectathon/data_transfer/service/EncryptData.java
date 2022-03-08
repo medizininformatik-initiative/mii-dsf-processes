@@ -125,7 +125,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 					"Could not find any DocumentReference in PublicKey Bundle with id='" + bundle.getId() + "'");
 
 		if (documentReferences.size() > 1)
-			logger.warn("Found {} DocumentReferences in PublicKey Bundle with id='{}', using first",
+			logger.warn("Found {} DocumentReferences in PublicKey Bundle with id='{}', using the first",
 					documentReferences.size(), bundle.getId());
 
 		return documentReferences.get(0);
@@ -141,7 +141,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 					"Could not find any Binary in PublicKey Bundle with id='" + bundle.getId() + "'");
 
 		if (binaries.size() > 1)
-			logger.warn("Found {} Binaries in PublicKey Bundle with id='{}', using first", binaries.size(),
+			logger.warn("Found {} Binaries in PublicKey Bundle with id='{}', using the first", binaries.size(),
 					bundle.getId());
 
 		return binaries.get(0);
@@ -155,7 +155,6 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 		}
 		catch (Exception exception)
 		{
-			logger.info("Could not read PublicKey from Binary in PublicKey Bundle with id='{}'", publicKeyBundleId);
 			throw new RuntimeException(
 					"Could not read PublicKey from Binary in PublicKey Bundle with id='" + publicKeyBundleId + "'",
 					exception);

@@ -132,7 +132,7 @@ public class TransferDataConfig
 
 	@Bean
 	@SuppressWarnings("unchecked")
-	public KdsClientFactory projectathonClientFactory()
+	public KdsClientFactory kdsClientFactory()
 	{
 		Path trustStorePath = checkExists(fhirStoreTrustStore);
 		Path certificatePath = checkExists(fhirStoreCertificate);
@@ -172,7 +172,7 @@ public class TransferDataConfig
 	@Bean
 	public ReadData readData()
 	{
-		return new ReadData(fhirClientProvider, taskHelper, readAccessHelper, fhirContext, projectathonClientFactory());
+		return new ReadData(fhirClientProvider, taskHelper, readAccessHelper, fhirContext, kdsClientFactory());
 	}
 
 	@Bean
@@ -243,7 +243,6 @@ public class TransferDataConfig
 	@Bean
 	public InsertData insertData()
 	{
-		return new InsertData(fhirClientProvider, taskHelper, readAccessHelper, fhirContext,
-				projectathonClientFactory());
+		return new InsertData(fhirClientProvider, taskHelper, readAccessHelper, fhirContext, kdsClientFactory());
 	}
 }

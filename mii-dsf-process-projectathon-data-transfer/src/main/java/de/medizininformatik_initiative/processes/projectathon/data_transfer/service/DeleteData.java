@@ -31,7 +31,8 @@ public class DeleteData extends AbstractServiceDelegate
 		IdType binaryId = new IdType((String) execution.getVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE));
 
 		logger.info(
-				"Permanently deleting Binary with id='{}' provided for project-identifier='{}' referenced in Task with id='{}'...",
+				"Permanently deleting encrypted Binary with id='{}' provided for project-identifier='{}' "
+						+ "referenced in Task with id='{}'...",
 				binaryId.getValue(), projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
 
 		deletePermanently(binaryId);

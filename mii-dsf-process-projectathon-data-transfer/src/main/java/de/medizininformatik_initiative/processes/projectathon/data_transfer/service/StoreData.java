@@ -29,7 +29,7 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 
 public class StoreData extends AbstractServiceDelegate
 {
@@ -81,8 +81,7 @@ public class StoreData extends AbstractServiceDelegate
 		Binary binary = new Binary().setContentType(MediaType.APPLICATION_OCTET_STREAM)
 				.setSecurityContext(securityContext).setData(content);
 
-		logger.debug("Created Binary: {}",
-				FhirContext.forR4().newXmlParser().setPrettyPrint(true).encodeResourceToString(binary));
+		LoggingHelper.logDebugBinary("Created Binary", binary);
 
 		return binary;
 	}

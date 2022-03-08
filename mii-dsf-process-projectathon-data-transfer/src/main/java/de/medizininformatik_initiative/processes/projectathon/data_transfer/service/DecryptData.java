@@ -16,18 +16,15 @@ import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.crypto.RsaAesGcmUtil;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 
 public class DecryptData extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(DecryptData.class);
-
 	private final OrganizationProvider organizationProvider;
 	private final KeyProvider keyProvider;
 
@@ -58,8 +55,8 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 
 		Bundle bundleDecrypted = decryptBundle(keyProvider.getPrivateKey(), bundleEncrypted,
 				sendingOrganizationIdentifier, localOrganizationIdentifier);
-		logger.debug("Decrypted Bundle: {}",
-				FhirContext.forR4().newXmlParser().encodeResourceToString(bundleDecrypted));
+
+		LoggingHelper.logDebugBundle("Decrypted Bundle", bundleDecrypted);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET, FhirResourceValues.create(bundleDecrypted));
 	}
@@ -87,7 +84,6 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		catch (Exception exception)
 		{
 			String taskId = getLeadingTaskFromExecutionVariables().getId();
-			logger.warn("Could not decrypt received data-set for task with id='{}'", taskId);
 			throw new RuntimeException("Could not decrypt received data-set for task with id='" + taskId + "'");
 		}
 	}
