@@ -13,7 +13,7 @@ Add entries to your hosts file
 127.0.0.1	cos
 ```
 
-*A total of four console windows are required. Start docker-compose commands from
+*A total of five console windows are required. Start docker-compose commands for consoles 1 to 4 from
 sub-folder:* `mii-dsf-processes/mii-dsf-processes-docker-test-setup`
 
 Console 1: Start DIC HAPI FHIR Server
@@ -61,9 +61,9 @@ Webbrowser at http://localhost:8080/fhir/: Add Demo Data to DIC HAPI FHIR Server
 [DicFhirStore_Demo.xml](../mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Bundle/DicFhirStore_Demo.xml) 
 -->
 
-*Start curl commands from root-folder:* `mii-dsf-processes`
+*Start curl commands in console 5 from root-folder:* `mii-dsf-processes`
 
-Console 6: Execute Demo Transaction-Bundle for HAPI
+Console 5: Execute Demo Transaction-Bundle for HAPI
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
@@ -71,11 +71,11 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 http://localhost:8080/fhir
 ```
 
-Console 6: Start Data Send Process at DIC using the following command
+Console 5: Start Data Send Process at DIC using the following command
 
 *Unfortunately this command does not work on Windows. An alternative for starting the process is using WSL or the
-example starter class with name `DataSendExampleStarter`
-in `mii-dsf-process-projectathon-data-transfer/src/test/java/../bpe/start`*
+example starter class with name* `DataSendExampleStarter` *in* 
+`mii-dsf-process-projectathon-data-transfer/src/test/java/../bpe/start`
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
@@ -87,13 +87,13 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 https://dic/fhir/Task
 ```
 
-Console X: Check data transferred to COS
+Console 5: Check data transferred to COS
 
 ```sh
 curl http://localhost:8081/fhir/DocumentReference
 ```
 
-Console X: Stop everything
+Console 5: Stop everything
 
 ```sh
 docker-compose down -v
