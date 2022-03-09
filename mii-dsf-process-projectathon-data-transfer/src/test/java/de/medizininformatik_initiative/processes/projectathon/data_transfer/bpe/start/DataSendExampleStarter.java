@@ -24,8 +24,6 @@ import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.Task.TaskIntent;
 import org.hl7.fhir.r4.model.Task.TaskStatus;
 
-import ca.uhn.fhir.context.FhirContext;
-
 public class DataSendExampleStarter
 {
 	public static void main(String[] args) throws Exception
@@ -60,9 +58,7 @@ public class DataSendExampleStarter
 				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_COORDINATING_SITE_IDENTIFIER);
 
 		task.addInput()
-				.setValue(new Reference().setIdentifier(
-						new Identifier().setSystem(NAMINGSYSTEM_MII_PROJECT_IDENTIFIER).setValue("Test_PROJECT"))
-						.setType(ResourceType.DocumentReference.name()))
+				.setValue(new Identifier().setSystem(NAMINGSYSTEM_MII_PROJECT_IDENTIFIER).setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER);
 

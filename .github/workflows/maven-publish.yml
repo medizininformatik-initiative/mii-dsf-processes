@@ -4,6 +4,7 @@
 name: Java CI Publish with Maven
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [closed]
     branches: [develop]

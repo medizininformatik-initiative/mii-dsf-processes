@@ -18,8 +18,8 @@
     <bpmn:endEvent id="DataReceiveEndEvent" name="end data receive process">
       <bpmn:incoming>Flow_1w6vljw</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1w6vljw" sourceRef="InsertDataIntoProjectathon" targetRef="DataReceiveEndEvent" />
-    <bpmn:serviceTask id="InsertDataIntoProjectathon" name="insert data into projectathon" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.InsertData">
+    <bpmn:sequenceFlow id="Flow_1w6vljw" sourceRef="insertData" targetRef="DataReceiveEndEvent" />
+    <bpmn:serviceTask id="insertData" name="insert data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.InsertData">
       <bpmn:incoming>Flow_0j6v09z</bpmn:incoming>
       <bpmn:outgoing>Flow_1w6vljw</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -28,7 +28,7 @@
       <bpmn:incoming>Flow_1c3t0x1</bpmn:incoming>
       <bpmn:outgoing>Flow_0j6v09z</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0j6v09z" sourceRef="validateData" targetRef="InsertDataIntoProjectathon" />
+    <bpmn:sequenceFlow id="Flow_0j6v09z" sourceRef="validateData" targetRef="insertData" />
   </bpmn:process>
   <bpmn:message id="Message_157qpi8" name="startDataReceiveMii" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -71,7 +71,7 @@
           <dc:Bounds x="859" y="142" width="82" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pau3xo_di" bpmnElement="InsertDataIntoProjectathon">
+      <bpmndi:BPMNShape id="Activity_0pau3xo_di" bpmnElement="insertData">
         <dc:Bounds x="720" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sah8ee_di" bpmnElement="validateData">

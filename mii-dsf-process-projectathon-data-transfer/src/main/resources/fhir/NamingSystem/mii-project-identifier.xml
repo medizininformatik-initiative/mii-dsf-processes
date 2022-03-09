@@ -6,9 +6,10 @@
 		</tag>
 	</meta>
 	<name value="MII_Project_Identifier"/>
-	<status value="active" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
 	<kind value="identifier"/>
-	<date value="2022-02-19" />
+	<date value="2022-03-09" />
 	<publisher value="Medizininformatik-Initiative" />
 	<responsible value="Medizininformatik-Initiative"/>
 	<description value="MII project identifier"/>

@@ -31,6 +31,7 @@ mii-dsf-processes-docker-test-setup/**/bpe/log/*.log.gz
 mii-dsf-processes-docker-test-setup/**/bpe/last_event/time.file
 mii-dsf-processes-docker-test-setup/**/bpe/plugin/*.jar
 mii-dsf-processes-docker-test-setup/**/bpe/process/*.jar
+mii-dsf-processes-docker-test-setup/**/bpe/process/**/*.jar
 
 mii-dsf-processes-docker-test-setup/**/fhir/conf/bundle.xml
 mii-dsf-processes-docker-test-setup/**/fhir/log/*.log

@@ -19,12 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
+import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Binary;
@@ -42,13 +44,16 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 {
 	private static final Logger logger = LoggerFactory.getLogger(EncryptData.class);
 
+	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
 	public EncryptData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
+		this.organizationProvider = organizationProvider;
 		this.endpointProvider = endpointProvider;
 	}
 
@@ -57,6 +62,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 	{
 		super.afterPropertiesSet();
 
+		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
 	}
 
@@ -65,10 +71,12 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 	{
 		String coordinatingSiteIdentifier = (String) execution
 				.getVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER);
+		String localOrganizationIdentifier = organizationProvider.getLocalIdentifierValue();
+
 		Bundle toEncrypt = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_DATA_SET);
 
 		PublicKey publicKey = readPublicKey(coordinatingSiteIdentifier);
-		byte[] encrypted = encrypt(publicKey, toEncrypt);
+		byte[] encrypted = encrypt(publicKey, toEncrypt, localOrganizationIdentifier, coordinatingSiteIdentifier);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, encrypted);
 	}
@@ -117,8 +125,8 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 					"Could not find any DocumentReference in PublicKey Bundle with id='" + bundle.getId() + "'");
 
 		if (documentReferences.size() > 1)
-			logger.warn("Found > 1 DocumentReferences ({}) in PublicKey Bundle with id='{}'", documentReferences.size(),
-					bundle.getId());
+			logger.warn("Found {} DocumentReferences in PublicKey Bundle with id='{}', using the first",
+					documentReferences.size(), bundle.getId());
 
 		return documentReferences.get(0);
 	}
@@ -133,7 +141,8 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 					"Could not find any Binary in PublicKey Bundle with id='" + bundle.getId() + "'");
 
 		if (binaries.size() > 1)
-			logger.warn("Found > 1 Binaries ({}) in PublicKey Bundle with id='{}'", binaries.size(), bundle.getId());
+			logger.warn("Found {} Binaries in PublicKey Bundle with id='{}', using the first", binaries.size(),
+					bundle.getId());
 
 		return binaries.get(0);
 	}
@@ -146,9 +155,8 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 		}
 		catch (Exception exception)
 		{
-			logger.info("Could not generate PublicKey from Binary in PublicKey Bundle with id='{}'", publicKeyBundleId);
 			throw new RuntimeException(
-					"Could not generate PublicKey from Binary in PublicKey Bundle with id='" + publicKeyBundleId + "'",
+					"Could not read PublicKey from Binary in PublicKey Bundle with id='" + publicKeyBundleId + "'",
 					exception);
 		}
 	}
@@ -161,57 +169,37 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 				.map(Attachment::getHash).count();
 
 		if (numberOfHashes < 1)
-		{
 			throw new RuntimeException(
 					"Could not find any sha256-hash in DocumentReference from Bundle with id='" + bundleId + "'");
-		}
 
 		if (numberOfHashes > 1)
-		{
-			logger.warn("DocumentReference contains > 1 sha256-hashes ({}), using the first from Bundle with id='{}'",
+			logger.warn("DocumentReference contains {} sha256-hashes, using the first from Bundle with id='{}'",
 					numberOfHashes, bundleId);
-		}
 
 		byte[] documentReferenceHash = documentReference.getContentFirstRep().getAttachment().getHash();
 		byte[] publicKeyHash = DigestUtils.sha256(publicKey.getEncoded());
 
 		logger.debug("DocumentReference PublicKey sha256-hash='{}' from Bundle with id='{}'",
-				byteToHex(documentReferenceHash), bundleId);
-		logger.debug("PublicKey actual sha256-hash='{}' from Bundle with id='{}'", byteToHex(publicKeyHash), bundleId);
+				Hex.encodeHexString(documentReferenceHash), bundleId);
+		logger.debug("PublicKey actual sha256-hash='{}' from Bundle with id='{}'", Hex.encodeHexString(publicKeyHash),
+				bundleId);
 
 		if (!Arrays.equals(documentReferenceHash, publicKeyHash))
-		{
 			throw new RuntimeException(
 					"Sha256-hash in DocumentReference does not match computed sha256-hash of Binary in Bundle with id='"
 							+ bundleId + "'");
-		}
 	}
 
-	private String byteToHex(byte[] toConvert)
-	{
-		StringBuilder hexString = new StringBuilder(2 * toConvert.length);
-
-		for (byte b : toConvert)
-		{
-			String hex = Integer.toHexString(0xff & b);
-			if (hex.length() == 1)
-			{
-				hexString.append('0');
-			}
-			hexString.append(hex);
-		}
-
-		return hexString.toString();
-	}
-
-	private byte[] encrypt(PublicKey publicKey, Bundle bundle)
+	private byte[] encrypt(PublicKey publicKey, Bundle bundle, String sendingOrganizationIdentifier,
+			String receivingOrganizationIdentifier)
 	{
 		try
 		{
 			byte[] toEncrypt = FhirContext.forR4().newXmlParser().encodeResourceToString(bundle)
 					.getBytes(StandardCharsets.UTF_8);
 
-			return RsaAesGcmUtil.encrypt(publicKey, toEncrypt);
+			return RsaAesGcmUtil.encrypt(publicKey, toEncrypt, sendingOrganizationIdentifier,
+					receivingOrganizationIdentifier);
 		}
 		catch (Exception exception)
 		{

@@ -14,15 +14,11 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ResourceType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.client.KdsClient;
 
 public final class KdsFhirClientStub implements KdsFhirClient
 {
-	private static final Logger logger = LoggerFactory.getLogger(KdsFhirClientStub.class);
-
 	private final KdsClient kdsClient;
 
 	public KdsFhirClientStub(KdsClient kdsClient)

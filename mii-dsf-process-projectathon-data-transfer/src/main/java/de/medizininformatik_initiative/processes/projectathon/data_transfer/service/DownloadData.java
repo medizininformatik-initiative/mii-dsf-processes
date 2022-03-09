@@ -56,7 +56,7 @@ public class DownloadData extends AbstractServiceDelegate
 			throw new IllegalArgumentException("No data-set reference present in task with id='" + task.getId() + "'");
 
 		if (dataSetReferences.size() > 1)
-			logger.warn("Found > 1 data-set references ({}) in task with id='{}', using only the first",
+			logger.warn("Found {} data-set references in task with id='{}', using only the first",
 					dataSetReferences.size(), task.getId());
 
 		return new IdType(dataSetReferences.get(0));
@@ -72,11 +72,10 @@ public class DownloadData extends AbstractServiceDelegate
 		{
 			return binary.readAllBytes();
 		}
-		catch (Exception excpetion)
+		catch (Exception exception)
 		{
-			logger.warn("Downloading Binary with id='{}' failed", dataSetReference.getValue());
 			throw new RuntimeException("Downloading Binary with id='" + dataSetReference.getValue() + "' failed.",
-					excpetion);
+					exception);
 		}
 	}
 
