@@ -37,7 +37,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
-import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 import de.rwh.utils.crypto.io.PemIo;
 
 public class KeyProviderImpl implements KeyProvider, InitializingBean
@@ -152,17 +152,16 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 				else if (output.getTotal() == 0)
 				{
 					logger.info("Creating new PublicKey Bundle on DSF FHIR server...");
-					Bundle bundleToCreate = getPublicKeyBundle();
+					Bundle bundleToCreate = createPublicKeyBundle();
 					bundleOnServer = clientProvider.getLocalWebserviceClient().createConditionaly(bundleToCreate,
 							"identifier=" + CODESYSTEM_MII_CRYPTOGRAPHY + "|"
 									+ CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
 				}
 				else
 				{
-					logger.warn("Exist > 1 Bundle with identifier={}|{}", CODESYSTEM_MII_CRYPTOGRAPHY,
-							CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
-					throw new RuntimeException("Exist > 1 Bundle with identifier=" + CODESYSTEM_MII_CRYPTOGRAPHY + "|"
-							+ CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
+					throw new RuntimeException(
+							"Exist " + output.getTotal() + " Bundle with identifier=" + CODESYSTEM_MII_CRYPTOGRAPHY
+									+ "|" + CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY + ", expected only one");
 				}
 
 				logger.info("PublicKey Bundle has id='{}'", bundleOnServer.getId());
@@ -175,7 +174,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 		}
 	}
 
-	private Bundle getPublicKeyBundle()
+	private Bundle createPublicKeyBundle()
 	{
 		Date date = new Date();
 
@@ -202,8 +201,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 
 		readAccessHelper.addAll(bundle);
 
-		logger.debug("Created Bundle: {}",
-				FhirContext.forR4().newXmlParser().setPrettyPrint(true).encodeResourceToString(bundle));
+		LoggingHelper.logDebugBundle("Created Bundle", bundle);
 
 		return bundle;
 	}

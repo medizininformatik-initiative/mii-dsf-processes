@@ -21,16 +21,20 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
-import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.util.LoggingHelper;
 
 public class ReadData extends AbstractServiceDelegate
 {
@@ -65,11 +69,10 @@ public class ReadData extends AbstractServiceDelegate
 		String coordinatingSiteIdentifier = getCoordinatingSiteIdentifier(task);
 
 		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		logger.debug("Read DocumentReference: {}",
-				FhirContext.forR4().newXmlParser().encodeResourceToString(documentReference));
+		LoggingHelper.logDebugResource("Read DocumentReference", documentReference);
 
 		Binary binary = readBinary(documentReference, task.getId());
-		logger.debug("Read Binary: {}", FhirContext.forR4().newXmlParser().encodeResourceToString(binary));
+		LoggingHelper.logDebugBinary("Read Binary", binary);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER, projectIdentifier);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER, coordinatingSiteIdentifier);
@@ -79,19 +82,20 @@ public class ReadData extends AbstractServiceDelegate
 
 	private String getProjectIdentifier(Task task)
 	{
-		List<String> identifiers = getTaskHelper()
-				.getInputParameterReferenceValues(task, CODESYSTEM_MII_DATA_TRANSFER,
-						CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER)
-				.filter(Reference::hasIdentifier)
-				.filter(i -> NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getIdentifier().getSystem()))
-				.map(i -> i.getIdentifier().getValue()).collect(toList());
+		List<String> identifiers = task.getInput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> CODESYSTEM_MII_DATA_TRANSFER.equals(c.getSystem())
+								&& CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER.equals(c.getCode())))
+				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
+				.filter(i -> NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getSystem())).map(Identifier::getValue)
+				.collect(toList());
 
 		if (identifiers.size() < 1)
 			throw new IllegalArgumentException("No project identifier present in task with id='" + task.getId() + "'");
 
 		if (identifiers.size() > 1)
-			logger.warn("Found > 1 project identifiers ({}) in task with id='{}', using only the first",
-					identifiers.size(), task.getId());
+			logger.warn("Found {} project identifiers in task with id='{}', using only the first", identifiers.size(),
+					task.getId());
 
 		return identifiers.get(0);
 	}
@@ -119,28 +123,54 @@ public class ReadData extends AbstractServiceDelegate
 
 		if (documentReferences.size() > 1)
 			logger.warn(
-					"Found > 1 DocumentReferences ({}) for project-identifier='{}' referenced in task with id='{}', using only the first",
-					documentReferences.size(), projectIdentifier, taskId);
+					"Found {} DocumentReferences for project-identifier='{}' referenced in task with id='{}', using first ({})",
+					documentReferences.size(), projectIdentifier, taskId,
+					documentReferences.get(0).getIdElement().getValue());
 
 		return documentReferences.get(0);
 	}
 
 	private Binary readBinary(DocumentReference documentReference, String taskId)
 	{
-		List<Binary> binaries = Stream.of(documentReference).filter(DocumentReference::hasContent)
-				.flatMap(dr -> dr.getContent().stream()).map(c -> c.getAttachment().getUrl()).map(this::readBinary)
-				.collect(toList());
+		List<String> urls = Stream.of(documentReference).filter(DocumentReference::hasContent)
+				.flatMap(dr -> dr.getContent().stream())
+				.filter(DocumentReference.DocumentReferenceContentComponent::hasAttachment)
+				.map(DocumentReference.DocumentReferenceContentComponent::getAttachment).filter(Attachment::hasUrl)
+				.map(Attachment::getUrl).collect(toList());
 
-		if (binaries.size() < 1)
-			throw new IllegalArgumentException("Could not find any Binary from DocumentReference with id='"
+		if (urls.size() < 1)
+			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id='"
 					+ documentReference.getId() + "' belonging to task with id='" + taskId + "'");
 
-		if (binaries.size() > 1)
+		if (urls.size() > 1)
 			logger.warn(
-					"Found > 1 Binaries ({}) from DocumentReference with id='{}' belonging to task with id='{}', using only the first",
-					binaries.size(), documentReference.getId(), taskId);
+					"Found {} attachment URLs in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					urls.size(), documentReference.getId(), taskId, urls.get(0));
 
-		return binaries.get(0);
+		if (!validBinaryUrl(urls.get(0)))
+		{
+			logger.warn(
+					"Attachment URL {} in DocumentReference with id='{}' belonging to task with id='{}', not a valid Binary reference,"
+							+ " should be a relative Binary reference or an absolute Binary reference to KDS FHIR server at {}",
+					urls.get(0), documentReference.getId(), taskId, kdsClientFactory.getKdsClient().getFhirBaseUrl());
+			throw new IllegalArgumentException(
+					"Attachment URL " + urls.get(0) + " in DocumentReference with id='" + documentReference.getId()
+							+ "' belonging to task with id='" + taskId + "' not a valid Binary reference");
+		}
+
+		return readBinary(urls.get(0));
+	}
+
+	private boolean validBinaryUrl(String url)
+	{
+		IdType idType = new IdType(url);
+		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
+
+		// expecting no Base URL or, Base URL equal to KDS client Base URL
+		boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
+		boolean isBinaryReference = ResourceType.Binary.name().equals(idType.getResourceType());
+
+		return hasValidBaseUrl && isBinaryReference;
 	}
 
 	private Binary readBinary(String url)

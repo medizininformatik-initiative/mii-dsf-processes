@@ -24,19 +24,17 @@ public class RsaAesGcmUtil
 	private static final String RSA_CIPHER = "RSA/ECB/PKCS1Padding";
 	private static final int RSA_KEY_LENGTH = 4096;
 	private static final int ENCRYPTED_AES_KEY_LENGTH = 512;
-	/**
-	 * AAD: some random bytes
-	 */
-	private static final byte[] AAD = "JLCbSbIk5VAvBtKs4ypnDw3AJRfSBWXFHUxl78WBJw".getBytes(StandardCharsets.UTF_8);
 
-	public static byte[] encrypt(PublicKey publicKey, byte[] data)
+	public static byte[] encrypt(PublicKey publicKey, byte[] data, String sendingOrganizationIdentifier,
+			String receivingOrganizationIdentifier)
 			throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException,
 			InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ShortBufferException
 	{
 		SecretKey aesKey = AesGcmUtil.generateAES256Key();
 
+		byte[] aad = getAad(sendingOrganizationIdentifier, receivingOrganizationIdentifier);
 		byte[] encryptedAesKey = encryptRsa(aesKey, publicKey);
-		byte[] encryptedData = AesGcmUtil.encrypt(data, AAD, aesKey);
+		byte[] encryptedData = AesGcmUtil.encrypt(data, aad, aesKey);
 
 		if (encryptedAesKey.length != ENCRYPTED_AES_KEY_LENGTH)
 			throw new IllegalStateException("Encrypted AES key length = " + ENCRYPTED_AES_KEY_LENGTH + " expected");
@@ -48,7 +46,8 @@ public class RsaAesGcmUtil
 		return output;
 	}
 
-	public static byte[] decrypt(PrivateKey privateKey, byte[] encrypted)
+	public static byte[] decrypt(PrivateKey privateKey, byte[] encrypted, String sendingOrganizationIdentifier,
+			String receivingOrganizationIdentifier)
 			throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException,
 			NoSuchAlgorithmException, InvalidAlgorithmParameterException
 	{
@@ -57,9 +56,10 @@ public class RsaAesGcmUtil
 		System.arraycopy(encrypted, 0, encryptedAesKey, 0, ENCRYPTED_AES_KEY_LENGTH);
 		System.arraycopy(encrypted, ENCRYPTED_AES_KEY_LENGTH, encryptedData, 0,
 				encrypted.length - ENCRYPTED_AES_KEY_LENGTH);
+		byte[] aad = getAad(sendingOrganizationIdentifier, receivingOrganizationIdentifier);
 
 		SecretKey key = decryptRsa(encryptedAesKey, privateKey);
-		return AesGcmUtil.decrypt(encryptedData, AAD, key);
+		return AesGcmUtil.decrypt(encryptedData, aad, key);
 	}
 
 	public static KeyPair generateRsa4096KeyPair() throws NoSuchAlgorithmException
@@ -88,5 +88,10 @@ public class RsaAesGcmUtil
 		byte[] decrypted = cipher.doFinal(encryptedKey);
 
 		return new SecretKeySpec(decrypted, "AES");
+	}
+
+	private static byte[] getAad(String sendingOrganizationIdentifier, String receivingOrganizationIdentifier)
+	{
+		return (sendingOrganizationIdentifier + "|" + receivingOrganizationIdentifier).getBytes(StandardCharsets.UTF_8);
 	}
 }

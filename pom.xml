@@ -6,7 +6,7 @@
 
 	<groupId>de.medizininformatik-initiative</groupId>
 	<artifactId>mii-dsf-processes</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0-RC1</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -23,6 +23,7 @@
 		<main.basedir>${project.basedir}</main.basedir>
 		<hapi.version>5.1.0</hapi.version>
 		<dsf.version>0.5.4</dsf.version>
+		<apache.tika.version>2.3.0</apache.tika.version>
 		<project.artifactId>mii-dsf-processes</project.artifactId>
 	</properties>
 
@@ -104,12 +105,6 @@
 				<version>${hapi.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.reflections</groupId>
-				<artifactId>reflections</artifactId>
-				<version>0.10.2</version>
-			</dependency>
-
 			<!-- hhn rwh -->
 			<dependency>
 				<groupId>de.hs-heilbronn.mi</groupId>
@@ -129,6 +124,17 @@
 				<version>1.8.0-beta4</version>
 			</dependency>
 
+			<!-- others -->
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-core</artifactId>
+				<version>${apache.tika.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>0.10.2</version>
+			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
@@ -185,8 +191,13 @@
 						</archive>
 					</configuration>
 				</plugin>
-				<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+				<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId>
 					<version>3.2.4</version> </plugin> -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>

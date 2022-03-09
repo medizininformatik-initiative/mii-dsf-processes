@@ -90,8 +90,8 @@ public class KdsClientFactory
 		try
 		{
 			logger.info(
-					"Testing connection to projectathon FHIR server with {trustStorePath: {}, certificatePath: {}, privateKeyPath: {}, privateKeyPassword: {},"
-							+ " basicAuthUsername {}, basicAuthPassword {}, bearerToken {}, serverBase: {}, proxyUrl {}, proxyUsername, proxyPassword {}}",
+					"Testing connection to KDS FHIR server with {trustStorePath: {}, certificatePath: {}, privateKeyPath: {}, privateKeyPassword: {},"
+							+ " basicAuthUsername {}, basicAuthPassword {}, bearerToken {}, serverBase: {}, proxyUrl {}, proxyUsername {}, proxyPassword {}}",
 					trustStorePath, certificatePath, privateKeyPath, privateKeyPassword != null ? "***" : "null",
 					kdsServerBasicAuthUsername, kdsServerBasicAuthPassword != null ? "***" : "null",
 					kdsServerBearerToken != null ? "***" : "null", kdsServerBase, proxyUrl, proxyUsername,
