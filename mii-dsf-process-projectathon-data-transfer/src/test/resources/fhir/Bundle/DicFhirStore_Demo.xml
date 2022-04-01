@@ -28,7 +28,7 @@
 		</resource>
 		<request>
 			<method value="PUT" />
-			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|Test_PROJECT&amp;date=2022-03-09T10:00:00+01:00" />
+			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|Test_PROJECT" />
 		</request>
 	</entry>
 	<entry>
