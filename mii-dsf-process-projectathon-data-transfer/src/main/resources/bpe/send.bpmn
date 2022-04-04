@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_008keuw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
-  <bpmn:process id="medizininformatik-initiativede_dataSend" isExecutable="true" camunda:versionTag="0.1.0">
+  <bpmn:process id="medizininformatik-initiativede_dataSend" isExecutable="true" camunda:versionTag="0.2.0">
     <bpmn:startEvent id="DataSendMessageStartEvent" name="start data send process">
       <bpmn:outgoing>Flow_0kkjyst</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_07sumgd" messageRef="Message_0mcjkpi" />
@@ -39,8 +39,8 @@
     <bpmn:intermediateThrowEvent id="startDataReceiveProcess" name="start data receive process">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive|0.1.0</camunda:inputParameter>
-          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/dataReceive/0.1.0</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive|0.2.0</camunda:inputParameter>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/dataReceive/0.2.0</camunda:inputParameter>
           <camunda:inputParameter name="messageName">startDataReceiveMii</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
@@ -51,9 +51,9 @@
     <bpmn:endEvent id="DataSendEndEvent" name="end data send process">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/dataReceive/0.1.0</camunda:inputParameter>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/dataReceive/0.2.0</camunda:inputParameter>
           <camunda:inputParameter name="messageName">startDataReceiveMii</camunda:inputParameter>
-          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive|0.1.0</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive|0.2.0</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0phc02z</bpmn:incoming>

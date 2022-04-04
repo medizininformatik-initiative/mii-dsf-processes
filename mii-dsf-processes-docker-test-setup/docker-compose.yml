@@ -154,7 +154,7 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: dic_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataReceive/0.1.0
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataReceive/0.2.0
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic-fhir-store:8080/fhir
     networks:
       dic-bpe-frontend:
@@ -271,7 +271,7 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: cos_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_COS
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://cos/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/0.1.0
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/0.2.0
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://cos-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PRIVATE_KEY: /run/secrets/cos_private_key.pem
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PUBLIC_KEY: /run/secrets/cos_public_key.pem
