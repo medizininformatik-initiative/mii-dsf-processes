@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.medizininformatik-initiative</groupId>
 		<artifactId>mii-dsf-processes</artifactId>
-		<version>0.1.0-RC1</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<properties>
@@ -239,7 +239,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>zip-assembly</id>
+						<id>tar-gz-assembly</id>
 						<phase>install</phase>
 						<goals>
 							<goal>single</goal>
@@ -249,8 +249,10 @@
 				<configuration>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptors>
-						<descriptor>src/assembly/zip.xml</descriptor>
+						<descriptor>src/assembly/tar-gz.xml</descriptor>
 					</descriptors>
+					<overrideUid>0</overrideUid>
+					<overrideGid>2202</overrideGid>
 				</configuration>
 			</plugin>
 		</plugins>

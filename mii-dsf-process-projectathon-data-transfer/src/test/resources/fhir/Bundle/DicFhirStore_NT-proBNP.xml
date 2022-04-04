@@ -28,7 +28,7 @@
 		</resource>
 		<request>
 			<method value="PUT" />
-			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|NT-proBNP&amp;date=<REPLACE-WITH-DATE-AND-TIME>" />
+			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|NT-proBNP" />
 		</request>
 	</entry>
 	<entry>
