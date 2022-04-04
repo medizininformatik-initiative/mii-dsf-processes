@@ -1,5 +1,7 @@
 # MII DSF Processes
 
+[![Java CI Build with Maven](https://github.com/medizininformatik-initiative/mii-dsf-processes/actions/workflows/maven-build.yml/badge.svg)](https://github.com/medizininformatik-initiative/mii-dsf-processes/actions/workflows/maven-build.yml)
+
 Business processes for the Medical Informatics Initiative as plugins for the [HiGHmed Data Sharing Framework][1].
 
 The [Projectathon Data Transfer process](https://github.com/medizininformatik-initiative/mii-dsf-processes/tree/main/mii-dsf-process-projectathon-data-transfer)
