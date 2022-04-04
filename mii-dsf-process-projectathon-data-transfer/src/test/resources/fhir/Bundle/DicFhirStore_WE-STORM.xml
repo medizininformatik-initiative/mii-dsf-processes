@@ -28,7 +28,7 @@
 		</resource>
 		<request>
 			<method value="PUT" />
-			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|WE-STORM />
+			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|WE-STORM" />
 		</request>
 	</entry>
 	<entry>
