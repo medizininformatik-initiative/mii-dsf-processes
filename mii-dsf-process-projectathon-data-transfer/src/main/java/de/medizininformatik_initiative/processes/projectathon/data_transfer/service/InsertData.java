@@ -15,8 +15,8 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +82,9 @@ public class InsertData extends AbstractServiceDelegate
 
 	private void addOutputToLeadingTask(IdType id)
 	{
-		getLeadingTaskFromExecutionVariables().addOutput().setValue(new CanonicalType(id.getValue())).getType()
-				.addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
+		getLeadingTaskFromExecutionVariables().addOutput()
+				.setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
+				.setSystem(CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_DOCUMENT_REFERENCE_LOCATION);
 	}
 }
