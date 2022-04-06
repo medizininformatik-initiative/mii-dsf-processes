@@ -1,129 +1,139 @@
 <StructureDefinition xmlns="http://hl7.org/fhir">
-  <meta>
-    <tag>
-      <system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
-      <code value="ALL" />
-    </tag>
-  </meta>
-  <url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive" />
-  <!-- version managed by bpe -->
-  <version value="${version}" />
-  <name value="TaskStartDataReceive" />
-  <!-- status managed by bpe -->
-  <status value="unknown" />
-  <experimental value="false" />
-  <date value="2022-04-04" />
-  <fhirVersion value="4.0.1" />
-  <kind value="resource" />
-  <abstract value="false" />
-  <type value="Task" />
-  <baseDefinition value="http://highmed.org/fhir/StructureDefinition/task-base" />
-  <derivation value="constraint" />
-  <differential>
-    <element id="Task.instantiatesUri">
-      <path value="Task.instantiatesUri" />
-      <fixedUri value="http://medizininformatik-initiative.de/bpe/Process/dataReceive/${version}" />
-    </element>
-    <element id="Task.input">
-      <path value="Task.input" />
-      <min value="3" />
-      <max value="3" />
-    </element>
-    <element id="Task.input:message-name">
-      <path value="Task.input" />
-      <sliceName value="message-name" />
-    </element>
-    <element id="Task.input:message-name.value[x]">
-      <path value="Task.input.value[x]" />
-      <fixedString value="startDataReceiveMii" />
-    </element>
-    <element id="Task.input:business-key">
-      <path value="Task.input" />
-      <sliceName value="business-key" />
-      <min value="1" />
-    </element>
-    <element id="Task.input:correlation-key">
-      <path value="Task.input" />
-      <sliceName value="correlation-key" />
-      <max value="0" />
-    </element>
-    <element id="Task.input:data-set-reference">
-      <path value="Task.input" />
-      <sliceName value="data-set-reference" />
-      <min value="1" />
-      <max value="1" />
-    </element>
-    <element id="Task.input:data-set-reference.type">
-      <path value="Task.input.type" />
-      <binding>
-        <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-transfer" />
-      </binding>
-    </element>
-    <element id="Task.input:data-set-reference.type.coding">
-      <path value="Task.input.type.coding" />
-      <min value="1" />
-      <max value="1" />
-    </element>
-    <element id="Task.input:data-set-reference.type.coding.system">
-      <path value="Task.input.type.coding.system" />
-      <min value="1" />
-      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
-    </element>
-    <element id="Task.input:data-set-reference.type.coding.code">
-      <path value="Task.input.type.coding.code" />
-      <min value="1" />
-      <fixedCode value="data-set-reference" />
-    </element>
-    <element id="Task.input:data-set-reference.value[x]">
-      <path value="Task.input.value[x]" />
-      <type>
-        <code value="Reference" />
-        <targetProfile value="http://hl7.org/fhir/StructureDefinition/Binary" />
-      </type>
-    </element>
-    <element id="Task.input:data-set-reference.value[x].reference">
-      <path value="Task.input.value[x].reference" />
-      <min value="1" />
-    </element>
-    <element id="Task.input:data-set-reference.value[x].identifier">
-      <path value="Task.input.value[x].identifier" />
-      <max value="0" />
-    </element>
-    <element id="Task.output:document-reference-location">
-      <path value="Task.output" />
-      <sliceName value="document-reference-location" />
-    </element>
-    <element id="Task.output:document-reference-location.type">
-      <path value="Task.output.type" />
-      <binding>
-        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
-          <valueString value="TaskOutputParameterType" />
-        </extension>
-        <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-transfer" />
-      </binding>
-    </element>
-    <element id="Task.output:document-reference-location.type.coding">
-      <path value="Task.output.type.coding" />
-      <min value="1" />
-      <max value="1" />
-    </element>
-    <element id="Task.output:document-reference-location.type.coding.system">
-      <path value="Task.output.type.coding.system" />
-      <min value="1" />
-      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
-    </element>
-    <element id="Task.output:document-reference-location.type.coding.code">
-      <path value="Task.output.type.coding.code" />
-      <min value="1" />
-      <fixedCode value="document-reference-location" />
-    </element>
-    <element id="Task.output:document-reference-location.value[x]">
-      <path value="Task.output.value[x]" />
-      <type>
-        <code value="canonical" />
-      </type>
-    </element>
-  </differential>
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag"/>
+			<code value="ALL"/>
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive"/>
+	<!-- version managed by bpe -->
+	<version value="${version}"/>
+	<name value="TaskStartDataReceive"/>
+	<!-- status managed by bpe -->
+	<status value="unknown"/>
+	<experimental value="false"/>
+	<date value="2022-04-04"/>
+	<fhirVersion value="4.0.1"/>
+	<kind value="resource"/>
+	<abstract value="false"/>
+	<type value="Task"/>
+	<baseDefinition value="http://highmed.org/fhir/StructureDefinition/task-base"/>
+	<derivation value="constraint"/>
+	<differential>
+		<element id="Task.instantiatesUri">
+			<path value="Task.instantiatesUri"/>
+			<fixedUri value="http://medizininformatik-initiative.de/bpe/Process/dataReceive/${version}"/>
+		</element>
+		<element id="Task.input">
+			<path value="Task.input"/>
+			<min value="3"/>
+			<max value="3"/>
+		</element>
+		<element id="Task.input:message-name">
+			<path value="Task.input"/>
+			<sliceName value="message-name"/>
+		</element>
+		<element id="Task.input:message-name.value[x]">
+			<path value="Task.input.value[x]"/>
+			<fixedString value="startDataReceiveMii"/>
+		</element>
+		<element id="Task.input:business-key">
+			<path value="Task.input"/>
+			<sliceName value="business-key"/>
+			<min value="1"/>
+		</element>
+		<element id="Task.input:correlation-key">
+			<path value="Task.input"/>
+			<sliceName value="correlation-key"/>
+			<max value="0"/>
+		</element>
+		<element id="Task.input:data-set-reference">
+			<path value="Task.input"/>
+			<sliceName value="data-set-reference"/>
+			<min value="1"/>
+			<max value="1"/>
+		</element>
+		<element id="Task.input:data-set-reference.type">
+			<path value="Task.input.type"/>
+			<binding>
+				<strength value="required"/>
+				<valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-transfer"/>
+			</binding>
+		</element>
+		<element id="Task.input:data-set-reference.type.coding">
+			<path value="Task.input.type.coding"/>
+			<min value="1"/>
+			<max value="1"/>
+		</element>
+		<element id="Task.input:data-set-reference.type.coding.system">
+			<path value="Task.input.type.coding.system"/>
+			<min value="1"/>
+			<fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer"/>
+		</element>
+		<element id="Task.input:data-set-reference.type.coding.code">
+			<path value="Task.input.type.coding.code"/>
+			<min value="1"/>
+			<fixedCode value="data-set-reference"/>
+		</element>
+		<element id="Task.input:data-set-reference.value[x]">
+			<path value="Task.input.value[x]"/>
+			<type>
+				<code value="Reference"/>
+				<targetProfile value="http://hl7.org/fhir/StructureDefinition/Binary"/>
+			</type>
+		</element>
+		<element id="Task.input:data-set-reference.value[x].reference">
+			<path value="Task.input.value[x].reference"/>
+			<min value="1"/>
+		</element>
+		<element id="Task.input:data-set-reference.value[x].identifier">
+			<path value="Task.input.value[x].identifier"/>
+			<max value="0"/>
+		</element>
+		<element id="Task.output:document-reference-location">
+			<path value="Task.output"/>
+			<sliceName value="document-reference-location"/>
+			<min value="0"/>
+		</element>
+		<element id="Task.output:document-reference-location.type">
+			<path value="Task.output.type"/>
+			<binding>
+				<extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+					<valueString value="TaskOutputParameterType"/>
+				</extension>
+				<strength value="required"/>
+				<valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-transfer"/>
+			</binding>
+		</element>
+		<element id="Task.output:document-reference-location.type.coding">
+			<path value="Task.output.type.coding"/>
+			<min value="1"/>
+			<max value="1"/>
+		</element>
+		<element id="Task.output:document-reference-location.type.coding.system">
+			<path value="Task.output.type.coding.system"/>
+			<min value="1"/>
+			<fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer"/>
+		</element>
+		<element id="Task.output:document-reference-location.type.coding.code">
+			<path value="Task.output.type.coding.code"/>
+			<min value="1"/>
+			<fixedCode value="document-reference-location"/>
+		</element>
+		<element id="Task.output:document-reference-location.value[x]">
+			<path value="Task.output.value[x]"/>
+			<type>
+				<code value="Reference"/>
+				<targetProfile value="http://hl7.org/fhir/StructureDefinition/DocumentReference"/>
+			</type>
+		</element>
+		<element id="Task.output:document-reference-location.value[x].reference">
+			<path value="Task.output.value[x].reference"/>
+            <min value="1"/>
+		</element>
+		<element id="Task.output:document-reference-location.value[x].identifier">
+			<path value="Task.output.value[x].identifier"/>
+			<max value="0"/>
+		</element>
+	</differential>
 </StructureDefinition>
