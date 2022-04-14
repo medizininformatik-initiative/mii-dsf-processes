@@ -72,9 +72,8 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream()
-				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
-						m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
+				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
 	}
 
 	@Test
@@ -88,9 +87,8 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream()
-				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
-						m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
+				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
 	}
 
 	private Task createValidTaskStartDataSend()
@@ -108,10 +106,11 @@ public class TaskProfileTest
 		task.addInput().setValue(new StringType(PROFILE_MII_TASK_START_DATA_SEND_MESSAGE_NAME)).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
 
-		task.addInput().setValue(new Reference().setIdentifier(
-								new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
-						.setType(ResourceType.Organization.name())).getType().addCoding()
-				.setSystem(CODESYSTEM_MII_DATA_TRANSFER)
+		task.addInput()
+				.setValue(new Reference().setIdentifier(
+						new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
+						.setType(ResourceType.Organization.name()))
+				.getType().addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_COORDINATING_SITE_IDENTIFIER);
 
 		task.addInput()
@@ -131,9 +130,8 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream()
-				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
-						m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
+				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
 	}
 
 	private Task createValidTaskStartDataReceive()
@@ -152,10 +150,11 @@ public class TaskProfileTest
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
 		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
-		task.addInput().setValue(
-						new Reference().setReference("https://dsf-dic.de/fhir/Binary/" + UUID.randomUUID().toString())
-								.setType(ResourceType.Binary.name())).getType().addCoding()
-				.setSystem(CODESYSTEM_MII_DATA_TRANSFER).setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE);
+		task.addInput()
+				.setValue(new Reference().setReference("https://dsf-dic.de/fhir/Binary/" + UUID.randomUUID().toString())
+						.setType(ResourceType.Binary.name()))
+				.getType().addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
+				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE);
 		return task;
 	}
 }
