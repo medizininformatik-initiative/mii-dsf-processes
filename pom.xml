@@ -11,7 +11,6 @@
 
 	<modules>
 		<module>mii-dsf-process-projectathon-data-transfer</module>
-		<module>mii-dsf-processes-documentation-generator</module>
 		<module>mii-dsf-processes-test-data-generator</module>
 	</modules>
 
@@ -92,6 +91,11 @@
 				<artifactId>dsf-fhir-server</artifactId>
 				<version>${dsf.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.highmed.dsf</groupId>
+				<artifactId>dsf-tools-documentation-generator</artifactId>
+				<version>${dsf.version}</version>
+			</dependency>
 
 			<!-- hapi-fhir -->
 			<dependency>
@@ -129,11 +133,6 @@
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
 				<version>${apache.tika.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.reflections</groupId>
-				<artifactId>reflections</artifactId>
-				<version>0.10.2</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>

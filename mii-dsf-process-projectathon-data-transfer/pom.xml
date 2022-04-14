@@ -33,8 +33,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>de.medizininformatik-initiative</groupId>
-			<artifactId>mii-dsf-processes-documentation-generator</artifactId>
+			<groupId>org.highmed.dsf</groupId>
+			<artifactId>dsf-tools-documentation-generator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
@@ -73,7 +73,7 @@
 						<argument>-classpath</argument>
 						<classpath/>
 						<argument>
-							de.medizininformatik_initiative.processes.documentation.generator.DocumentationGenerator
+							org.highmed.dsf.tools.generator.DocumentationGenerator
 						</argument>
 						<argument>
 							de.medizininformatik_initiative.processes.projectathon.data_transfer
