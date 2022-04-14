@@ -79,7 +79,8 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 				"medizininformatik-initiativede_dataReceive/" + VERSION,
 				Arrays.asList(aRec, cC, cD, nP, sTstaDrec, vC, vD));
 
-		return ResourceProvider.read(VERSION, () -> fhirContext.newXmlParser().setStripVersionsFromReferences(false),
-				classLoader, propertyResolver, resourcesByProcessKeyAndVersion);
+		return ResourceProvider.read(VERSION, RELEASE_DATE,
+				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,
+				resourcesByProcessKeyAndVersion);
 	}
 }
