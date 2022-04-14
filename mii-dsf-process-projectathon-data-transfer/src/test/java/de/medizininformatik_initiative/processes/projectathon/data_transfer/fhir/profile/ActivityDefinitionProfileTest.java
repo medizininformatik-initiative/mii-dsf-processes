@@ -1,11 +1,11 @@
 package de.medizininformatik_initiative.processes.projectathon.data_transfer.fhir.profile;
 
+import static de.medizininformatik_initiative.processes.projectathon.data_transfer.DataTransferProcessPluginDefinition.RELEASE_DATE;
 import static de.medizininformatik_initiative.processes.projectathon.data_transfer.DataTransferProcessPluginDefinition.VERSION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.highmed.dsf.fhir.authorization.process.ProcessAuthorizationHelper;
@@ -27,7 +27,7 @@ public class ActivityDefinitionProfileTest
 	private static final Logger logger = LoggerFactory.getLogger(ActivityDefinitionProfileTest.class);
 
 	@ClassRule
-	public static final ValidationSupportRule validationRule = new ValidationSupportRule(VERSION, LocalDate.now(),
+	public static final ValidationSupportRule validationRule = new ValidationSupportRule(VERSION, RELEASE_DATE,
 			Arrays.asList("highmed-activity-definition-0.5.0.xml", "highmed-extension-process-authorization-0.5.0.xml",
 					"highmed-extension-process-authorization-consortium-role-0.5.0.xml",
 					"highmed-extension-process-authorization-organization-0.5.0.xml",
@@ -55,8 +55,9 @@ public class ActivityDefinitionProfileTest
 		ValidationResult result = resourceValidator.validate(ad);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
-				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream()
+				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
+						m.getSeverity())).count());
 
 		assertTrue(processAuthorizationHelper.isValid(ad, taskProfile -> true, orgIdentifier -> true, role -> true));
 	}
@@ -70,8 +71,9 @@ public class ActivityDefinitionProfileTest
 		ValidationResult result = resourceValidator.validate(ad);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
-				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream()
+				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
+						m.getSeverity())).count());
 
 		assertTrue(processAuthorizationHelper.isValid(ad, taskProfile -> true, orgIdentifier -> true, role -> true));
 	}

@@ -11,6 +11,7 @@ import static de.medizininformatik_initiative.processes.projectathon.data_transf
 import static de.medizininformatik_initiative.processes.projectathon.data_transfer.ConstantsDataTransfer.PROFILE_MII_TASK_START_DATA_RECEIVE_MESSAGE_NAME;
 import static de.medizininformatik_initiative.processes.projectathon.data_transfer.ConstantsDataTransfer.PROFILE_MII_TASK_START_DATA_SEND;
 import static de.medizininformatik_initiative.processes.projectathon.data_transfer.ConstantsDataTransfer.PROFILE_MII_TASK_START_DATA_SEND_MESSAGE_NAME;
+import static de.medizininformatik_initiative.processes.projectathon.data_transfer.DataTransferProcessPluginDefinition.RELEASE_DATE;
 import static de.medizininformatik_initiative.processes.projectathon.data_transfer.DataTransferProcessPluginDefinition.VERSION;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY;
@@ -18,7 +19,6 @@ import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_ME
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.junit.Assert.assertEquals;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
@@ -46,7 +46,7 @@ public class TaskProfileTest
 	private static final Logger logger = LoggerFactory.getLogger(TaskProfileTest.class);
 
 	@ClassRule
-	public static final ValidationSupportRule validationRule = new ValidationSupportRule(VERSION, LocalDate.now(),
+	public static final ValidationSupportRule validationRule = new ValidationSupportRule(VERSION, RELEASE_DATE,
 			Arrays.asList("highmed-task-base-0.5.0.xml", "mii-projectathon-task-start-data-receive.xml",
 					"mii-projectathon-task-start-data-send.xml"),
 			Arrays.asList("highmed-read-access-tag-0.5.0.xml", "highmed-bpmn-message-0.5.0.xml",
@@ -72,8 +72,9 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
-				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream()
+				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
+						m.getSeverity())).count());
 	}
 
 	@Test
@@ -87,8 +88,9 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
-				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream()
+				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
+						m.getSeverity())).count());
 	}
 
 	private Task createValidTaskStartDataSend()
@@ -106,11 +108,10 @@ public class TaskProfileTest
 		task.addInput().setValue(new StringType(PROFILE_MII_TASK_START_DATA_SEND_MESSAGE_NAME)).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
 
-		task.addInput()
-				.setValue(new Reference().setIdentifier(
-						new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
-						.setType(ResourceType.Organization.name()))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
+		task.addInput().setValue(new Reference().setIdentifier(
+								new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
+						.setType(ResourceType.Organization.name())).getType().addCoding()
+				.setSystem(CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_COORDINATING_SITE_IDENTIFIER);
 
 		task.addInput()
@@ -130,8 +131,9 @@ public class TaskProfileTest
 		ValidationResult result = resourceValidator.validate(task);
 		ValidationSupportRule.logValidationMessages(logger, result);
 
-		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
-				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+		assertEquals(0, result.getMessages().stream()
+				.filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity()) || ResultSeverityEnum.FATAL.equals(
+						m.getSeverity())).count());
 	}
 
 	private Task createValidTaskStartDataReceive()
@@ -150,11 +152,10 @@ public class TaskProfileTest
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
 		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
-		task.addInput()
-				.setValue(new Reference().setReference("https://dsf-dic.de/fhir/Binary/" + UUID.randomUUID().toString())
-						.setType(ResourceType.Binary.name()))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_DATA_TRANSFER)
-				.setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE);
+		task.addInput().setValue(
+						new Reference().setReference("https://dsf-dic.de/fhir/Binary/" + UUID.randomUUID().toString())
+								.setType(ResourceType.Binary.name())).getType().addCoding()
+				.setSystem(CODESYSTEM_MII_DATA_TRANSFER).setCode(CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE);
 		return task;
 	}
 }
