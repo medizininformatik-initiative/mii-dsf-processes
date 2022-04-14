@@ -20,7 +20,7 @@
 				<date value="<REPLACE-WITH-DATE-AND-TIME>"/>
 				<content>
 					<attachment>
-						<contentType value="text/csv"/>
+						<contentType value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 						<url value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi"/>
 					</attachment>
 				</content>
@@ -35,7 +35,7 @@
 		<fullUrl value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi" />
 		<resource>
 			<Binary xmlns="http://hl7.org/fhir">
-				<contentType value="text/csv"/>
+				<contentType value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 				<data value="<REPLACE-WITH-BASE64-ENCODED-CSV-FILE>"/>
 			</Binary>
 		</resource>
