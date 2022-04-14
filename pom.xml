@@ -22,7 +22,7 @@
 
 		<main.basedir>${project.basedir}</main.basedir>
 		<hapi.version>5.1.0</hapi.version>
-		<dsf.version>0.5.5</dsf.version>
+		<dsf.version>0.6.0-RC1</dsf.version>
 		<apache.tika.version>2.3.0</apache.tika.version>
 		<project.artifactId>mii-dsf-processes</project.artifactId>
 	</properties>
