@@ -1,5 +1,6 @@
 package de.medizininformatik_initiative.processes.projectathon.data_transfer;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import de.medizininformatik_initiative.processes.projectathon.data_transfer.spri
 public class DataTransferProcessPluginDefinition implements ProcessPluginDefinition
 {
 	public static final String VERSION = "0.2.0";
+	public static final LocalDate RELEASE_DATE = LocalDate.of(2022, 4, 14);
 
 	@Override
 	public String getName()
@@ -32,6 +34,12 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 	public String getVersion()
 	{
 		return VERSION;
+	}
+
+	@Override
+	public LocalDate getReleaseDate()
+	{
+		return RELEASE_DATE;
 	}
 
 	@Override
