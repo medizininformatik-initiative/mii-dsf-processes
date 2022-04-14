@@ -7,13 +7,14 @@
 	</meta>
 	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography" />
 	<!-- version managed by bpe -->
-	<version value="${version}" />
+	<version value="#{version}" />
 	<name value="MiiCryptography" />
 	<title value="MII Cryptography" />
 	<!-- status managed by bpe -->
 	<status value="unknown" />
 	<experimental value="false" />
-	<date value="2022-04-04" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
 	<publisher value="Medizininformatik-Initiative" />
 	<description value="CodeSystem with standard values for cryptography in MII processes" />
 	<caseSensitive value="true" />

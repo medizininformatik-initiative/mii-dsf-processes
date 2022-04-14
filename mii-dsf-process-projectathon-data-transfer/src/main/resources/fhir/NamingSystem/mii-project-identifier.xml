@@ -9,7 +9,8 @@
 	<!-- status managed by bpe -->
 	<status value="unknown" />
 	<kind value="identifier"/>
-	<date value="2022-04-04" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
 	<publisher value="Medizininformatik-Initiative" />
 	<responsible value="Medizininformatik-Initiative"/>
 	<description value="MII project identifier"/>

@@ -7,12 +7,13 @@
 	</meta>
 	<url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-receive"/>
 	<!-- version managed by bpe -->
-	<version value="${version}"/>
+	<version value="#{version}"/>
 	<name value="TaskStartDataReceive"/>
 	<!-- status managed by bpe -->
 	<status value="unknown"/>
 	<experimental value="false"/>
-	<date value="2022-04-04"/>
+	<!-- date managed by bpe -->
+	<date value="#{date}"/>
 	<fhirVersion value="4.0.1"/>
 	<kind value="resource"/>
 	<abstract value="false"/>
@@ -22,7 +23,7 @@
 	<differential>
 		<element id="Task.instantiatesUri">
 			<path value="Task.instantiatesUri"/>
-			<fixedUri value="http://medizininformatik-initiative.de/bpe/Process/dataReceive/${version}"/>
+			<fixedUri value="http://medizininformatik-initiative.de/bpe/Process/dataReceive/#{version}"/>
 		</element>
 		<element id="Task.input">
 			<path value="Task.input"/>

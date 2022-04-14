@@ -12,7 +12,7 @@
 		</extension>
 		<extension url="task-profile">
 			<valueCanonical
-					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|${version}" />
+					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|#{version}" />
 		</extension>
 		<extension url="requester">
 			<valueCoding>
@@ -58,14 +58,15 @@
 	<url
 		value="http://medizininformatik-initiative.de/bpe/Process/dataSend" />
 	<!-- version managed by bpe -->
-	<version value="${version}" />
+	<version value="#{version}" />
 	<name value="dataSend" />
 	<title value="Data Send Process" />
 	<subtitle value="Data Send to Coordinating Site Process" />
 	<!-- status managed by bpe -->
 	<status value="unknown" />
 	<experimental value="false" />
-	<date value="2022-04-04" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
 	<publisher value="Medizininformatik-Initiative" />
 	<contact>
 		<name value="Medizininformatik-Initiative" />
