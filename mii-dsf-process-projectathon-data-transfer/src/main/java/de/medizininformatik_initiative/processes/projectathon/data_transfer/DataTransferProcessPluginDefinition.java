@@ -14,9 +14,11 @@ import org.highmed.dsf.fhir.resources.NamingSystemResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.PropertyResolver;
 
 import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.processes.projectathon.data_transfer.client.KdsClientFactory;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.spring.config.TransferDataConfig;
 
 public class DataTransferProcessPluginDefinition implements ProcessPluginDefinition
@@ -82,5 +84,11 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,
 				resourcesByProcessKeyAndVersion);
+	}
+
+	@Override
+	public void onProcessesDeployed(ApplicationContext pluginApplicationContext, List<String> activeProcesses)
+	{
+		pluginApplicationContext.getBean(KdsClientFactory.class).testConnection();
 	}
 }

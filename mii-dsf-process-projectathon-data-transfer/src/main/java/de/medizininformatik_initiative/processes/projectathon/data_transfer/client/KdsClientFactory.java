@@ -14,8 +14,6 @@ import java.util.UUID;
 import org.bouncycastle.pkcs.PKCSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.projectathon.data_transfer.client.fhir.KdsFhirClient;
@@ -84,8 +82,7 @@ public class KdsClientFactory
 		this.localIdentifierValue = localIdentifierValue;
 	}
 
-	@EventListener({ ContextRefreshedEvent.class })
-	public void onContextRefreshedEvent(ContextRefreshedEvent event)
+	public void testConnection()
 	{
 		try
 		{
