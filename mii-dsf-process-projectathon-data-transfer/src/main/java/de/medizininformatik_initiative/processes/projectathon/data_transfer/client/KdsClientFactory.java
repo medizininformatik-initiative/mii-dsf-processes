@@ -56,7 +56,6 @@ public class KdsClientFactory
 			String proxyUrl, String proxyUsername, String proxyPassword, boolean hapiClientVerbose,
 			FhirContext fhirContext, Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue)
 	{
-		super();
 		this.trustStorePath = trustStorePath;
 		this.certificatePath = certificatePath;
 		this.privateKeyPath = privateKeyPath;
