@@ -22,6 +22,7 @@ import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -78,7 +79,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 		PublicKey publicKey = readPublicKey(coordinatingSiteIdentifier);
 		byte[] encrypted = encrypt(publicKey, toEncrypt, localOrganizationIdentifier, coordinatingSiteIdentifier);
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, encrypted);
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, Variables.byteArrayValue(encrypted));
 	}
 
 	private PublicKey readPublicKey(String coordinatingSiteIdentifier)

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -42,7 +43,7 @@ public class DownloadData extends AbstractServiceDelegate
 		logger.info("Downloading Binary with id='{}'...", dataSetReference.getValue());
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, bundleEncrypted);
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED, Variables.byteArrayValue(bundleEncrypted));
 	}
 
 	private IdType getDataSetReference(Task task)

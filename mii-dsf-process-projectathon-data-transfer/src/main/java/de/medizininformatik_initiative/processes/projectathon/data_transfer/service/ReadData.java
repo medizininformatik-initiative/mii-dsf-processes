@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -74,8 +75,9 @@ public class ReadData extends AbstractServiceDelegate
 		Binary binary = readBinary(documentReference, task.getId());
 		LoggingHelper.logDebugBinary("Read Binary", binary);
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER, projectIdentifier);
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER, coordinatingSiteIdentifier);
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER, Variables.stringValue(projectIdentifier));
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER,
+				Variables.stringValue(coordinatingSiteIdentifier));
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE, FhirResourceValues.create(documentReference));
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_BINARY, FhirResourceValues.create(binary));
 	}

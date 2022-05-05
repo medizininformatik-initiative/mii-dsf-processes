@@ -7,6 +7,7 @@ import static de.medizininformatik_initiative.processes.projectathon.data_transf
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS;
+import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 import javax.ws.rs.core.MediaType;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -23,7 +25,9 @@ import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
 import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
@@ -69,7 +73,7 @@ public class StoreData extends AbstractServiceDelegate
 
 		Target target = createTarget(coordinatingSiteIdentifier);
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE, binaryId);
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE, Variables.stringValue(binaryId));
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
@@ -100,14 +104,22 @@ public class StoreData extends AbstractServiceDelegate
 
 	private Target createTarget(String coordinatingSiteIdentifier)
 	{
-		String endpointUrl = getEndpointUrl(coordinatingSiteIdentifier);
-		return Target.createUniDirectionalTarget(coordinatingSiteIdentifier, endpointUrl);
+		Endpoint endpoint = getEndpoint(coordinatingSiteIdentifier);
+		return Target.createUniDirectionalTarget(coordinatingSiteIdentifier, getEndpointIdentifierValue(endpoint),
+				endpoint.getAddress());
 	}
 
-	private String getEndpointUrl(String identifier)
+	private Endpoint getEndpoint(String identifier)
 	{
-		return endpointProvider.getFirstConsortiumEndpointAdress(
+		return endpointProvider.getFirstConsortiumEndpoint(
 				NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
 				CODESYSTEM_HIGHMED_ORGANIZATION_ROLE, CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier).get();
+	}
+
+	private String getEndpointIdentifierValue(Endpoint endpoint)
+	{
+		return endpoint.getIdentifier().stream()
+				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).findFirst()
+				.map(Identifier::getValue).get();
 	}
 }

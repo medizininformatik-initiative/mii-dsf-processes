@@ -1,5 +1,8 @@
 package de.medizininformatik_initiative.processes.projectathon.data_transfer;
 
+import static de.medizininformatik_initiative.processes.projectathon.data_transfer.ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE;
+import static de.medizininformatik_initiative.processes.projectathon.data_transfer.ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -60,26 +63,25 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 	public ResourceProvider getResourceProvider(FhirContext fhirContext, ClassLoader classLoader,
 			PropertyResolver propertyResolver)
 	{
-		var aSen = ActivityDefinitionResource.file("fhir/ActivityDefinition/mii-projectathon-data-send.xml");
 		var aRec = ActivityDefinitionResource.file("fhir/ActivityDefinition/mii-projectathon-data-receive.xml");
+		var aSen = ActivityDefinitionResource.file("fhir/ActivityDefinition/mii-projectathon-data-send.xml");
 
 		var cC = CodeSystemResource.file("fhir/CodeSystem/mii-cryptography.xml");
 		var cD = CodeSystemResource.file("fhir/CodeSystem/mii-data-transfer.xml");
+
 		var nP = NamingSystemResource.file("fhir/NamingSystem/mii-project-identifier.xml");
 
-		var sTstaDsen = StructureDefinitionResource
-				.file("fhir/StructureDefinition/mii-projectathon-task-start-data-send.xml");
 		var sTstaDrec = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-start-data-receive.xml");
+		var sTstaDsen = StructureDefinitionResource
+				.file("fhir/StructureDefinition/mii-projectathon-task-start-data-send.xml");
 
 		var vC = ValueSetResource.file("fhir/ValueSet/mii-cryptography.xml");
 		var vD = ValueSetResource.file("fhir/ValueSet/mii-data-transfer.xml");
 
 		Map<String, List<AbstractResource>> resourcesByProcessKeyAndVersion = Map.of( //
-				"medizininformatik-initiativede_dataSend/" + VERSION,
-				Arrays.asList(aSen, cC, cD, nP, sTstaDsen, vC, vD), //
-				"medizininformatik-initiativede_dataReceive/" + VERSION,
-				Arrays.asList(aRec, cC, cD, nP, sTstaDrec, vC, vD));
+				PROCESS_NAME_FULL_DATA_RECEIVE + "/" + VERSION, Arrays.asList(aRec, cC, cD, nP, sTstaDrec, vC, vD), //
+				PROCESS_NAME_FULL_DATA_SEND + "/" + VERSION, Arrays.asList(aSen, cC, cD, nP, sTstaDsen, vC, vD));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,

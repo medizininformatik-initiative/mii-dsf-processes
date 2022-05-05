@@ -21,7 +21,7 @@
 
 		<main.basedir>${project.basedir}</main.basedir>
 		<hapi.version>5.1.0</hapi.version>
-		<dsf.version>0.6.0-RC2</dsf.version>
+		<dsf.version>0.6.0-RC3</dsf.version>
 	</properties>
 
 	<description>Business processes for the Medical Informatics Initiative as plugins for the HiGHmed Data

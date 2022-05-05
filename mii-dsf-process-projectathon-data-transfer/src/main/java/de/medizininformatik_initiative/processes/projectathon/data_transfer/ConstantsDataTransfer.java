@@ -4,6 +4,12 @@ import static de.medizininformatik_initiative.processes.projectathon.data_transf
 
 public interface ConstantsDataTransfer
 {
+	String PROCESS_NAME_DATA_SEND = "dataSend";
+	String PROCESS_NAME_DATA_RECEIVE = "dataReceive";
+
+	String PROCESS_NAME_FULL_DATA_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_SEND;
+	String PROCESS_NAME_FULL_DATA_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_RECEIVE;
+
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
 	String BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER = "coordinating-site-identifier";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET = "data-set";
