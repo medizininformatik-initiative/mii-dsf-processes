@@ -64,6 +64,11 @@ services:
   dic-fhir:
     image: ghcr.io/highmed/fhir:0.6.0
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     ports:
       - 127.0.0.1:5000:5000
     secrets:
@@ -111,6 +116,11 @@ services:
   dic-bpe:
     image: ghcr.io/highmed/bpe:0.6.0
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     ports:
       - 127.0.0.1:5003:5003
     secrets:
@@ -180,6 +190,11 @@ services:
   cos-fhir:
     image: ghcr.io/highmed/fhir:0.6.0
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     ports:
       - 127.0.0.1:5001:5001
     secrets:
@@ -227,6 +242,11 @@ services:
   cos-bpe:
     image: ghcr.io/highmed/bpe:0.6.0
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
     ports:
       - 127.0.0.1:5004:5004
     secrets:
