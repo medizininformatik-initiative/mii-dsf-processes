@@ -1,13 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>mii-dsf-process-projectathon-data-transfer</artifactId>
+	<artifactId>mii-dsf-process-reporting</artifactId>
 
 	<parent>
-		<groupId>de.medizininformatik-initiative</groupId>
 		<artifactId>mii-dsf-processes</artifactId>
+		<groupId>de.medizininformatik-initiative</groupId>
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
@@ -24,11 +25,6 @@
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>hapi-fhir-client</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -76,7 +72,7 @@
 							org.highmed.dsf.tools.generator.DocumentationGenerator
 						</argument>
 						<argument>
-							de.medizininformatik_initiative.process.projectathon.data_transfer
+							de.medizininformatik_initiative.process.reporting
 						</argument>
 					</arguments>
 					<includeProjectDependencies>true</includeProjectDependencies>
@@ -102,14 +98,9 @@
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
-								../mii-dsf-processes-docker-test-setup/dic/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/dic/bpe/process
 							</outputDirectory>
 						</configuration>
 					</execution>
@@ -143,14 +134,9 @@
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
-								../mii-dsf-processes-docker-test-setup/cos/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/cos/bpe/process
 							</outputDirectory>
 						</configuration>
 					</execution>
@@ -171,23 +157,6 @@
 							<outputDirectory>../mii-dsf-processes-docker-test-setup/cos/bpe/plugin</outputDirectory>
 						</configuration>
 					</execution>
-					<execution>
-						<id>copy-dependencies/assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -197,10 +166,10 @@
 					<filesets>
 						<fileset>
 							<directory>
-								../mii-dsf-processes-docker-test-setup/dic/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/dic/bpe/process
 							</directory>
 							<includes>
-								<include>**</include>
+								<include>${project.artifactId}-${project.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
@@ -215,10 +184,10 @@
 						</fileset>
 						<fileset>
 							<directory>
-								../mii-dsf-processes-docker-test-setup/cos/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/cos/bpe/process
 							</directory>
 							<includes>
-								<include>**</include>
+								<include>${project.artifactId}-${project.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
@@ -232,27 +201,6 @@
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 					</filesets>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>tar-gz-assembly</id>
-						<phase>install</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptors>
-						<descriptor>src/assembly/tar-gz.xml</descriptor>
-					</descriptors>
-					<overrideUid>0</overrideUid>
-					<overrideGid>2202</overrideGid>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -11,6 +11,7 @@
 
 	<modules>
 		<module>mii-dsf-process-projectathon-data-transfer</module>
+		<module>mii-dsf-process-reporting</module>
 		<module>mii-dsf-processes-test-data-generator</module>
 	</modules>
 

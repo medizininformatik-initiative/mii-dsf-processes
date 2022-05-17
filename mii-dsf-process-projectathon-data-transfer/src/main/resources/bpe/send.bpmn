@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_008keuw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_008keuw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <bpmn:process id="medizininformatik-initiativede_dataSend" isExecutable="true" camunda:versionTag="#{version}">
     <bpmn:startEvent id="DataSendMessageStartEvent" name="start data send process">
       <bpmn:outgoing>Flow_0kkjyst</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_07sumgd" messageRef="Message_0mcjkpi" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="ReadData" name="read data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.ReadData">
+    <bpmn:serviceTask id="ReadData" name="read data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.ReadData">
       <bpmn:incoming>Flow_0kkjyst</bpmn:incoming>
       <bpmn:outgoing>Flow_0yamo5r</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0yamo5r" sourceRef="ReadData" targetRef="ValidateData" />
     <bpmn:sequenceFlow id="Flow_0zrvqk8" sourceRef="ValidateData" targetRef="CreateBundle" />
     <bpmn:sequenceFlow id="Flow_109e2pt" sourceRef="StoreDataForManagementSite" targetRef="startDataReceiveProcess" />
-    <bpmn:serviceTask id="ValidateData" name="validate data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.ValidateDataDic">
+    <bpmn:serviceTask id="ValidateData" name="validate data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataDic">
       <bpmn:incoming>Flow_0yamo5r</bpmn:incoming>
       <bpmn:outgoing>Flow_0zrvqk8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="EncryptData" name="encrypt data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.EncryptData">
+    <bpmn:serviceTask id="EncryptData" name="encrypt data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.EncryptData">
       <bpmn:incoming>Flow_05qlnk4</bpmn:incoming>
       <bpmn:outgoing>Flow_15vmy2h</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="StoreDataForManagementSite" name="store data for management site" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.StoreData">
+    <bpmn:serviceTask id="StoreDataForManagementSite" name="store data for management site" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.StoreData">
       <bpmn:incoming>Flow_15vmy2h</bpmn:incoming>
       <bpmn:outgoing>Flow_109e2pt</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -46,7 +46,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_109e2pt</bpmn:incoming>
       <bpmn:outgoing>Flow_1yhho1t</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_00o7ojd" messageRef="Message_0j7x2tc" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.message.StartReceiveProcess" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_00o7ojd" messageRef="Message_0j7x2tc" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.message.StartReceiveProcess" />
     </bpmn:intermediateThrowEvent>
     <bpmn:endEvent id="DataSendEndEvent" name="end data send process">
       <bpmn:extensionElements>
@@ -58,12 +58,12 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0phc02z</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="deleteData" name="delete data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DeleteData">
+    <bpmn:serviceTask id="deleteData" name="delete data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.DeleteData">
       <bpmn:incoming>Flow_1pzxejf</bpmn:incoming>
       <bpmn:outgoing>Flow_0phc02z</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_05qlnk4" sourceRef="CreateBundle" targetRef="EncryptData" />
-    <bpmn:serviceTask id="CreateBundle" name="create bundle" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.CreateBundle">
+    <bpmn:serviceTask id="CreateBundle" name="create bundle" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.CreateBundle">
       <bpmn:incoming>Flow_0zrvqk8</bpmn:incoming>
       <bpmn:outgoing>Flow_05qlnk4</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -72,6 +72,10 @@
   <bpmn:message id="Message_0j7x2tc" name="startDataReceiveMii" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_dataSend">
+      <bpmndi:BPMNEdge id="Flow_05qlnk4_di" bpmnElement="Flow_05qlnk4">
+        <di:waypoint x="710" y="120" />
+        <di:waypoint x="770" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pzxejf_di" bpmnElement="Flow_1pzxejf">
         <di:waypoint x="1238" y="120" />
         <di:waypoint x="1290" y="120" />
@@ -103,10 +107,6 @@
       <bpmndi:BPMNEdge id="Flow_0yamo5r_di" bpmnElement="Flow_0yamo5r">
         <di:waypoint x="390" y="120" />
         <di:waypoint x="450" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05qlnk4_di" bpmnElement="Flow_05qlnk4">
-        <di:waypoint x="710" y="120" />
-        <di:waypoint x="770" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0kggab9_di" bpmnElement="DataSendMessageStartEvent">
         <dc:Bounds x="172" y="102" width="36" height="36" />
