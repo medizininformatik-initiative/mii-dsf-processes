@@ -23,10 +23,13 @@ services:
         ipv4_address: 172.20.0.66
       cos-fhir-frontend:
         ipv4_address: 172.20.0.82
+      hrp-fhir-frontend:
+        ipv4_address: 172.20.0.98
       internet:
         aliases:
           - dic
           - cos
+          - hrp
     environment:
       TZ: Europe/Berlin
 
@@ -47,8 +50,10 @@ services:
     networks:
       - dic-fhir-backend
       - cos-fhir-backend
+      - hrp-fhir-backend
       - dic-bpe-backend
       - cos-bpe-backend
+      - hrp-bpe-backend
     secrets:
       - db_liquibase.password
     volumes:
@@ -164,7 +169,7 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: dic_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataReceive/0.2.0
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataReceive/0.2.0,medizininformatik-initiativede_reportReceive/0.2.0
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic-fhir-store:8080/fhir
     networks:
       dic-bpe-frontend:
@@ -291,7 +296,7 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: cos_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_COS
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://cos/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/0.2.0
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/0.2.0,
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://cos-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PRIVATE_KEY: /run/secrets/cos_private_key.pem
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PUBLIC_KEY: /run/secrets/cos_public_key.pem
@@ -316,6 +321,117 @@ services:
           - cos-fhir-store
 
 
+  hrp-fhir:
+    image: ghcr.io/highmed/fhir:0.6.0
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+    ports:
+      - 127.0.0.1:5002:5002
+    secrets:
+      - db_liquibase.password
+      - db_hrp_fhir_user.password
+      - db_hrp_fhir_user_permanent_delete.password
+      - app_client_trust_certificates.pem
+      - app_hrp_client_certificate.pem
+      - app_hrp_client_certificate_private_key.pem
+      - app_client_certificate_private_key.pem.password
+    volumes:
+      - type: bind
+        source: ./hrp/fhir/conf/bundle.xml
+        target: /opt/fhir/conf/bundle.xml
+      - type: bind
+        source: ./hrp/fhir/log
+        target: /opt/fhir/log
+    environment:
+      TZ: Europe/Berlin
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5002
+      ORG_HIGHMED_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user_permanent_delete.password
+      ORG_HIGHMED_DSF_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_hrp_client_certificate.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_hrp_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
+      ORG_HIGHMED_DSF_FHIR_DB_URL: jdbc:postgresql://db/hrp_fhir
+      ORG_HIGHMED_DSF_FHIR_DB_USER_GROUP: hrp_fhir_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_USERNAME: hrp_fhir_server_user
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_GROUP: hrp_fhir_permanent_delete_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_USERNAME: hrp_fhir_server_permanent_delete_user
+      ORG_HIGHMED_DSF_FHIR_SERVER_BASE_URL: https://hrp/fhir
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS: ${HRP_USER_THUMBPRINTS}
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS_PERMANENT_DELETE: ${HRP_USER_THUMBPRINTS_PERMANENT_DELETE}
+      ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
+    networks:
+      hrp-fhir-frontend:
+        ipv4_address: 172.20.0.99
+      hrp-fhir-backend:
+      internet:
+    depends_on:
+      - db
+      - proxy
+  hrp-bpe:
+    image: ghcr.io/highmed/bpe:0.6.0
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+    ports:
+      - 127.0.0.1:5005:5005
+    secrets:
+      - db_liquibase.password
+      - db_hrp_bpe_user.password
+      - db_hrp_bpe_user_camunda.password
+      - app_client_trust_certificates.pem
+      - app_hrp_client_certificate.pem
+      - app_hrp_client_certificate_private_key.pem
+      - app_client_certificate_private_key.pem.password
+    volumes:
+      - type: bind
+        source: ./hrp/bpe/plugin
+        target: /opt/bpe/plugin
+        read_only: true
+      - type: bind
+        source: ./hrp/bpe/process
+        target: /opt/bpe/process
+        read_only: true
+      - type: bind
+        source: ./hrp/bpe/log
+        target: /opt/bpe/log
+      - type: bind
+        source: ./hrp/bpe/last_event
+        target: /opt/bpe/last_event
+    environment:
+      TZ: Europe/Berlin
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      ORG_HIGHMED_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user_camunda.password
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_hrp_client_certificate.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_hrp_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
+      ORG_HIGHMED_DSF_BPE_DB_URL: jdbc:postgresql://db/hrp_bpe
+      ORG_HIGHMED_DSF_BPE_DB_USER_GROUP: hrp_bpe_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_USERNAME: hrp_bpe_server_user
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_GROUP: hrp_camunda_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: hrp_camunda_server_user
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://hrp/fhir
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_reportAutostart/0.2.0,medizininformatik-initiativede_reportSend/0.2.0
+    networks:
+      hrp-bpe-frontend:
+      hrp-bpe-backend:
+      internet:
+    depends_on:
+      - db
+      - hrp-fhir
+
 secrets:
   proxy_certificate_and_int_cas.pem:
     file: ./secrets/proxy_certificate_and_int_cas.pem
@@ -326,7 +442,7 @@ secrets:
 
   db_liquibase.password:
     file: ./secrets/db_liquibase.password
-    
+
   db_dic_fhir_user.password:
     file: ./secrets/db_dic_fhir_user.password
   db_dic_fhir_user_permanent_delete.password:
@@ -345,6 +461,15 @@ secrets:
   db_cos_bpe_user_camunda.password:
     file: ./secrets/db_cos_bpe_user_camunda.password
 
+  db_hrp_fhir_user.password:
+    file: ./secrets/db_hrp_fhir_user.password
+  db_hrp_fhir_user_permanent_delete.password:
+    file: ./secrets/db_hrp_fhir_user_permanent_delete.password
+  db_hrp_bpe_user.password:
+    file: ./secrets/db_hrp_bpe_user.password
+  db_hrp_bpe_user_camunda.password:
+    file: ./secrets/db_hrp_bpe_user_camunda.password
+
   app_client_trust_certificates.pem:
     file: ./secrets/app_client_trust_certificates.pem
   app_client_certificate_private_key.pem.password:
@@ -360,6 +485,11 @@ secrets:
   app_cos_client_certificate_private_key.pem:
     file: ./secrets/app_cos_client_certificate_private_key.pem
 
+  app_hrp_client_certificate.pem:
+    file: ./secrets/app_hrp_client_certificate.pem
+  app_hrp_client_certificate_private_key.pem:
+    file: ./secrets/app_hrp_client_certificate_private_key.pem
+
   cos_private_key.pem:
     file: ./secrets/cos_private_key.pem
   cos_public_key.pem:
@@ -372,7 +502,7 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.20.0.64/28
+        - subnet: 172.20.0.64/28
   dic-fhir-backend:
   dic-bpe-frontend:
   dic-bpe-backend:
@@ -381,10 +511,19 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.20.0.80/28
+        - subnet: 172.20.0.80/28
   cos-fhir-backend:
   cos-bpe-frontend:
   cos-bpe-backend:
+  hrp-fhir-frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.96/28
+  hrp-fhir-backend:
+  hrp-bpe-frontend:
+  hrp-bpe-backend:
 
 
 volumes:

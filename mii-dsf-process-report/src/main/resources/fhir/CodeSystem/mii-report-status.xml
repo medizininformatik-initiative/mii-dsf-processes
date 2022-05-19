@@ -1,0 +1,57 @@
+<CodeSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/report-status" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MII_Report_Status" />
+	<title value="MII Report Status" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="CodeSystem with standard values for the report process status" />
+	<caseSensitive value="true" />
+	<hierarchyMeaning value="grouped-by" />
+	<versionNeeded value="false" />
+	<content value="complete" />
+	<concept>
+		<code value="not-allowed" />
+		<display value="Not allowed" />
+		<definition value="Not allowed to send report to HRP" />
+	</concept>
+	<concept>
+		<code value="not-reachable" />
+		<display value="Not reachable" />
+		<definition value="Report could not be sent to HRP" />
+	</concept>
+	<concept>
+		<code value="receipt-missing" />
+		<display value="Receipt missing" />
+		<definition value="No receipt received from HRP" />
+	</concept>
+	<concept>
+		<code value="receipt-ok" />
+		<display value="Receive ok" />
+		<definition value="Ok received from HRP" />
+	</concept>
+	<concept>
+		<code value="receipt-error" />
+		<display value="Receive error" />
+		<definition value="Error received from HRP" />
+	</concept>
+	<concept>
+		<code value="receive-ok" />
+		<display value="Receive ok" />
+	</concept>
+	<concept>
+		<code value="receive-error" />
+		<display value="Receive error" />
+	</concept>
+</CodeSystem>

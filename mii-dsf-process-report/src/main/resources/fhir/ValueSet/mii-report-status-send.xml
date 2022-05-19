@@ -1,0 +1,47 @@
+<ValueSet xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system
+				value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/ValueSet/report-status-send" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MII_Report_Status_Send" />
+	<title value="MII Report Status Send" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="ValueSet with values for the report send status" />
+	<immutable value="true" />
+	<compose>
+		<include>
+			<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report-status" />
+			<concept>
+				<code value="not-allowed" />
+				<display value="Not allowed" />
+			</concept>
+			<concept>
+				<code value="not-reachable" />
+				<display value="Not reachable" />
+			</concept>
+			<concept>
+				<code value="receipt-missing" />
+				<display value="Receipt missing" />
+			</concept>
+			<concept>
+				<code value="receipt-ok" />
+				<display value="Receive ok" />
+			</concept>
+			<concept>
+				<code value="receipt-error" />
+				<display value="Receive error" />
+			</concept>
+		</include>
+	</compose>
+</ValueSet> 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_15v05m6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+  <bpmn:process id="medizininformatik-initiativede_reportReceive" isExecutable="true" camunda:versionTag="#{version}">
+    <bpmn:startEvent id="StartEvent_1" name="start receive report">
+      <bpmn:outgoing>SequenceFlow_07w11cw</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0u91abp" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_07w11cw" sourceRef="StartEvent_1" targetRef="downloadReport" />
+    <bpmn:endEvent id="sendReceipt" name="send receipt">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/reportSend/#{version}</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">reportReceive</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-receive|#{version}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1ism9wt</bpmn:incoming>
+      <bpmn:messageEventDefinition camunda:class="de.medizininformatik_initiative.process.report.message.SendReceipt" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_09i9zb8" sourceRef="downloadReport" targetRef="insertReport" />
+    <bpmn:serviceTask id="downloadReport" name="download report" camunda:class="de.medizininformatik_initiative.process.report.service.DownloadReport">
+      <bpmn:incoming>SequenceFlow_07w11cw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_09i9zb8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="selectTargetDic" name="select target dic" camunda:class="de.medizininformatik_initiative.process.report.service.SelectTargetDic">
+      <bpmn:incoming>Flow_0epmqlh</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ism9wt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1ism9wt" sourceRef="selectTargetDic" targetRef="sendReceipt" />
+    <bpmn:sequenceFlow id="Flow_0epmqlh" sourceRef="insertReport" targetRef="selectTargetDic" />
+    <bpmn:serviceTask id="insertReport" name="insert report" camunda:class="de.medizininformatik_initiative.process.report.service.InsertReport">
+      <bpmn:incoming>SequenceFlow_09i9zb8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0epmqlh</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_0u91abp" name="reportSend" />
+  <bpmn:message id="Message_1h0kvyq" />
+  <bpmn:error id="Error_1j0t9ud" name="target_not_allowed" errorCode="target_not_allowed" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_reportReceive">
+      <bpmndi:BPMNEdge id="Flow_0epmqlh_di" bpmnElement="Flow_0epmqlh">
+        <di:waypoint x="520" y="120" />
+        <di:waypoint x="580" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ism9wt_di" bpmnElement="SequenceFlow_1ism9wt">
+        <di:waypoint x="680" y="120" />
+        <di:waypoint x="742" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_09i9zb8_di" bpmnElement="SequenceFlow_09i9zb8">
+        <di:waypoint x="362" y="120" />
+        <di:waypoint x="420" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07w11cw_di" bpmnElement="SequenceFlow_07w11cw">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="262" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1qh431z_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="145" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_108jj6g_di" bpmnElement="sendReceipt">
+        <dc:Bounds x="742" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="731" y="145" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1uea92o_di" bpmnElement="downloadReport">
+        <dc:Bounds x="262" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0ko681m_di" bpmnElement="selectTargetDic">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xhzf00_di" bpmnElement="insertReport">
+        <dc:Bounds x="420" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

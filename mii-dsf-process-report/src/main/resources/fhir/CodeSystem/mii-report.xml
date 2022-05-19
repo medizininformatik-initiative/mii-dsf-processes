@@ -1,0 +1,49 @@
+<CodeSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/report" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MII_Report" />
+	<title value="MII Report" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="CodeSystem with standard values for the report process" />
+	<caseSensitive value="true" />
+	<hierarchyMeaning value="grouped-by" />
+	<versionNeeded value="false" />
+	<content value="complete" />
+	<concept>
+		<code value="report-status" />
+		<display value="Report Status" />
+		<definition value="Report status of local organization" />
+	</concept>
+	<concept>
+		<code value="search-bundle-reference" />
+		<display value="Search Bundle Reference" />
+		<definition value="Reference to a search Bundle containing GET requests on which the report is based on" />
+	</concept>
+	<concept>
+		<code value="search-bundle-response-reference" />
+		<display value="Search Bundle Response Reference" />
+		<definition value="Reference to a response search Bundle containing the report" />
+	</concept>
+	<concept>
+		<code value="health-research-platform-identifier" />
+		<display value="Health Research Platform Identifier" />
+		<definition value="Health research platform identifier where the search Bundle response should be sent to" />
+	</concept>
+	<concept>
+		<code value="timer-interval" />
+		<display value="Timer Interval" />
+		<definition value="Interval between two autostarts of the report process" />
+	</concept>
+</CodeSystem> 

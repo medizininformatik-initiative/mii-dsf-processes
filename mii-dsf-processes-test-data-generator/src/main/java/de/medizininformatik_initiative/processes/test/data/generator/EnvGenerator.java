@@ -53,11 +53,18 @@ public class EnvGenerator
 		Stream<String> cosUserThumbprintsPermanentDelete = filterAndMapToThumbprint(clientCertificateFilesByCommonName,
 				"cos-client", "Webbrowser Test User");
 
+		Stream<String> hrpUserThumbprints = filterAndMapToThumbprint(clientCertificateFilesByCommonName, "hrp-client",
+				"Webbrowser Test User");
+		Stream<String> hrpUserThumbprintsPermanentDelete = filterAndMapToThumbprint(clientCertificateFilesByCommonName,
+				"hrp-client", "Webbrowser Test User");
+
 		List<EnvEntry> entries = List.of(
 				new EnvEntry("DIC_" + USER_THUMBPRINTS, dicUserThumbprints, "DIC_" + USER_THUMBPRINTS_PERMANENTDELETE,
 						dicUserThumbprintsPermanentDelete),
 				new EnvEntry("COS_" + USER_THUMBPRINTS, cosUserThumbprints, "COS_" + USER_THUMBPRINTS_PERMANENTDELETE,
-						cosUserThumbprintsPermanentDelete));
+						cosUserThumbprintsPermanentDelete),
+				new EnvEntry("HRP_" + USER_THUMBPRINTS, hrpUserThumbprints, "HRP_" + USER_THUMBPRINTS_PERMANENTDELETE,
+						hrpUserThumbprintsPermanentDelete));
 
 		writeEnvFile(Paths.get("../mii-dsf-processes-docker-test-setup/.env"), entries);
 	}

@@ -1,0 +1,46 @@
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <meta>
+    <tag>
+      <system value="http://highmed.org/fhir/CodeSystem/read-access-tag"/>
+      <code value="ALL"/>
+    </tag>
+  </meta>
+  <url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error"/>
+  <!-- version managed by bpe -->
+  <version value="#{version}" />
+  <name value="ReportStatusError"/>
+  <!-- status managed by bpe -->
+  <status value="unknown" />
+  <experimental value="false" />
+  <!-- date managed by bpe -->
+  <date value="#{date}" />
+  <fhirVersion value="4.0.1"/>
+  <kind value="complex-type"/>
+  <abstract value="false"/>
+  <context>
+    <type value="fhirpath"/>
+    <expression value="Task.input | Task.output"/>
+  </context>
+  <type value="Extension"/>
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/Extension"/>
+  <derivation value="constraint"/>
+  <differential>
+    <element id="Extension">
+      <path value="Extension"/>
+      <min value="0"/>
+      <max value="1"/>
+    </element>
+    <element id="Extension.url">
+      <path value="Extension.url"/>
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error"/>
+    </element>
+    <element id="Extension.value[x]">
+      <path value="Extension.value[x]"/>
+      <min value="1"/>
+      <max value="1"/>
+      <type>
+        <code value="string"/>
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

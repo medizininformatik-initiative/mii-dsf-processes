@@ -81,17 +81,23 @@ public class BundleGenerator
 	private void createDockerTestBundle(
 			Map<String, CertificateGenerator.CertificateFiles> clientCertificateFilesByCommonName)
 	{
-		Path medic3BundleTemplateFile = Paths.get("src/main/resources/bundle-templates/bundle.xml");
+		Path bundleTemplateFile = Paths.get("src/main/resources/bundle-templates/bundle.xml");
 
-		bundle = readAndCleanBundle(medic3BundleTemplateFile);
+		bundle = readAndCleanBundle(bundleTemplateFile);
 
-		Organization organizationCos = (Organization) bundle.getEntry().get(0).getResource();
+		Organization organizationHrp = (Organization) bundle.getEntry().get(0).getResource();
+		Extension organizationHrpThumbprintExtension = organizationHrp
+				.getExtensionByUrl("http://highmed.org/fhir/StructureDefinition/extension-certificate-thumbprint");
+		organizationHrpThumbprintExtension.setValue(new StringType(
+				clientCertificateFilesByCommonName.get("hrp-client").getCertificateSha512ThumbprintHex()));
+
+		Organization organizationCos = (Organization) bundle.getEntry().get(1).getResource();
 		Extension organizationCosThumbprintExtension = organizationCos
 				.getExtensionByUrl("http://highmed.org/fhir/StructureDefinition/extension-certificate-thumbprint");
 		organizationCosThumbprintExtension.setValue(new StringType(
 				clientCertificateFilesByCommonName.get("cos-client").getCertificateSha512ThumbprintHex()));
 
-		Organization organizationDic = (Organization) bundle.getEntry().get(1).getResource();
+		Organization organizationDic = (Organization) bundle.getEntry().get(2).getResource();
 		Extension organizationMedic1thumbprintExtension = organizationDic
 				.getExtensionByUrl("http://highmed.org/fhir/StructureDefinition/extension-certificate-thumbprint");
 		organizationMedic1thumbprintExtension.setValue(new StringType(
@@ -102,13 +108,16 @@ public class BundleGenerator
 
 	public void copyDockerTestBundles()
 	{
-		Path dicBundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/dic/fhir/conf/bundle.xml");
-		logger.info("Copying fhir bundle to {}", dicBundleFile);
-		writeBundle(dicBundleFile, bundle);
+		Path hrpBundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/hrp/fhir/conf/bundle.xml");
+		logger.info("Copying fhir bundle to {}", hrpBundleFile);
+		writeBundle(hrpBundleFile, bundle);
 
 		Path cosBundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/cos/fhir/conf/bundle.xml");
 		logger.info("Copying fhir bundle to {}", cosBundleFile);
 		writeBundle(cosBundleFile, bundle);
 
+		Path dicBundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/dic/fhir/conf/bundle.xml");
+		logger.info("Copying fhir bundle to {}", dicBundleFile);
+		writeBundle(dicBundleFile, bundle);
 	}
 }
