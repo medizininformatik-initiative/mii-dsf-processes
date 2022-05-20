@@ -14,6 +14,7 @@ import org.highmed.dsf.bpe.ProcessPluginDefinition;
 import org.highmed.dsf.fhir.resources.AbstractResource;
 import org.highmed.dsf.fhir.resources.ActivityDefinitionResource;
 import org.highmed.dsf.fhir.resources.CodeSystemResource;
+import org.highmed.dsf.fhir.resources.NamingSystemResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
@@ -69,6 +70,8 @@ public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 		var cReport = CodeSystemResource.file("fhir/CodeSystem/mii-report.xml");
 		var cReportStatus = CodeSystemResource.file("fhir/CodeSystem/mii-report-status.xml");
 
+		var nReport = NamingSystemResource.file("fhir/NamingSystem/mii-report.xml");
+
 		var eReportStatusError = StructureDefinitionResource
 				.file("fhir/StructureDefinition/extension-mii-report-status-error.xml");
 
@@ -88,10 +91,10 @@ public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 				PROCESS_NAME_FULL_REPORT_AUTOSTART + "/" + VERSION,
 				Arrays.asList(aAutostart, cReport, sAutostartStart, sAutostartStop, vReport),
 				PROCESS_NAME_FULL_REPORT_RECEIVE + "/" + VERSION,
-				Arrays.asList(aReceive, cReport, cReportStatus, eReportStatusError, sSend, vReport,
+				Arrays.asList(aReceive, cReport, cReportStatus, eReportStatusError, nReport, sSend, vReport,
 						vReportStatusReceive),
 				PROCESS_NAME_FULL_REPORT_SEND + "/" + VERSION, Arrays.asList(aSend, cReport, cReportStatus,
-						eReportStatusError, sReceive, sSendStart, vReport, vReportStatusSend));
+						eReportStatusError, nReport, sReceive, sSendStart, vReport, vReportStatusSend));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, resolver,

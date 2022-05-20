@@ -12,12 +12,21 @@ public interface ConstantsReport
 	String PROCESS_NAME_FULL_REPORT_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_REPORT_RECEIVE;
 	String PROCESS_NAME_FULL_REPORT_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_REPORT_SEND;
 
+	String BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL = "reportTimerInterval";
+	String BPMN_EXECUTION_VARIABLE_REPORT_STOP_TIMER = "reportStopTimer";
+	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE = "searchBundleReference";
+	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE = "searchBundle";
+	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "searchBundleResponseReference";
+
+	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
+
 	String EXTENSION_REPORT_STATUS_ERROR_URL = "http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error";
+
+	String NAMING_SYSTEM_MII_REPORT = "http://medizininformatik-initiative.de//sid/report";
 
 	String CODESYSTEM_MII_REPORT = "http://medizininformatik-initiative.de/fhir/CodeSystem/report";
 	String CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE = "search-bundle-reference";
 	String CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "search-bundle-response-reference";
-	String CODESYSTEM_MII_REPORT_VALUE_HEALTH_RESEARCH_PLATFORM_IDENTIFIER = "health-research-platform-identifier";
 	String CODESYSTEM_MII_REPORT_VALUE_REPORT_STATUS = "report-status";
 	String CODESYSTEM_MII_REPORT_VALUE_TIMER_INTERVAL = "timer-interval";
 
@@ -63,10 +72,4 @@ public interface ConstantsReport
 	String PROFILE_MII_REPORT_TASK_RECEIVE = "http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-receive";
 	String PROFILE_MII_REPORT_TASK_RECEIVE_AND_LATEST_VERSION = PROFILE_MII_REPORT_TASK_RECEIVE + "|" + VERSION;
 	String PROFILE_MII_REPORT_TASK_RECEIVE_MESSAGE_NAME = "reportReceive";
-
-	String BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL = "reportTimerInterval";
-	String BPMN_EXECUTION_VARIABLE_REPORT_STOP_TIMER = "reportStopTimer";
-	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "search-bundle-response-reference";
-
-	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
 }

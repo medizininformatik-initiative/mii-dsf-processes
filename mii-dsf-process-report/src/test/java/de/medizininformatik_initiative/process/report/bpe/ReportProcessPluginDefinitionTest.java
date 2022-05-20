@@ -33,12 +33,11 @@ public class ReportProcessPluginDefinitionTest
 		var reportReceive = provider.getResources(PROCESS_NAME_FULL_REPORT_RECEIVE + "/" + VERSION,
 				s -> ResourceProvider.empty());
 		assertNotNull(reportReceive);
-		assertEquals(7, reportReceive.count());
+		assertEquals(8, reportReceive.count());
 
 		var reportSend = provider.getResources(PROCESS_NAME_FULL_REPORT_SEND + "/" + VERSION,
 				s -> ResourceProvider.empty());
 		assertNotNull(reportSend);
-		assertEquals(8, reportSend.count());
-
+		assertEquals(9, reportSend.count());
 	}
 }

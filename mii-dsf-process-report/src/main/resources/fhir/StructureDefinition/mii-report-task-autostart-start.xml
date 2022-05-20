@@ -30,8 +30,8 @@
         <valueString value="Parameter" />
       </extension>
       <path value="Task.input" />
-      <min value="4" />
-      <max value="5" />
+      <min value="3" />
+      <max value="4" />
     </element>
     <element id="Task.input:message-name">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
@@ -108,55 +108,6 @@
     <element id="Task.input:search-bundle-reference.value[x].identifier">
       <path value="Task.input.value[x].identifier" />
       <max value="0" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier">
-      <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
-        <valueString value="Parameter" />
-      </extension>
-      <path value="Task.input" />
-      <sliceName value="health-research-platform-identifier" />
-      <min value="1" />
-      <max value="1" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier.type">
-      <path value="Task.input.type" />
-      <binding>
-        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
-          <valueString value="TaskInputParameterType" />
-        </extension>
-        <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/report" />
-      </binding>
-    </element>
-    <element id="Task.input:health-research-platform-identifier.type.coding">
-      <path value="Task.input.type.coding" />
-      <min value="1" />
-      <max value="1" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier.type.coding.system">
-      <path value="Task.input.type.coding.system" />
-      <min value="1" />
-      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/report" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier.type.coding.code">
-      <path value="Task.input.type.coding.code" />
-      <min value="1" />
-      <fixedCode value="health-research-platform-identifier" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier.value[x]">
-      <path value="Task.input.value[x]" />
-      <type>
-        <code value="Reference" />
-        <targetProfile value="http://highmed.org/fhir/StructureDefinition/organization" />
-      </type>
-    </element>
-    <element id="Task.input:health-research-platform-identifier.value[x].reference">
-      <path value="Task.input.value[x].reference" />
-      <max value="0" />
-    </element>
-    <element id="Task.input:health-research-platform-identifier.value[x].identifier">
-      <path value="Task.input.value[x].identifier" />
-      <min value="1" />
     </element>
     <element id="Task.input:timer-interval">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">

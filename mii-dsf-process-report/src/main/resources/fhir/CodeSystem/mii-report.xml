@@ -27,6 +27,11 @@
 		<definition value="Report status of local organization" />
 	</concept>
 	<concept>
+		<code value="search-bundle" />
+		<display value="Search Bundle" />
+		<definition value="Search Bundle on which the report is based" />
+	</concept>
+	<concept>
 		<code value="search-bundle-reference" />
 		<display value="Search Bundle Reference" />
 		<definition value="Reference to a search Bundle containing GET requests on which the report is based on" />
@@ -35,11 +40,6 @@
 		<code value="search-bundle-response-reference" />
 		<display value="Search Bundle Response Reference" />
 		<definition value="Reference to a response search Bundle containing the report" />
-	</concept>
-	<concept>
-		<code value="health-research-platform-identifier" />
-		<display value="Health Research Platform Identifier" />
-		<definition value="Health research platform identifier where the search Bundle response should be sent to" />
 	</concept>
 	<concept>
 		<code value="timer-interval" />

@@ -7,8 +7,8 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.EXT
 
 import org.hl7.fhir.r4.model.BackboneElement;
 import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.Task.ParameterComponent;
 import org.hl7.fhir.r4.model.Task.TaskOutputComponent;
 
@@ -51,8 +51,24 @@ public class ReportStatusGenerator
 
 	private void addErrorExtension(BackboneElement element, String errorMessage)
 	{
-		Extension extension = element.addExtension();
-		extension.setUrl(EXTENSION_REPORT_STATUS_ERROR_URL);
-		extension.setValue(new StringType(errorMessage));
+		element.addExtension().setUrl(EXTENSION_REPORT_STATUS_ERROR_URL).setValue(new StringType(errorMessage));
+	}
+
+	public void transformInputToOutput(Task inputTask, Task outputTask)
+	{
+		inputTask.getInput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> CODESYSTEM_MII_REPORT.equals(c.getSystem())
+								&& CODESYSTEM_MII_REPORT_VALUE_REPORT_STATUS.equals(c.getCode())))
+				.map(this::toTaskOutputComponent).forEach(outputTask::addOutput);
+	}
+
+	private TaskOutputComponent toTaskOutputComponent(ParameterComponent inputComponent)
+	{
+		TaskOutputComponent outputComponent = new TaskOutputComponent().setType(inputComponent.getType())
+				.setValue(inputComponent.getValue());
+		outputComponent.setExtension(inputComponent.getExtension());
+
+		return outputComponent;
 	}
 }

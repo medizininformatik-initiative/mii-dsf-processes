@@ -6,7 +6,6 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.COD
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_OK;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_OK;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_HEALTH_RESEARCH_PLATFORM_IDENTIFIER;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_RESPONSE_REFERENCE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_TIMER_INTERVAL;
@@ -38,7 +37,6 @@ import java.util.UUID;
 import org.highmed.dsf.fhir.validation.ResourceValidator;
 import org.highmed.dsf.fhir.validation.ResourceValidatorImpl;
 import org.highmed.dsf.fhir.validation.ValidationSupportRule;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
@@ -133,11 +131,6 @@ public class TaskProfileTest
 						.setType(ResourceType.Bundle.name()))
 				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
 				.setCode(CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE);
-		task.addInput()
-				.setValue(new Reference().setType(ResourceType.Organization.name()).setIdentifier(
-						new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("HRP")))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
-				.setCode(CODESYSTEM_MII_REPORT_VALUE_HEALTH_RESEARCH_PLATFORM_IDENTIFIER);
 
 		return task;
 	}
@@ -253,11 +246,6 @@ public class TaskProfileTest
 						.setType(ResourceType.Bundle.name()))
 				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
 				.setCode(CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE);
-		task.addInput()
-				.setValue(new Reference().setType(ResourceType.Organization.name()).setIdentifier(
-						new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("HRP")))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
-				.setCode(CODESYSTEM_MII_REPORT_VALUE_HEALTH_RESEARCH_PLATFORM_IDENTIFIER);
 
 		return task;
 	}

@@ -1,6 +1,5 @@
 package de.medizininformatik_initiative.process.report.spring.config;
 
-import org.camunda.feel.syntaxtree.In;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
@@ -16,12 +15,14 @@ import de.medizininformatik_initiative.process.report.message.SendReport;
 import de.medizininformatik_initiative.process.report.message.StartSendReport;
 import de.medizininformatik_initiative.process.report.service.CreateReport;
 import de.medizininformatik_initiative.process.report.service.DownloadReport;
+import de.medizininformatik_initiative.process.report.service.DownloadSearchBundle;
 import de.medizininformatik_initiative.process.report.service.InsertReport;
 import de.medizininformatik_initiative.process.report.service.SelectTargetDic;
 import de.medizininformatik_initiative.process.report.service.SelectTargetHrp;
 import de.medizininformatik_initiative.process.report.service.StartTimer;
 import de.medizininformatik_initiative.process.report.service.StopTimer;
 import de.medizininformatik_initiative.process.report.service.StoreReceipt;
+import de.medizininformatik_initiative.process.report.util.ReportStatusGenerator;
 
 @Configuration
 public class ReportingConfig
@@ -69,25 +70,38 @@ public class ReportingConfig
 	@Bean
 	public SelectTargetHrp selectTargetHrp()
 	{
-		return new SelectTargetHrp(clientProvider, taskHelper, readAccessHelper, endpointProvider);
+		return new SelectTargetHrp(clientProvider, taskHelper, readAccessHelper);
+	}
+
+	@Bean
+	public DownloadSearchBundle downloadSearchBundle()
+	{
+		return new DownloadSearchBundle(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean
 	public CreateReport createReport()
 	{
-		return new CreateReport(clientProvider, taskHelper, readAccessHelper);
+		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider);
+	}
+
+	@Bean
+	public ReportStatusGenerator reportStatusGenerator()
+	{
+		return new ReportStatusGenerator();
 	}
 
 	@Bean
 	public SendReport sendReport()
 	{
-		return new SendReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext);
+		return new SendReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext,
+				reportStatusGenerator());
 	}
 
 	@Bean
 	public StoreReceipt storeReceipt()
 	{
-		return new StoreReceipt(clientProvider, taskHelper, readAccessHelper);
+		return new StoreReceipt(clientProvider, taskHelper, readAccessHelper, reportStatusGenerator());
 	}
 
 	// reportReceive Process

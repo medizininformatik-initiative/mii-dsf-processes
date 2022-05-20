@@ -1,0 +1,21 @@
+<NamingSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag"/>
+			<code value="ALL"/>
+		</tag>
+	</meta>
+	<name value="MII_Report"/>
+	<status value="active"/>
+	<kind value="identifier"/>
+	<!-- date managed by bpe -->
+	<date value="#{date}"/>
+	<publisher value="Medizininformatik-Initiative" />
+	<responsible value="FDPG"/>
+	<description value="Report identification of data integration center"/>
+	<usage value="Used withing the MII for resolution data integration center reports"/>
+	<uniqueId>
+		<type value="other"/>
+		<value value="http://medizininformatik-initiative.de//sid/report"/>
+	</uniqueId>
+</NamingSystem>
