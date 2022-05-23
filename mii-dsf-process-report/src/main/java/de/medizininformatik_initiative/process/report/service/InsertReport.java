@@ -3,6 +3,7 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
 
 import java.util.Collections;
 import java.util.Map;
@@ -48,20 +49,27 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 	@Override
 	protected void doExecute(DelegateExecution delegateExecution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables();
+
 		Bundle report = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE);
-		report.setId("").getMeta().setVersionId("");
+		report.setId("").getMeta().setVersionId("").setTag(null);
+
+		Identifier reportIdentifier = getReportIdentifier(task);
+		report.setIdentifier(reportIdentifier);
+
+		getReadAccessHelper().addLocal(report);
+		getReadAccessHelper().addOrganization(report, task.getRequester().getIdentifier().getValue());
 
 		try
 		{
 			IdType reportId = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-					.updateConditionaly(report,
-							Map.of("identifier", Collections.singletonList(getReportIdentifierAsSearchString(report))));
+					.updateConditionaly(report, Map.of("identifier", Collections
+							.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
 
 			logger.info("Stored report with id='{}'...", reportId.getValue());
 		}
 		catch (Exception exception)
 		{
-			Task task = getLeadingTaskFromExecutionVariables();
 			task.setStatus(Task.TaskStatus.FAILED);
 			task.addOutput(reportStatusGenerator.createReportStatusOutput(
 					CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
@@ -72,9 +80,9 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 		}
 	}
 
-	private String getReportIdentifierAsSearchString(Bundle report)
+	private Identifier getReportIdentifier(Task task)
 	{
-		Identifier identifier = report.getIdentifier();
-		return identifier.getSystem() + "|" + identifier.getValue();
+		return new Identifier().setSystem(NAMING_SYSTEM_MII_REPORT)
+				.setValue("Report_" + task.getRequester().getIdentifier().getValue());
 	}
 }

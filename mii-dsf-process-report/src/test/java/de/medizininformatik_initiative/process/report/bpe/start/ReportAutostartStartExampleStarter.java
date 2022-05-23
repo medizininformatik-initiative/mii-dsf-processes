@@ -23,7 +23,7 @@ import org.hl7.fhir.r4.model.Task;
 
 public class ReportAutostartStartExampleStarter
 {
-	private static final String SEARCH_BUNDLE_REFERENCE = "https://hrp/fhir/Bundle/fea26bf3-4beb-40c7-8d00-63c20f43aadb";
+	private static final String SEARCH_BUNDLE_REFERENCE = "https://hrp/fhir/Bundle/68395cee-b361-46cc-aba8-a508be3e5b21";
 
 	public static void main(String[] args) throws Exception
 	{

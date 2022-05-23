@@ -178,7 +178,7 @@ public class ReportingConfig
 	@Bean
 	public CreateReport createReport()
 	{
-		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider);
+		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, kdsClientFactory());
 	}
 
 	@Bean

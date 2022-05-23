@@ -10,4 +10,6 @@ public interface KdsFhirClient
 	Binary readBinary(String url);
 
 	Bundle executeTransactionBundle(Bundle toExecute);
+
+	Bundle executeBatchBundle(Bundle toExecute);
 }

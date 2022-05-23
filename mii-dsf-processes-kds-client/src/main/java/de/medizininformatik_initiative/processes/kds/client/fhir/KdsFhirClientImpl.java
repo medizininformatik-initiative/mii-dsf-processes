@@ -39,4 +39,11 @@ public class KdsFhirClientImpl implements KdsFhirClient
 		return kdsClient.getGenericFhirClient().transaction().withBundle(toExecute)
 				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
 	}
+
+	@Override
+	public Bundle executeBatchBundle(Bundle toExecute)
+	{
+		return kdsClient.getGenericFhirClient().transaction().withBundle(toExecute)
+				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
+	}
 }

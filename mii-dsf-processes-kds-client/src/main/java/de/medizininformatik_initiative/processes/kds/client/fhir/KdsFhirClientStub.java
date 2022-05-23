@@ -328,4 +328,13 @@ public final class KdsFhirClientStub implements KdsFhirClient
 				+ "Y3VzIiwiYWlyIiwiZGlubmVyIiwicmFkaW8iLCJwb3B1bGF0aW9uIiwiY291cnNlIiwic2xpcHBlZCIsIm1ldGFsI"
 				+ "iwic3RpbGwiLCJwb2xpY2VtYW4iLCJzdGVlcCI=").getBytes(StandardCharsets.UTF_8);
 	}
+
+	@Override
+	public Bundle executeBatchBundle(Bundle toExecute)
+	{
+		Bundle bundle = new Bundle();
+		bundle.setType(Bundle.BundleType.BATCHRESPONSE);
+
+		return bundle;
+	}
 }
