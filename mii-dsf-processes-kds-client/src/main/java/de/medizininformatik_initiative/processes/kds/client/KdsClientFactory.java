@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client;
+package de.medizininformatik_initiative.processes.kds.client;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 import de.rwh.utils.crypto.CertificateHelper;
 import de.rwh.utils.crypto.io.CertificateReader;
 import de.rwh.utils.crypto.io.PemIo;

@@ -18,8 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.PropertyResolver;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClientFactory;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.spring.config.TransferDataConfig;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class DataTransferProcessPluginDefinition implements ProcessPluginDefinition
 {

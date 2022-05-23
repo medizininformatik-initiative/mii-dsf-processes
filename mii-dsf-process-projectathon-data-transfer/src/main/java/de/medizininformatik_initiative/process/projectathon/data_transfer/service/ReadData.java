@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClientFactory;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class ReadData extends AbstractServiceDelegate
 {

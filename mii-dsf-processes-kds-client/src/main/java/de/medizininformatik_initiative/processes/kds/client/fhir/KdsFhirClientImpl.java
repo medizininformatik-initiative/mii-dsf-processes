@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir;
+package de.medizininformatik_initiative.processes.kds.client.fhir;
 
 import static ca.uhn.fhir.rest.api.Constants.HEADER_PREFER;
 
@@ -7,7 +7,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
 
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClient;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 
 public class KdsFhirClientImpl implements KdsFhirClient
 {
@@ -34,9 +34,9 @@ public class KdsFhirClientImpl implements KdsFhirClient
 	}
 
 	@Override
-	public Bundle storeBundle(Bundle toStore)
+	public Bundle executeTransactionBundle(Bundle toExecute)
 	{
-		return kdsClient.getGenericFhirClient().transaction().withBundle(toStore)
+		return kdsClient.getGenericFhirClient().transaction().withBundle(toExecute)
 				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
 	}
 }

@@ -1,8 +1,8 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client;
+package de.medizininformatik_initiative.processes.kds.client;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 
 public interface KdsClient
 {

@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client;
+package de.medizininformatik_initiative.processes.kds.client;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +17,7 @@ import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 
 public class KdsClientImpl implements KdsClient
 {

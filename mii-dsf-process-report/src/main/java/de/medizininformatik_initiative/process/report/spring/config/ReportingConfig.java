@@ -1,11 +1,16 @@
 package de.medizininformatik_initiative.process.report.spring.config;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +28,8 @@ import de.medizininformatik_initiative.process.report.service.StartTimer;
 import de.medizininformatik_initiative.process.report.service.StopTimer;
 import de.medizininformatik_initiative.process.report.service.StoreReceipt;
 import de.medizininformatik_initiative.process.report.util.ReportStatusGenerator;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 
 @Configuration
 public class ReportingConfig
@@ -44,6 +51,95 @@ public class ReportingConfig
 
 	@Autowired
 	private FhirContext fhirContext;
+
+	// Documentation of values in Data Transfer Process
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.base.url:#{null}}")
+	private String fhirStoreBaseUrl;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.client:de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClientImpl}")
+	private String fhirStoreClientClass;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.trust.certificates:#{null}}")
+	private String fhirStoreTrustStore;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.certificate:#{null}}")
+	private String fhirStoreCertificate;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.private.key:#{null}}")
+	private String fhirStorePrivateKey;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.private.key.password:#{null}}")
+	private char[] fhirStorePrivateKeyPassword;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.basicauth.username:#{null}}")
+	private String fhirStoreUsername;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.basicauth.password:#{null}}")
+	private String fhirStorePassword;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.bearer.token:#{null}}")
+	private String fhirStoreBearerToken;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.connect:10000}")
+	private int fhirStoreConnectTimeout;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.connection.request:10000}")
+	private int fhirStoreConnectionRequestTimeout;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.socket:10000}")
+	private int fhirStoreSocketTimeout;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.client.verbose:false}")
+	private boolean fhirStoreHapiClientVerbose;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.url:#{null}}")
+	private String fhirStoreProxyUrl;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.username:#{null}}")
+	private String fhirStoreProxyUsername;
+
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.password:#{null}}")
+	private String fhirStoreProxyPassword;
+
+	@Value("${org.highmed.dsf.bpe.fhir.server.organization.identifier.value}")
+	private String localIdentifierValue;
+
+	@Bean
+	@SuppressWarnings("unchecked")
+	public KdsClientFactory kdsClientFactory()
+	{
+		Path trustStorePath = checkExists(fhirStoreTrustStore);
+		Path certificatePath = checkExists(fhirStoreCertificate);
+		Path privateKeyPath = checkExists(fhirStorePrivateKey);
+
+		try
+		{
+			return new KdsClientFactory(trustStorePath, certificatePath, privateKeyPath, fhirStorePrivateKeyPassword,
+					fhirStoreConnectTimeout, fhirStoreSocketTimeout, fhirStoreConnectionRequestTimeout,
+					fhirStoreBaseUrl, fhirStoreUsername, fhirStorePassword, fhirStoreBearerToken, fhirStoreProxyUrl,
+					fhirStoreProxyUsername, fhirStoreProxyPassword, fhirStoreHapiClientVerbose, fhirContext,
+					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Path checkExists(String file)
+	{
+		if (file == null)
+			return null;
+		else
+		{
+			Path path = Paths.get(file);
+
+			if (!Files.isReadable(path))
+				throw new RuntimeException(path.toString() + " not readable");
+
+			return path;
+		}
+	}
 
 	// reportAutostart Process
 

@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir;
+package de.medizininformatik_initiative.processes.kds.client.fhir;
 
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.hl7.fhir.r4.model.Bundle.BundleType.TRANSACTIONRESPONSE;
@@ -15,7 +15,7 @@ import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ResourceType;
 
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClient;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 
 public final class KdsFhirClientStub implements KdsFhirClient
 {
@@ -54,7 +54,7 @@ public final class KdsFhirClientStub implements KdsFhirClient
 	}
 
 	@Override
-	public Bundle storeBundle(Bundle toStore)
+	public Bundle executeTransactionBundle(Bundle toExecute)
 	{
 		Bundle bundle = new Bundle().setType(TRANSACTIONRESPONSE);
 		bundle.setId(UUID.randomUUID().toString());

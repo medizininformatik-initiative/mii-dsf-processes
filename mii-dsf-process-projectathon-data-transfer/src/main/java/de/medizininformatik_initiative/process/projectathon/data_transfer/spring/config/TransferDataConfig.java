@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClientFactory;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClient;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProviderImpl;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.message.StartReceiveProcess;
@@ -31,6 +29,8 @@ import de.medizininformatik_initiative.process.projectathon.data_transfer.servic
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.StoreData;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataCos;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataDic;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 
 @Configuration
 public class TransferDataConfig
@@ -58,7 +58,7 @@ public class TransferDataConfig
 	private String fhirStoreBaseUrl;
 
 	@ProcessDocumentation(description = "Client implementation used to connect to the KDS FHIR server in order to read/store FHIR resources")
-	@Value("${de.medizininformatik.initiative.kds.fhir.server.client:de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClientImpl}")
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.client:de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClientImpl}")
 	private String fhirStoreClientClass;
 
 	@ProcessDocumentation(description = "PEM encoded file with one or more trusted root certificate to validate the KDS FHIR server certificate when connecting via https", recommendation = "Use docker secret file to configure", example = "/run/secrets/hospital_ca.pem")

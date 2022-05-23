@@ -18,10 +18,12 @@ import org.highmed.dsf.fhir.resources.NamingSystemResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.PropertyResolver;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.report.spring.config.ReportingConfig;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 {
@@ -99,5 +101,12 @@ public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, resolver,
 				resourcesByProcessKeyAndVersion);
+	}
+
+	@Override
+	public void onProcessesDeployed(ApplicationContext pluginApplicationContext, List<String> activeProcesses)
+	{
+		if (activeProcesses.contains(PROCESS_NAME_FULL_REPORT_SEND))
+			pluginApplicationContext.getBean(KdsClientFactory.class).testConnection();
 	}
 }

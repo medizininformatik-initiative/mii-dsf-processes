@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class InsertData extends AbstractServiceDelegate
 {
@@ -51,7 +51,7 @@ public class InsertData extends AbstractServiceDelegate
 	{
 		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
-		Bundle stored = kdsClientFactory.getKdsClient().getFhirClient().storeBundle(bundle);
+		Bundle stored = kdsClientFactory.getKdsClient().getFhirClient().executeTransactionBundle(bundle);
 
 		List<IdType> idsOfCreatedResources = stored.getEntry().stream().filter(Bundle.BundleEntryComponent::hasResponse)
 				.map(Bundle.BundleEntryComponent::getResponse).map(Bundle.BundleEntryResponseComponent::getLocation)

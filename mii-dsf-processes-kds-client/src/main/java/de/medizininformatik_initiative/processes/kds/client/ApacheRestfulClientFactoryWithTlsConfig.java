@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client;
+package de.medizininformatik_initiative.processes.kds.client;
 
 import java.security.KeyManagementException;
 import java.security.KeyStore;

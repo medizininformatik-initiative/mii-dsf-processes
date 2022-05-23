@@ -1,12 +1,12 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client;
+package de.medizininformatik_initiative.processes.kds.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClient;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir.KdsFhirClientStub;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClientStub;
 
 public class KdsClientStub implements KdsClient
 {

@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.client.fhir;
+package de.medizininformatik_initiative.processes.kds.client.fhir;
 
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
@@ -9,5 +9,5 @@ public interface KdsFhirClient
 
 	Binary readBinary(String url);
 
-	Bundle storeBundle(Bundle toStore);
+	Bundle executeTransactionBundle(Bundle toExecute);
 }

@@ -13,6 +13,7 @@
 		<module>mii-dsf-process-projectathon-data-transfer</module>
 		<module>mii-dsf-process-report</module>
 		<module>mii-dsf-processes-test-data-generator</module>
+		<module>mii-dsf-processes-kds-client</module>
 	</modules>
 
 	<properties>
@@ -66,6 +67,11 @@
 			<dependency>
 				<groupId>de.medizininformatik-initiative</groupId>
 				<artifactId>mii-dsf-processes-documentation-generator</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.medizininformatik-initiative</groupId>
+				<artifactId>mii-dsf-processes-kds-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
