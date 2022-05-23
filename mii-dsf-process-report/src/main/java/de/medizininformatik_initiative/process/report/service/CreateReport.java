@@ -2,7 +2,6 @@ package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 
@@ -20,10 +19,14 @@ import org.highmed.dsf.fhir.variables.Target;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 public class CreateReport extends AbstractServiceDelegate implements InitializingBean
 {
+	private static final Logger logger = LoggerFactory.getLogger(CreateReport.class);
+
 	private final OrganizationProvider organizationProvider;
 
 	public CreateReport(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
@@ -56,6 +59,7 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 				.setValue("Report_" + organizationProvider.getLocalIdentifierValue());
 
 		getReadAccessHelper().addOrganization(bundle, target.getOrganizationIdentifierValue());
+		getReadAccessHelper().addOrganization(bundle, organizationProvider.getLocalIdentifierValue());
 
 		return bundle;
 	}
@@ -65,6 +69,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		IdType bundleIdType = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
 				.updateConditionaly(responseBundle, Map.of("identifier", Collections.singletonList(
 						NAMING_SYSTEM_MII_REPORT + "|Report_" + organizationProvider.getLocalIdentifierValue())));
+
+		logger.info("Stored report bundle with id {}", bundleIdType.getValue());
 
 		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Bundle.name(),
 				bundleIdType.getIdPart(), bundleIdType.getVersionIdPart()).getValue();

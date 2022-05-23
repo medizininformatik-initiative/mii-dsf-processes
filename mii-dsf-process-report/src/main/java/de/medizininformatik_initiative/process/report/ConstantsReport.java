@@ -17,6 +17,7 @@ public interface ConstantsReport
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE = "searchBundleReference";
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE = "searchBundle";
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "searchBundleResponseReference";
+	String BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR = "receiveError";
 
 	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
 

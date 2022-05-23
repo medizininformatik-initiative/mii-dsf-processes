@@ -1,6 +1,7 @@
 package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.EXTENSION_REPORT_STATUS_ERROR_URL;
 
 import java.util.Objects;
 
@@ -40,13 +41,9 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		Task currentTask = getCurrentTaskFromExecutionVariables();
 
 		if (!currentTask.getId().equals(leadingTask.getId()))
-		{
 			handleReceivedResponse(leadingTask, currentTask);
-		}
 		else
-		{
 			handleMissingResponse(leadingTask);
-		}
 
 		updateLeadingTaskInExecutionVariables(leadingTask);
 	}
@@ -54,6 +51,11 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 	private void handleReceivedResponse(Task leadingTask, Task currentTask)
 	{
 		statusGenerator.transformInputToOutput(currentTask, leadingTask);
+
+		if (leadingTask.getOutput().stream().filter(Task.TaskOutputComponent::hasExtension)
+				.flatMap(o -> o.getExtension().stream())
+				.anyMatch(e -> EXTENSION_REPORT_STATUS_ERROR_URL.equals(e.getUrl())))
+			leadingTask.setStatus(Task.TaskStatus.FAILED);
 
 		// The currentTask finishes here but is not automatically set to completed
 		// because it is an additional currentTask during the execution of the main process
@@ -63,6 +65,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 
 	private void handleMissingResponse(Task leadingTask)
 	{
+		leadingTask.setStatus(Task.TaskStatus.FAILED);
 		leadingTask.addOutput(
 				statusGenerator.createReportStatusOutput(CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING));
 	}

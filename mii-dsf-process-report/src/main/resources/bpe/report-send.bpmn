@@ -75,6 +75,10 @@
   <bpmn:message id="Message_2irb7l0" name="reportReceive" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_reportSend">
+      <bpmndi:BPMNEdge id="Flow_0bq8udu_di" bpmnElement="Flow_0bq8udu">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="610" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_085f33c_di" bpmnElement="Flow_085f33c">
         <di:waypoint x="1028" y="210" />
         <di:waypoint x="1120" y="210" />
@@ -82,7 +86,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lez18n_di" bpmnElement="Flow_0lez18n">
         <di:waypoint x="1145" y="120" />
-        <di:waypoint x="1230" y="120" />
+        <di:waypoint x="1210" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fi7ktr_di" bpmnElement="Flow_1fi7ktr">
         <di:waypoint x="890" y="145" />
@@ -106,8 +110,8 @@
         <di:waypoint x="772" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d1hhpd_di" bpmnElement="Flow_0d1hhpd">
-        <di:waypoint x="1330" y="120" />
-        <di:waypoint x="1412" y="120" />
+        <di:waypoint x="1310" y="120" />
+        <di:waypoint x="1392" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_05ia6lz_di" bpmnElement="SequenceFlow_05ia6lz">
         <di:waypoint x="380" y="120" />
@@ -117,16 +121,15 @@
         <di:waypoint x="208" y="120" />
         <di:waypoint x="280" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bq8udu_di" bpmnElement="Flow_0bq8udu">
-        <di:waypoint x="540" y="120" />
-        <di:waypoint x="610" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1rdxonv_di" bpmnElement="EndEvent_1rdxonv">
-        <dc:Bounds x="1412" y="102" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0byox2n_di" bpmnElement="storeReceipt">
-        <dc:Bounds x="1230" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="ServiceTask_1cxtndb_di" bpmnElement="selectTargetHrp">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1dlqln5_di" bpmnElement="startSendReport">
+        <dc:Bounds x="172" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="145" width="81" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15jlcfu_di" bpmnElement="createReport">
         <dc:Bounds x="610" y="80" width="100" height="80" />
@@ -156,18 +159,15 @@
       <bpmndi:BPMNShape id="Gateway_0tuxyny_di" bpmnElement="Gateway_0tuxyny" isMarkerVisible="true">
         <dc:Bounds x="1095" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_1dlqln5_di" bpmnElement="startSendReport">
-        <dc:Bounds x="172" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="155" y="145" width="81" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_1cxtndb_di" bpmnElement="selectTargetHrp">
-        <dc:Bounds x="280" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0loajh8_di" bpmnElement="downloadSearchBundle">
         <dc:Bounds x="440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0byox2n_di" bpmnElement="storeReceipt">
+        <dc:Bounds x="1210" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1rdxonv_di" bpmnElement="EndEvent_1rdxonv">
+        <dc:Bounds x="1392" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

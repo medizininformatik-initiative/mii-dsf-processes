@@ -5,6 +5,8 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.COD
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_REPORT_STATUS;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.EXTENSION_REPORT_STATUS_ERROR_URL;
 
+import java.util.stream.Stream;
+
 import org.hl7.fhir.r4.model.BackboneElement;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.StringType;
@@ -56,19 +58,47 @@ public class ReportStatusGenerator
 
 	public void transformInputToOutput(Task inputTask, Task outputTask)
 	{
-		inputTask.getInput().stream()
+		transformInputToOutputComponents(inputTask).forEach(outputTask::addOutput);
+	}
+
+	public Stream<Task.TaskOutputComponent> transformInputToOutputComponents(Task inputTask)
+	{
+		return inputTask.getInput().stream()
 				.filter(i -> i.getType().getCoding().stream()
 						.anyMatch(c -> CODESYSTEM_MII_REPORT.equals(c.getSystem())
 								&& CODESYSTEM_MII_REPORT_VALUE_REPORT_STATUS.equals(c.getCode())))
-				.map(this::toTaskOutputComponent).forEach(outputTask::addOutput);
+				.map(this::toTaskOutputComponent);
 	}
 
 	private TaskOutputComponent toTaskOutputComponent(ParameterComponent inputComponent)
 	{
 		TaskOutputComponent outputComponent = new TaskOutputComponent().setType(inputComponent.getType())
-				.setValue(inputComponent.getValue());
+				.setValue(inputComponent.getValue().copy());
 		outputComponent.setExtension(inputComponent.getExtension());
 
 		return outputComponent;
+	}
+
+	public void transformOutputToInput(Task outputTask, Task inputTask)
+	{
+		transformOutputToInputComponent(outputTask).forEach(inputTask::addInput);
+	}
+
+	public Stream<ParameterComponent> transformOutputToInputComponent(Task outputTask)
+	{
+		return outputTask.getOutput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> CODESYSTEM_MII_REPORT.equals(c.getSystem())
+								&& CODESYSTEM_MII_REPORT_VALUE_REPORT_STATUS.equals(c.getCode())))
+				.map(this::toTaskInputComponent);
+	}
+
+	private ParameterComponent toTaskInputComponent(TaskOutputComponent outputComponent)
+	{
+		ParameterComponent inputComponent = new ParameterComponent().setType(outputComponent.getType())
+				.setValue(outputComponent.getValue().copy());
+		inputComponent.setExtension(outputComponent.getExtension());
+
+		return inputComponent;
 	}
 }

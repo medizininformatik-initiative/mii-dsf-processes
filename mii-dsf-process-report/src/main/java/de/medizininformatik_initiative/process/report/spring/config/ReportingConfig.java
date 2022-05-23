@@ -109,13 +109,13 @@ public class ReportingConfig
 	@Bean
 	public DownloadReport downloadReport()
 	{
-		return new DownloadReport(clientProvider, taskHelper, readAccessHelper);
+		return new DownloadReport(clientProvider, taskHelper, readAccessHelper, reportStatusGenerator());
 	}
 
 	@Bean
 	public InsertReport insertReport()
 	{
-		return new InsertReport(clientProvider, taskHelper, readAccessHelper);
+		return new InsertReport(clientProvider, taskHelper, readAccessHelper, reportStatusGenerator());
 	}
 
 	@Bean
@@ -127,6 +127,7 @@ public class ReportingConfig
 	@Bean
 	public SendReceipt sendReceipt()
 	{
-		return new SendReceipt(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext);
+		return new SendReceipt(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext,
+				reportStatusGenerator());
 	}
 }
