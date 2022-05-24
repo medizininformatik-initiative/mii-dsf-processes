@@ -67,7 +67,7 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 					.updateConditionaly(report, Map.of("identifier", Collections
 							.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
 
-			logger.info("Stored report locally with id '{}'...", reportId.getValue());
+			logger.info("Stored report bundle with id '{}'...", reportId.getValue());
 		}
 		catch (Exception exception)
 		{

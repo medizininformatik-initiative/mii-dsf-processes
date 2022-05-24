@@ -83,7 +83,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		leadingTask.getOutput().stream().filter(o -> o.getValue() instanceof Coding).map(o -> (Coding) o.getValue())
 				.filter(o -> CODESYSTEM_MII_REPORT_STATUS.equals(o.getSystem())).forEach(
 						o -> logger
-								.info("Task with id '{}' has report-status code '{}'{}]", leadingTask.getId(),
+								.info("Task with id '{}' has report-status code '{}'{}", leadingTask.getId(),
 										o.getCode(),
 										o.hasExtension()
 												? " and extension '" + o.getExtensionFirstRep().getUrl() + "|"
