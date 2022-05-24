@@ -4,6 +4,7 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.BPM
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
 
 import java.util.Collections;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
+
 		Objects.requireNonNull(reportStatusGenerator, "reportStatusGenerator");
 	}
 
@@ -50,11 +52,10 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 	protected void doExecute(DelegateExecution delegateExecution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
+		Identifier reportIdentifier = getReportIdentifier(task);
 
 		Bundle report = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE);
 		report.setId("").getMeta().setVersionId("").setTag(null);
-
-		Identifier reportIdentifier = getReportIdentifier(task);
 		report.setIdentifier(reportIdentifier);
 
 		getReadAccessHelper().addLocal(report);
@@ -66,7 +67,7 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 					.updateConditionaly(report, Map.of("identifier", Collections
 							.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
 
-			logger.info("Stored report with id='{}'...", reportId.getValue());
+			logger.info("Stored report locally with id '{}'...", reportId.getValue());
 		}
 		catch (Exception exception)
 		{
@@ -83,6 +84,6 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 	private Identifier getReportIdentifier(Task task)
 	{
 		return new Identifier().setSystem(NAMING_SYSTEM_MII_REPORT)
-				.setValue("Report_" + task.getRequester().getIdentifier().getValue());
+				.setValue(NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX + task.getRequester().getIdentifier().getValue());
 	}
 }

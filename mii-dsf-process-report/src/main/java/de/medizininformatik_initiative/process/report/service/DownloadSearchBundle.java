@@ -3,6 +3,8 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE;
 
+import java.util.Objects;
+
 import javax.ws.rs.WebApplicationException;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -17,15 +19,30 @@ import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-public class DownloadSearchBundle extends AbstractServiceDelegate
+import ca.uhn.fhir.context.FhirContext;
+
+public class DownloadSearchBundle extends AbstractServiceDelegate implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(DownloadSearchBundle.class);
 
+	private final FhirContext fhirContext;
+
 	public DownloadSearchBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, FhirContext fhirContext)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
+
+		this.fhirContext = fhirContext;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+
+		Objects.requireNonNull(fhirContext, "fhirContext");
 	}
 
 	@Override
@@ -33,8 +50,10 @@ public class DownloadSearchBundle extends AbstractServiceDelegate
 	{
 		String searchBundleReference = (String) execution.getVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE);
 		IdType searchBundleId = new IdType(searchBundleReference);
-
 		Bundle bundle = readSearchBundle(searchBundleId);
+
+		logger.debug("Search Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(bundle));
+
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
 	}
 
@@ -54,11 +73,10 @@ public class DownloadSearchBundle extends AbstractServiceDelegate
 		}
 		catch (WebApplicationException exception)
 		{
-			logger.error("Error while reading search Bundle with id {} from organization {}: {}",
+			logger.error("Error while reading search Bundle with id '{}' from organization '{}': {}",
 					searchBundleId.getValue(), task.getRequester().getReference(), exception.getMessage());
-			throw new RuntimeException("Error while reading search Bundle with id " + searchBundleId.getValue()
-					+ " from organization " + task.getRequester().getReference() + ", " + exception.getMessage(),
-					exception);
+			throw new RuntimeException("Error while reading search Bundle with id '" + searchBundleId.getValue()
+					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());
 		}
 	}
 }

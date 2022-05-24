@@ -18,6 +18,7 @@ import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.report.message.SendReceipt;
 import de.medizininformatik_initiative.process.report.message.SendReport;
 import de.medizininformatik_initiative.process.report.message.StartSendReport;
+import de.medizininformatik_initiative.process.report.service.CheckSearchBundle;
 import de.medizininformatik_initiative.process.report.service.CreateReport;
 import de.medizininformatik_initiative.process.report.service.DownloadReport;
 import de.medizininformatik_initiative.process.report.service.DownloadSearchBundle;
@@ -172,13 +173,20 @@ public class ReportingConfig
 	@Bean
 	public DownloadSearchBundle downloadSearchBundle()
 	{
-		return new DownloadSearchBundle(clientProvider, taskHelper, readAccessHelper);
+		return new DownloadSearchBundle(clientProvider, taskHelper, readAccessHelper, fhirContext);
+	}
+
+	@Bean
+	public CheckSearchBundle checkSearchBundle()
+	{
+		return new CheckSearchBundle(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean
 	public CreateReport createReport()
 	{
-		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, kdsClientFactory());
+		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, kdsClientFactory(),
+				fhirContext);
 	}
 
 	@Bean

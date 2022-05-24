@@ -25,10 +25,13 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
-import org.springframework.beans.factory.InitializingBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SelectTargetHrp extends AbstractServiceDelegate implements InitializingBean
+public class SelectTargetHrp extends AbstractServiceDelegate
 {
+	private static final Logger logger = LoggerFactory.getLogger(SelectTargetHrp.class);
+
 	public SelectTargetHrp(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper)
 	{
@@ -47,6 +50,9 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 		Endpoint endpoint = extractEndpoint(endpointOrganizationBundle, searchBundleId);
 		Target target = createTarget(organization, endpoint);
 
+		logger.info("Using search Bundle from organization '{}' and url '{}'", target.getOrganizationIdentifierValue(),
+				searchBundleId.getValue());
+
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE,
 				Variables.stringValue(searchBundleId.getValue()));
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
@@ -63,7 +69,7 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 
 		if (!idType.hasBaseUrl())
 			throw new RuntimeException(
-					"Search Bundle reference (" + idType.getValue() + ") does not contain a base url");
+					"Search Bundle reference '" + idType.getValue() + "' does not contain a base url");
 
 		return idType;
 	}
@@ -75,8 +81,8 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 						Collections.singletonList("Endpoint:organization")));
 
 		if (bundle.getEntry().size() != 2)
-			throw new RuntimeException("Search for organization and endpoint based on url " + searchBundleId.getValue()
-					+ " did return " + bundle.getEntry().size() + " results, expected 2");
+			throw new RuntimeException("Search for organization and endpoint based on url '" + searchBundleId.getValue()
+					+ "' did return " + bundle.getEntry().size() + " results, expected 2");
 
 		return bundle;
 	}
@@ -85,27 +91,30 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 	{
 		return endpointOrganizationBundle.getEntry().stream().filter(e -> e.getResource() instanceof Organization)
 				.map(e -> (Organization) e.getResource()).findFirst()
-				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url "
-						+ searchBundleId.getValue() + " did not return any organization"));
+				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url '"
+						+ searchBundleId.getValue() + "' did not return any organization"));
 	}
 
 	private Endpoint extractEndpoint(Bundle endpointOrganizationBundle, IdType searchBundleId)
 	{
 		return endpointOrganizationBundle.getEntry().stream().filter(e -> e.getResource() instanceof Endpoint)
 				.map(e -> (Endpoint) e.getResource()).findFirst()
-				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url "
-						+ searchBundleId.getValue() + " did not return any endpoint"));
+				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url '"
+						+ searchBundleId.getValue() + "' did not return any endpoint"));
 	}
 
 	private Target createTarget(Organization organization, Endpoint endpoint)
 	{
 		String organizationIdentifier = organization.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-				.map(Identifier::getValue).findFirst().get();
+				.map(Identifier::getValue).findFirst()
+				.orElseThrow(() -> new RuntimeException("organization is missing identifier of type '"
+						+ NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER + "'"));
 
 		String endpointIdentifier = endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).map(Identifier::getValue)
-				.findFirst().get();
+				.findFirst().orElseThrow(() -> new RuntimeException(
+						"Endpoint is missing identifier of type '" + NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER + "'"));
 
 		return Target.createUniDirectionalTarget(organizationIdentifier, endpointIdentifier, endpoint.getAddress());
 	}

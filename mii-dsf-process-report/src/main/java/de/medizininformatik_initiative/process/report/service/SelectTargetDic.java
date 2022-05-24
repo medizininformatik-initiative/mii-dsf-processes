@@ -36,6 +36,7 @@ public class SelectTargetDic extends AbstractServiceDelegate implements Initiali
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
+
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
 	}
 

@@ -1,5 +1,6 @@
 package de.medizininformatik_initiative.process.report.service;
 
+import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.EXTENSION_REPORT_STATUS_ERROR_URL;
 
@@ -10,13 +11,18 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.report.util.ReportStatusGenerator;
 
 public class StoreReceipt extends AbstractServiceDelegate implements InitializingBean
 {
+	private static final Logger logger = LoggerFactory.getLogger(StoreReceipt.class);
+
 	private final ReportStatusGenerator statusGenerator;
 
 	public StoreReceipt(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
@@ -31,6 +37,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
+
 		Objects.requireNonNull(statusGenerator, "statusGenerator");
 	}
 
@@ -45,6 +52,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		else
 			handleMissingResponse(leadingTask);
 
+		writeStatusLog(leadingTask);
 		updateLeadingTaskInExecutionVariables(leadingTask);
 	}
 
@@ -68,5 +76,20 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		leadingTask.setStatus(Task.TaskStatus.FAILED);
 		leadingTask.addOutput(
 				statusGenerator.createReportStatusOutput(CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING));
+	}
+
+	private void writeStatusLog(Task leadingTask)
+	{
+		leadingTask.getOutput().stream().filter(o -> o.getValue() instanceof Coding).map(o -> (Coding) o.getValue())
+				.filter(o -> CODESYSTEM_MII_REPORT_STATUS.equals(o.getSystem())).forEach(
+						o -> logger
+								.info("Task with id '{}' has report-status code '{}'{}]", leadingTask.getId(),
+										o.getCode(),
+										o.hasExtension()
+												? " and extension '" + o.getExtensionFirstRep().getUrl() + "|"
+														+ o.getExtensionFirstRep().getValueAsPrimitive()
+																.getValueAsString()
+														+ "'"
+												: ""));
 	}
 }

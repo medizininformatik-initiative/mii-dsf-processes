@@ -47,6 +47,7 @@ public class DownloadReport extends AbstractServiceDelegate implements Initializ
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
+
 		Objects.requireNonNull(reportStatusGenerator, "reportStatusGenerator");
 	}
 
@@ -56,9 +57,9 @@ public class DownloadReport extends AbstractServiceDelegate implements Initializ
 		Task task = getLeadingTaskFromExecutionVariables();
 
 		IdType reportReference = getReportReference(task);
-		logger.info("Downloading report with id='{}'...", reportReference.getValue());
+		logger.info("Downloading report with id '{}'...", reportReference.getValue());
 
-		Bundle reportBundle = readReport(reportReference, task);
+		Bundle reportBundle = downloadReportBundle(reportReference, task);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(reportBundle));
 	}
 
@@ -73,13 +74,13 @@ public class DownloadReport extends AbstractServiceDelegate implements Initializ
 			throw new IllegalArgumentException("No report reference present in task with id='" + task.getId() + "'");
 
 		if (reportReferences.size() > 1)
-			logger.warn("Found {} report references in task with id='{}', using only the first",
+			logger.warn("Found {} report references in task with id '{}', using only the first",
 					reportReferences.size(), task.getId());
 
 		return new IdType(reportReferences.get(0));
 	}
 
-	private Bundle readReport(IdType reportReference, Task task)
+	private Bundle downloadReportBundle(IdType reportReference, Task task)
 	{
 		FhirWebserviceClient client = getFhirWebserviceClientProvider()
 				.getWebserviceClient(reportReference.getBaseUrl());

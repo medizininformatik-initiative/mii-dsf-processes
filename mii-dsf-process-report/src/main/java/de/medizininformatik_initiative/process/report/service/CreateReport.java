@@ -3,6 +3,7 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 
 import java.util.Collections;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class CreateReport extends AbstractServiceDelegate implements InitializingBean
@@ -36,15 +38,17 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 	private final OrganizationProvider organizationProvider;
 	private final KdsClientFactory kdsClientFactory;
+	private final FhirContext fhirContext;
 
 	public CreateReport(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
-			KdsClientFactory kdsClientFactory)
+			KdsClientFactory kdsClientFactory, FhirContext fhirContext)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.kdsClientFactory = kdsClientFactory;
+		this.fhirContext = fhirContext;
 	}
 
 	@Override
@@ -54,6 +58,7 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(kdsClientFactory, "kdsClientFactory");
+		Objects.requireNonNull(fhirContext, "fhirContext");
 	}
 
 	@Override
@@ -63,8 +68,14 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
 		Bundle responseBundle = executeSearchBundle(searchBundle);
-		Bundle report = transformToReport(searchBundle, responseBundle, target);
-		String reportReference = storeResponseBundle(report);
+
+		logger.debug("Response Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(responseBundle));
+
+		Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
+
+		logger.debug("Report Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(reportBundle));
+
+		String reportReference = storeResponseBundle(reportBundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE,
 				Variables.stringValue(reportReference));
@@ -75,12 +86,12 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		return kdsClientFactory.getKdsClient().getFhirClient().executeBatchBundle(searchBundle);
 	}
 
-	private Bundle transformToReport(Bundle searchBundle, Bundle responseBundle, Target target)
+	private Bundle transformToReportBundle(Bundle searchBundle, Bundle responseBundle, Target target)
 	{
 		Bundle report = new Bundle();
 		report.setType(responseBundle.getType());
 		report.getIdentifier().setSystem(NAMING_SYSTEM_MII_REPORT)
-				.setValue("Report_" + organizationProvider.getLocalIdentifierValue());
+				.setValue(NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX + organizationProvider.getLocalIdentifierValue());
 
 		getReadAccessHelper().addLocal(report);
 		getReadAccessHelper().addOrganization(report, target.getOrganizationIdentifierValue());
@@ -91,7 +102,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			Bundle.BundleEntryComponent reportEntry = new Bundle.BundleEntryComponent();
 
 			if (responseEntry.getResource() instanceof Bundle || responseEntry.getResource() == null)
-				toEntryComponentBundleResource(searchBundle, i, responseEntry, reportEntry);
+				toEntryComponentBundleResource(responseEntry, reportEntry,
+						searchBundle.getEntry().get(i).getRequest().getUrl());
 
 			if (responseEntry.getResource() instanceof CapabilityStatement)
 				toEntryComponentCapabilityStatementResource(responseEntry, reportEntry);
@@ -103,13 +115,12 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		return report;
 	}
 
-	private void toEntryComponentBundleResource(Bundle searchBundle, int counter,
-			Bundle.BundleEntryComponent responseEntry, Bundle.BundleEntryComponent reportEntry)
+	private void toEntryComponentBundleResource(Bundle.BundleEntryComponent responseEntry,
+			Bundle.BundleEntryComponent reportEntry, String url)
 	{
 		Bundle reportEntryBundle = new Bundle();
 		reportEntryBundle.getMeta().setLastUpdated(new Date());
-		reportEntryBundle.addLink().setRelation("self")
-				.setUrl(searchBundle.getEntry().get(counter).getRequest().getUrl());
+		reportEntryBundle.addLink().setRelation("self").setUrl(url);
 		reportEntryBundle.setType(Bundle.BundleType.SEARCHSET);
 		reportEntryBundle.setTotal(0);
 
@@ -164,10 +175,13 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 	private String storeResponseBundle(Bundle responseBundle)
 	{
 		IdType bundleIdType = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-				.updateConditionaly(responseBundle, Map.of("identifier", Collections.singletonList(
-						NAMING_SYSTEM_MII_REPORT + "|Report_" + organizationProvider.getLocalIdentifierValue())));
+				.updateConditionaly(responseBundle,
+						Map.of("identifier",
+								Collections.singletonList(
+										NAMING_SYSTEM_MII_REPORT + "|" + NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX
+												+ organizationProvider.getLocalIdentifierValue())));
 
-		logger.info("Stored report bundle with id {}", bundleIdType.getValue());
+		logger.info("Stored report bundle with id '{}'", bundleIdType.getValue());
 
 		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Bundle.name(),
 				bundleIdType.getIdPart(), bundleIdType.getVersionIdPart()).getValue();
