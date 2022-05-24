@@ -3,8 +3,11 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.EXTENSION_REPORT_STATUS_ERROR_URL;
+import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN;
+import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -52,6 +55,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		else
 			handleMissingResponse(leadingTask);
 
+		addBusinessKeyOutput(leadingTask, execution);
 		writeStatusLog(leadingTask);
 		updateLeadingTaskInExecutionVariables(leadingTask);
 	}
@@ -76,6 +80,16 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		leadingTask.setStatus(Task.TaskStatus.FAILED);
 		leadingTask.addOutput(
 				statusGenerator.createReportStatusOutput(CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING));
+	}
+
+	private void addBusinessKeyOutput(Task leadingTask, DelegateExecution execution)
+	{
+		Optional<String> businessKey = getTaskHelper().getFirstInputParameterStringValue(leadingTask,
+				CODESYSTEM_HIGHMED_BPMN, CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
+
+		if (businessKey.isEmpty())
+			leadingTask.addOutput(getTaskHelper().createOutput(CODESYSTEM_HIGHMED_BPMN,
+					CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY, execution.getBusinessKey()));
 	}
 
 	private void writeStatusLog(Task leadingTask)

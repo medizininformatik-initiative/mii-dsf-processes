@@ -44,6 +44,6 @@
 	<concept>
 		<code value="timer-interval" />
 		<display value="Timer Interval" />
-		<definition value="Interval between two autostarts of the report process" />
+		<definition value="Interval between two autostart of the report process" />
 	</concept>
 </CodeSystem> 
