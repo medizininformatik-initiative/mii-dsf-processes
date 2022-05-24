@@ -9,8 +9,10 @@ mvn clean package
 Add entries to your hosts file
 
 ```
-127.0.0.1	dic
+127.0.0.1	dic1
+127.0.0.1	dic2
 127.0.0.1	cos
+127.0.0.1	hrp
 ```
 
 *A total of five console windows are required. Start docker-compose commands for consoles 1 to 4 from

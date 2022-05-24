@@ -55,8 +55,8 @@ public class CertificateGenerator
 
 	private static final char[] CERT_PASSWORD = "password".toCharArray();
 
-	private static final String[] SERVER_COMMON_NAMES = { "localhost", "hrp", "cos", "dic" };
-	private static final String[] CLIENT_COMMON_NAMES = { "hrp-client", "cos-client", "dic-client",
+	private static final String[] SERVER_COMMON_NAMES = { "localhost", "hrp", "cos", "dic1", "dic2" };
+	private static final String[] CLIENT_COMMON_NAMES = { "hrp-client", "cos-client", "dic1-client", "dic2-client",
 			"Webbrowser Test User" };
 
 	private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();

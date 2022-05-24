@@ -19,15 +19,18 @@ services:
         target: /etc/nginx/nginx.conf
         read_only: true
     networks:
-      dic-fhir-frontend:
+      dic1-fhir-frontend:
         ipv4_address: 172.20.0.66
-      cos-fhir-frontend:
+      dic2-fhir-frontend:
         ipv4_address: 172.20.0.82
-      hrp-fhir-frontend:
+      cos-fhir-frontend:
         ipv4_address: 172.20.0.98
+      hrp-fhir-frontend:
+        ipv4_address: 172.20.0.114
       internet:
         aliases:
-          - dic
+          - dic1
+          - dic2
           - cos
           - hrp
     environment:
@@ -48,10 +51,12 @@ services:
       POSTGRES_USER: liquibase_user
       POSTGRES_DB: postgres
     networks:
-      - dic-fhir-backend
+      - dic1-fhir-backend
+      - dic2-fhir-backend
       - cos-fhir-backend
       - hrp-fhir-backend
-      - dic-bpe-backend
+      - dic1-bpe-backend
+      - dic2-bpe-backend
       - cos-bpe-backend
       - hrp-bpe-backend
     secrets:
@@ -66,7 +71,7 @@ services:
         read_only: true
 
 
-  dic-fhir:
+  dic1-fhir:
     image: ghcr.io/highmed/fhir:0.6.0
     restart: on-failure
     healthcheck:
@@ -78,47 +83,47 @@ services:
       - 127.0.0.1:5000:5000
     secrets:
       - db_liquibase.password
-      - db_dic_fhir_user.password
-      - db_dic_fhir_user_permanent_delete.password
+      - db_dic1_fhir_user.password
+      - db_dic1_fhir_user_permanent_delete.password
       - app_client_trust_certificates.pem
-      - app_dic_client_certificate.pem
-      - app_dic_client_certificate_private_key.pem
+      - app_dic1_client_certificate.pem
+      - app_dic1_client_certificate_private_key.pem
       - app_client_certificate_private_key.pem.password
     volumes:
       - type: bind
-        source: ./dic/fhir/conf/bundle.xml
+        source: ./dic1/fhir/conf/bundle.xml
         target: /opt/fhir/conf/bundle.xml
       - type: bind
-        source: ./dic/fhir/log
+        source: ./dic1/fhir/log
         target: /opt/fhir/log
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000
       ORG_HIGHMED_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
-      ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_dic_fhir_user.password
-      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_dic_fhir_user_permanent_delete.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_dic1_fhir_user.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_dic1_fhir_user_permanent_delete.password
       ORG_HIGHMED_DSF_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
-      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic_client_certificate.pem
-      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic1_client_certificate.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic1_client_certificate_private_key.pem
       ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
-      ORG_HIGHMED_DSF_FHIR_DB_URL: jdbc:postgresql://db/dic_fhir
-      ORG_HIGHMED_DSF_FHIR_DB_USER_GROUP: dic_fhir_users
-      ORG_HIGHMED_DSF_FHIR_DB_USER_USERNAME: dic_fhir_server_user
-      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_GROUP: dic_fhir_permanent_delete_users
-      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_USERNAME: dic_fhir_server_permanent_delete_user
-      ORG_HIGHMED_DSF_FHIR_SERVER_BASE_URL: https://dic/fhir
-      ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC
-      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS: ${DIC_USER_THUMBPRINTS}
-      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS_PERMANENT_DELETE: ${DIC_USER_THUMBPRINTS_PERMANENT_DELETE}
+      ORG_HIGHMED_DSF_FHIR_DB_URL: jdbc:postgresql://db/dic1_fhir
+      ORG_HIGHMED_DSF_FHIR_DB_USER_GROUP: dic1_fhir_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_USERNAME: dic1_fhir_server_user
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_GROUP: dic1_fhir_permanent_delete_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_USERNAME: dic1_fhir_server_permanent_delete_user
+      ORG_HIGHMED_DSF_FHIR_SERVER_BASE_URL: https://dic1/fhir
+      ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC1
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS: ${DIC1_USER_THUMBPRINTS}
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS_PERMANENT_DELETE: ${DIC1_USER_THUMBPRINTS_PERMANENT_DELETE}
     networks:
-      dic-fhir-frontend:
+      dic1-fhir-frontend:
         ipv4_address: 172.20.0.67
-      dic-fhir-backend:
+      dic1-fhir-backend:
       internet:
     depends_on:
       - db
       - proxy
-  dic-bpe:
+  dic1-bpe:
     image: ghcr.io/highmed/bpe:0.6.0
     restart: on-failure
     healthcheck:
@@ -127,72 +132,199 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5003:5003
+      - 127.0.0.1:5010:5010
     secrets:
       - db_liquibase.password
-      - db_dic_bpe_user.password
-      - db_dic_bpe_user_camunda.password
+      - db_dic1_bpe_user.password
+      - db_dic1_bpe_user_camunda.password
       - app_client_trust_certificates.pem
-      - app_dic_client_certificate.pem
-      - app_dic_client_certificate_private_key.pem
+      - app_dic1_client_certificate.pem
+      - app_dic1_client_certificate_private_key.pem
       - app_client_certificate_private_key.pem.password
       - cos_public_key.pem
     volumes:
       - type: bind
-        source: ./dic/bpe/plugin
+        source: ./dic1/bpe/plugin
         target: /opt/bpe/plugin
         read_only: true
       - type: bind
-        source: ./dic/bpe/process
+        source: ./dic1/bpe/process
         target: /opt/bpe/process
         read_only: true
       - type: bind
-        source: ./dic/bpe/log
+        source: ./dic1/bpe/log
         target: /opt/bpe/log
       - type: bind
-        source: ./dic/bpe/last_event
+        source: ./dic1/bpe/last_event
         target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5003
       ORG_HIGHMED_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
-      ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_dic_bpe_user.password
-      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_dic_bpe_user_camunda.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_dic1_bpe_user.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_dic1_bpe_user_camunda.password
       ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
-      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic_client_certificate.pem
-      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic1_client_certificate.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic1_client_certificate_private_key.pem
       ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
-      ORG_HIGHMED_DSF_BPE_DB_URL: jdbc:postgresql://db/dic_bpe
-      ORG_HIGHMED_DSF_BPE_DB_USER_GROUP: dic_bpe_users
-      ORG_HIGHMED_DSF_BPE_DB_USER_USERNAME: dic_bpe_server_user
-      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_GROUP: dic_camunda_users
-      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: dic_camunda_server_user
-      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC
-      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic/fhir
+      ORG_HIGHMED_DSF_BPE_DB_URL: jdbc:postgresql://db/dic1_bpe
+      ORG_HIGHMED_DSF_BPE_DB_USER_GROUP: dic1_bpe_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_USERNAME: dic1_bpe_server_user
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_GROUP: dic1_camunda_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: dic1_camunda_server_user
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC1
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic1/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_dataReceive/0.2.0,
         medizininformatik-initiativede_reportReceive/0.2.0
-      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic-fhir-store:8080/fhir
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
     networks:
-      dic-bpe-frontend:
-      dic-bpe-backend:
+      dic1-bpe-frontend:
+      dic1-bpe-backend:
       internet:
     depends_on:
       - db
-      - dic-fhir
-    # - dic-fhir-store not defining a dependency here, dic-fhir-store* needs to be started manually
-  dic-fhir-store-hapi:
-    build: ./dic/hapi
+      - dic1-fhir
+    # - dic1-fhir-store not defining a dependency here, dic1-fhir-store* needs to be started manually
+  dic1-fhir-store-hapi:
+    build: ./dic1/hapi
     restart: on-failure
     ports:
       - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
     networks:
-      dic-bpe-backend:
+      dic1-bpe-backend:
         aliases:
-          - dic-fhir-store
+          - dic1-fhir-store
 
+
+  dic2-fhir:
+    image: ghcr.io/highmed/fhir:0.6.0
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+    ports:
+      - 127.0.0.1:5001:5001
+    secrets:
+      - db_liquibase.password
+      - db_dic2_fhir_user.password
+      - db_dic2_fhir_user_permanent_delete.password
+      - app_client_trust_certificates.pem
+      - app_dic2_client_certificate.pem
+      - app_dic2_client_certificate_private_key.pem
+      - app_client_certificate_private_key.pem.password
+    volumes:
+      - type: bind
+        source: ./dic2/fhir/conf/bundle.xml
+        target: /opt/fhir/conf/bundle.xml
+      - type: bind
+        source: ./dic2/fhir/log
+        target: /opt/fhir/log
+    environment:
+      TZ: Europe/Berlin
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5001
+      ORG_HIGHMED_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_dic2_fhir_user.password
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_dic2_fhir_user_permanent_delete.password
+      ORG_HIGHMED_DSF_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic2_client_certificate.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic2_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
+      ORG_HIGHMED_DSF_FHIR_DB_URL: jdbc:postgresql://db/dic2_fhir
+      ORG_HIGHMED_DSF_FHIR_DB_USER_GROUP: dic2_fhir_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_USERNAME: dic2_fhir_server_user
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_GROUP: dic2_fhir_permanent_delete_users
+      ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_USERNAME: dic2_fhir_server_permanent_delete_user
+      ORG_HIGHMED_DSF_FHIR_SERVER_BASE_URL: https://dic2/fhir
+      ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS: ${DIC2_USER_THUMBPRINTS}
+      ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS_PERMANENT_DELETE: ${DIC2_USER_THUMBPRINTS_PERMANENT_DELETE}
+    networks:
+      dic2-fhir-frontend:
+        ipv4_address: 172.20.0.83
+      dic2-fhir-backend:
+      internet:
+    depends_on:
+      - db
+      - proxy
+  dic2-bpe:
+    image: ghcr.io/highmed/bpe:0.6.0
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+    ports:
+      - 127.0.0.1:5011:5011
+    secrets:
+      - db_liquibase.password
+      - db_dic2_bpe_user.password
+      - db_dic2_bpe_user_camunda.password
+      - app_client_trust_certificates.pem
+      - app_dic2_client_certificate.pem
+      - app_dic2_client_certificate_private_key.pem
+      - app_client_certificate_private_key.pem.password
+      - cos_public_key.pem
+    volumes:
+      - type: bind
+        source: ./dic2/bpe/plugin
+        target: /opt/bpe/plugin
+        read_only: true
+      - type: bind
+        source: ./dic2/bpe/process
+        target: /opt/bpe/process
+        read_only: true
+      - type: bind
+        source: ./dic2/bpe/log
+        target: /opt/bpe/log
+      - type: bind
+        source: ./dic2/bpe/last_event
+        target: /opt/bpe/last_event
+    environment:
+      TZ: Europe/Berlin
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5011
+      ORG_HIGHMED_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_dic2_bpe_user.password
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_dic2_bpe_user_camunda.password
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_TRUST_CERTIFICATES: /run/secrets/app_client_trust_certificates.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE: /run/secrets/app_dic2_client_certificate.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY: /run/secrets/app_dic2_client_certificate_private_key.pem
+      ORG_HIGHMED_DSF_BPE_FHIR_CLIENT_CERTIFICATE_PRIVATE_KEY_PASSWORD_FILE: /run/secrets/app_client_certificate_private_key.pem.password
+      ORG_HIGHMED_DSF_BPE_DB_URL: jdbc:postgresql://db/dic2_bpe
+      ORG_HIGHMED_DSF_BPE_DB_USER_GROUP: dic2_bpe_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_USERNAME: dic2_bpe_server_user
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_GROUP: dic2_camunda_users
+      ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: dic2_camunda_server_user
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
+      ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
+        medizininformatik-initiativede_dataReceive/0.2.0,
+        medizininformatik-initiativede_reportReceive/0.2.0
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
+    networks:
+      dic2-bpe-frontend:
+      dic2-bpe-backend:
+      internet:
+    depends_on:
+      - db
+      - dic2-fhir
+    # - dic2-fhir-store not defining a dependency here, dic2-fhir-store* needs to be started manually
+  dic2-fhir-store-blaze:
+    image: ghcr.io/num-codex/blaze
+    restart: on-failure
+    ports:
+      - 127.0.0.1:8081:8080
+    environment:
+      TZ: Europe/Berlin
+    networks:
+      dic2-bpe-backend:
+        aliases:
+          - dic2-fhir-store
 
   cos-fhir:
     image: ghcr.io/highmed/fhir:0.6.0
@@ -203,7 +335,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5001:5001
+      - 127.0.0.1:5002:5002
     secrets:
       - db_liquibase.password
       - db_cos_fhir_user.password
@@ -221,7 +353,7 @@ services:
         target: /opt/fhir/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5001
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5002
       ORG_HIGHMED_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_cos_fhir_user.password
       ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_cos_fhir_user_permanent_delete.password
@@ -240,7 +372,7 @@ services:
       ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_COS
     networks:
       cos-fhir-frontend:
-        ipv4_address: 172.20.0.83
+        ipv4_address: 172.20.0.99
       cos-fhir-backend:
       internet:
     depends_on:
@@ -255,7 +387,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5004:5004
+      - 127.0.0.1:5012:5012
     secrets:
       - db_liquibase.password
       - db_cos_bpe_user.password
@@ -283,7 +415,7 @@ services:
         target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5004
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5012
       ORG_HIGHMED_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_cos_bpe_user.password
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_cos_bpe_user_camunda.password
@@ -314,7 +446,7 @@ services:
     build: ./cos/hapi
     restart: on-failure
     ports:
-      - 127.0.0.1:8081:8080
+      - 127.0.0.1:8082:8080
     environment:
       TZ: Europe/Berlin
     networks:
@@ -332,7 +464,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5002:5002
+      - 127.0.0.1:5003:5003
     secrets:
       - db_liquibase.password
       - db_hrp_fhir_user.password
@@ -350,7 +482,7 @@ services:
         target: /opt/fhir/log
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5002
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5003
       ORG_HIGHMED_DSF_FHIR_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       ORG_HIGHMED_DSF_FHIR_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user.password
       ORG_HIGHMED_DSF_FHIR_DB_USER_PERMANENT_DELETE_PASSWORD_FILE: /run/secrets/db_hrp_fhir_user_permanent_delete.password
@@ -369,7 +501,7 @@ services:
       ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
     networks:
       hrp-fhir-frontend:
-        ipv4_address: 172.20.0.99
+        ipv4_address: 172.20.0.115
       hrp-fhir-backend:
       internet:
     depends_on:
@@ -384,7 +516,7 @@ services:
       timeout: 15s
       retries: 5
     ports:
-      - 127.0.0.1:5005:5005
+      - 127.0.0.1:5013:5013
     secrets:
       - db_liquibase.password
       - db_hrp_bpe_user.password
@@ -410,7 +542,7 @@ services:
         target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
-      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5013
       ORG_HIGHMED_DSF_BPE_DB_LIQUIBASE_PASSWORD_FILE: /run/secrets/db_liquibase.password
       ORG_HIGHMED_DSF_BPE_DB_USER_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user.password
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_PASSWORD_FILE: /run/secrets/db_hrp_bpe_user_camunda.password
@@ -447,14 +579,23 @@ secrets:
   db_liquibase.password:
     file: ./secrets/db_liquibase.password
 
-  db_dic_fhir_user.password:
-    file: ./secrets/db_dic_fhir_user.password
-  db_dic_fhir_user_permanent_delete.password:
-    file: ./secrets/db_dic_fhir_user_permanent_delete.password
-  db_dic_bpe_user.password:
-    file: ./secrets/db_dic_bpe_user.password
-  db_dic_bpe_user_camunda.password:
-    file: ./secrets/db_dic_bpe_user_camunda.password
+  db_dic1_fhir_user.password:
+    file: ./secrets/db_dic1_fhir_user.password
+  db_dic1_fhir_user_permanent_delete.password:
+    file: ./secrets/db_dic1_fhir_user_permanent_delete.password
+  db_dic1_bpe_user.password:
+    file: ./secrets/db_dic1_bpe_user.password
+  db_dic1_bpe_user_camunda.password:
+    file: ./secrets/db_dic1_bpe_user_camunda.password
+
+  db_dic2_fhir_user.password:
+    file: ./secrets/db_dic2_fhir_user.password
+  db_dic2_fhir_user_permanent_delete.password:
+      file: ./secrets/db_dic2_fhir_user_permanent_delete.password
+  db_dic2_bpe_user.password:
+      file: ./secrets/db_dic2_bpe_user.password
+  db_dic2_bpe_user_camunda.password:
+      file: secrets/db_dic1_bpe_user_camunda.password
 
   db_cos_fhir_user.password:
     file: ./secrets/db_cos_fhir_user.password
@@ -479,10 +620,15 @@ secrets:
   app_client_certificate_private_key.pem.password:
     file: ./secrets/app_client_certificate_private_key.pem.password
 
-  app_dic_client_certificate.pem:
-    file: ./secrets/app_dic_client_certificate.pem
-  app_dic_client_certificate_private_key.pem:
-    file: ./secrets/app_dic_client_certificate_private_key.pem
+  app_dic1_client_certificate.pem:
+    file: ./secrets/app_dic1_client_certificate.pem
+  app_dic1_client_certificate_private_key.pem:
+    file: ./secrets/app_dic1_client_certificate_private_key.pem
+
+  app_dic2_client_certificate.pem:
+    file: ./secrets/app_dic2_client_certificate.pem
+  app_dic2_client_certificate_private_key.pem:
+    file: ./secrets/app_dic2_client_certificate_private_key.pem
 
   app_cos_client_certificate.pem:
     file: ./secrets/app_cos_client_certificate.pem
@@ -501,21 +647,30 @@ secrets:
 
 networks:
   internet:
-  dic-fhir-frontend:
+  dic1-fhir-frontend:
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.20.0.64/28
-  dic-fhir-backend:
-  dic-bpe-frontend:
-  dic-bpe-backend:
-  cos-fhir-frontend:
+  dic1-fhir-backend:
+  dic1-bpe-frontend:
+  dic1-bpe-backend:
+  dic2-fhir-frontend:
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.20.0.80/28
+  dic2-fhir-backend:
+  dic2-bpe-frontend:
+  dic2-bpe-backend:
+  cos-fhir-frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.96/28
   cos-fhir-backend:
   cos-bpe-frontend:
   cos-bpe-backend:
@@ -524,7 +679,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.20.0.96/28
+        - subnet: 172.20.0.112/28
   hrp-fhir-backend:
   hrp-bpe-frontend:
   hrp-bpe-backend:

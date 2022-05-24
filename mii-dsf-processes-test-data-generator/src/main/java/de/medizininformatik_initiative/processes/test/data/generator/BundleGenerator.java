@@ -97,11 +97,17 @@ public class BundleGenerator
 		organizationCosThumbprintExtension.setValue(new StringType(
 				clientCertificateFilesByCommonName.get("cos-client").getCertificateSha512ThumbprintHex()));
 
-		Organization organizationDic = (Organization) bundle.getEntry().get(2).getResource();
-		Extension organizationMedic1thumbprintExtension = organizationDic
+		Organization organizationDic1 = (Organization) bundle.getEntry().get(2).getResource();
+		Extension organizationDic1thumbprintExtension = organizationDic1
 				.getExtensionByUrl("http://highmed.org/fhir/StructureDefinition/extension-certificate-thumbprint");
-		organizationMedic1thumbprintExtension.setValue(new StringType(
-				clientCertificateFilesByCommonName.get("dic-client").getCertificateSha512ThumbprintHex()));
+		organizationDic1thumbprintExtension.setValue(new StringType(
+				clientCertificateFilesByCommonName.get("dic1-client").getCertificateSha512ThumbprintHex()));
+
+		Organization organizationDic2 = (Organization) bundle.getEntry().get(3).getResource();
+		Extension organizationDic2thumbprintExtension = organizationDic2
+				.getExtensionByUrl("http://highmed.org/fhir/StructureDefinition/extension-certificate-thumbprint");
+		organizationDic2thumbprintExtension.setValue(new StringType(
+				clientCertificateFilesByCommonName.get("dic2-client").getCertificateSha512ThumbprintHex()));
 
 		writeBundle(Paths.get("bundle/bundle.xml"), bundle);
 	}
@@ -116,8 +122,12 @@ public class BundleGenerator
 		logger.info("Copying fhir bundle to {}", cosBundleFile);
 		writeBundle(cosBundleFile, bundle);
 
-		Path dicBundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/dic/fhir/conf/bundle.xml");
-		logger.info("Copying fhir bundle to {}", dicBundleFile);
-		writeBundle(dicBundleFile, bundle);
+		Path dic1BundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/dic1/fhir/conf/bundle.xml");
+		logger.info("Copying fhir bundle to {}", dic1BundleFile);
+		writeBundle(dic1BundleFile, bundle);
+
+		Path dic2BundleFile = Paths.get("../mii-dsf-processes-docker-test-setup/dic2/fhir/conf/bundle.xml");
+		logger.info("Copying fhir bundle to {}", dic2BundleFile);
+		writeBundle(dic2BundleFile, bundle);
 	}
 }

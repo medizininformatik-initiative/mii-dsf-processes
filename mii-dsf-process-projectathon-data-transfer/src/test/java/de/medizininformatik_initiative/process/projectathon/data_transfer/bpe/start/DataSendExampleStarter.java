@@ -24,7 +24,7 @@ public class DataSendExampleStarter
 	public static void main(String[] args) throws Exception
 	{
 		Task task = createTask();
-		ExampleStarter.forServer(args, "https://dic/fhir").startWith(task);
+		ExampleStarter.forServer(args, "https://dic1/fhir").startWith(task);
 	}
 
 	private static Task createTask()
@@ -38,9 +38,9 @@ public class DataSendExampleStarter
 		task.setIntent(TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
 		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC");
+				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1");
 		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC");
+				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1");
 
 		task.addInput().setValue(new StringType(ConstantsDataTransfer.PROFILE_MII_TASK_START_DATA_SEND_MESSAGE_NAME))
 				.getType().addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN)
