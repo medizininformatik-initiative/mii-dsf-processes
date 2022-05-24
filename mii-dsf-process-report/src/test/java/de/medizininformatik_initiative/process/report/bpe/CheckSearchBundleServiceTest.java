@@ -72,32 +72,32 @@ public class CheckSearchBundleServiceTest
 	@Test
 	public void testValid()
 	{
-		testValid("/fhir/bundle/search-bundle.xml");
+		testValid("/fhir/Bundle/search-bundle.xml");
 
 	}
 
 	@Test
 	public void testInvalidResource()
 	{
-		testInvalid("/fhir/bundle/search-bundle-invalid-resource.xml", "resources");
+		testInvalid("/fhir/Bundle/search-bundle-invalid-resource.xml", "resources");
 	}
 
 	@Test
 	public void testInvalidRequestMethod()
 	{
-		testInvalid("/fhir/bundle/search-bundle-invalid-request-method.xml", "GET");
+		testInvalid("/fhir/Bundle/search-bundle-invalid-request-method.xml", "GET");
 	}
 
 	@Test
 	public void testInvalidNoSummary()
 	{
-		testInvalid("/fhir/bundle/search-bundle-invalid-no-summary.xml", "_summary=count");
+		testInvalid("/fhir/Bundle/search-bundle-invalid-no-summary.xml", "_summary=count");
 	}
 
 	@Test
 	public void testInvalidParam()
 	{
-		testInvalid("/fhir/bundle/search-bundle-invalid-param.xml", "invalid search params");
+		testInvalid("/fhir/Bundle/search-bundle-invalid-param.xml", "invalid search params");
 	}
 
 	private void testValid(String pathToBundle)

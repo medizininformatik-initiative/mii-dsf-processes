@@ -56,10 +56,7 @@ Console 3: Disconnect from log output (Ctrl-C) if Server started Console 3: Star
 docker-compose up -d cos-bpe && docker-compose logs -f cos-fhir cos-bpe
 ````
 
-<!--
-Webbrowser at http://localhost:8080/fhir/: Add Demo Data to DIC1 HAPI FHIR Server via Transaction-Bundle at
-[Dic1FhirStore_Demo.xml](../mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Bundle/Dic1FhirStore_Demo.xml) 
--->
+<!-- EXECUTE PROCESS -->
 
 *Start curl commands in console 5 from root-folder:* `mii-dsf-processes`
 

@@ -1,0 +1,46 @@
+<Task xmlns="http://hl7.org/fhir">
+	<meta>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-send-start"></profile>
+	</meta>
+	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportSend/0.2.0"></instantiatesUri>
+	<status value="requested"></status>
+	<intent value="order"></intent>
+	<authoredOn value="2022-05-24T17:49:15+02:00"></authoredOn>
+	<requester>
+		<type value="Organization"></type>
+		<identifier>
+			<system value="http://highmed.org/sid/organization-identifier"></system>
+			<value value="Test_DIC1"></value>
+		</identifier>
+	</requester>
+	<restriction>
+		<recipient>
+			<type value="Organization"></type>
+			<identifier>
+				<system value="http://highmed.org/sid/organization-identifier"></system>
+				<value value="Test_DIC1"></value>
+			</identifier>
+		</recipient>
+	</restriction>
+	<input>
+		<type>
+			<coding>
+				<system value="http://highmed.org/fhir/CodeSystem/bpmn-message"></system>
+				<code value="message-name"></code>
+			</coding>
+		</type>
+		<valueString value="reportSendStart"></valueString>
+	</input>
+	<input>
+		<type>
+			<coding>
+				<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report"></system>
+				<code value="search-bundle-reference"></code>
+			</coding>
+		</type>
+		<valueReference>
+			<reference value="<REPLACE-WITH-SEARCH-BUNDLE-ID>"></reference>
+			<type value="Bundle"></type>
+		</valueReference>
+	</input>
+</Task>

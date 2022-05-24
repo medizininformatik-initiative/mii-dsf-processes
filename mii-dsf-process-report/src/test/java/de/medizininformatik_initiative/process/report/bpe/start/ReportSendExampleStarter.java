@@ -51,7 +51,8 @@ public class ReportSendExampleStarter
 			throw new IllegalStateException("Expected a single search Bundle");
 
 		Bundle bundle = (Bundle) searchResult.getEntryFirstRep().getResource();
-		IdType id = new IdType(HRP_URL, bundle.getId());
+		IdType id = new IdType(HRP_URL, ResourceType.Bundle.name(), bundle.getIdElement().getIdPart(),
+				bundle.getIdElement().getVersionIdPart());
 		return id.getValue();
 	}
 
