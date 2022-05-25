@@ -20,6 +20,7 @@ public interface ConstantsReport
 	String BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR = "receiveError";
 
 	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
+	String FHIR_STORE_TYPE_BLAZE = "blaze";
 
 	String EXTENSION_REPORT_STATUS_ERROR_URL = "http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error";
 

@@ -9,6 +9,7 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.highmed.dsf.tools.generator.ProcessDocumentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +54,12 @@ public class ReportingConfig
 	@Autowired
 	private FhirContext fhirContext;
 
-	// Documentation of values in Data Transfer Process
+	@ProcessDocumentation(processNames = {
+			"medizininformatik-initiativede_reportSend" }, description = "The KDS FHIR server type, possible values are [blaze, other] ; must be set, if a Blaze server is used")
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.type:other}")
+	private String fhirStoreType;
+
+	// Documentation of remaining values in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.base.url:#{null}}")
 	private String fhirStoreBaseUrl;
 
@@ -186,7 +192,7 @@ public class ReportingConfig
 	public CreateReport createReport()
 	{
 		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, kdsClientFactory(),
-				fhirContext);
+				fhirContext, fhirStoreType);
 	}
 
 	@Bean

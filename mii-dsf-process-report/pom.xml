@@ -34,6 +34,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.highmed.dsf</groupId>
+			<artifactId>dsf-tools-documentation-generator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
 			<artifactId>log4j2-utils</artifactId>
 		</dependency>
@@ -58,6 +62,35 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>prepare-package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-classpath</argument>
+						<classpath/>
+						<argument>
+							org.highmed.dsf.tools.generator.DocumentationGenerator
+						</argument>
+						<argument>
+							de.medizininformatik_initiative.process.report
+						</argument>
+					</arguments>
+					<includeProjectDependencies>true</includeProjectDependencies>
+					<addResourcesToClasspath>true</addResourcesToClasspath>
+					<classpathScope>compile</classpathScope>
+					<workingDirectory>${project.basedir}</workingDirectory>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>

@@ -306,6 +306,7 @@ services:
         medizininformatik-initiativede_dataReceive/0.2.0,
         medizininformatik-initiativede_reportReceive/0.2.0
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_TYPE: blaze
     networks:
       dic2-bpe-frontend:
       dic2-bpe-backend:

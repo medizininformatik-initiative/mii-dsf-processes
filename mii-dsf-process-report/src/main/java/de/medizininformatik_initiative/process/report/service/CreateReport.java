@@ -2,6 +2,7 @@ package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.FHIR_STORE_TYPE_BLAZE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
@@ -36,19 +37,24 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 {
 	private static final Logger logger = LoggerFactory.getLogger(CreateReport.class);
 
+	private static final String CAPABILITY_STATEMENT_PATH = "metadata";
+
 	private final OrganizationProvider organizationProvider;
 	private final KdsClientFactory kdsClientFactory;
 	private final FhirContext fhirContext;
 
+	private final String fhirStoreType;
+
 	public CreateReport(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
-			KdsClientFactory kdsClientFactory, FhirContext fhirContext)
+			KdsClientFactory kdsClientFactory, FhirContext fhirContext, String fhirStoreType)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.kdsClientFactory = kdsClientFactory;
 		this.fhirContext = fhirContext;
+		this.fhirStoreType = fhirStoreType;
 	}
 
 	@Override
@@ -59,6 +65,7 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(kdsClientFactory, "kdsClientFactory");
 		Objects.requireNonNull(fhirContext, "fhirContext");
+		Objects.requireNonNull(fhirStoreType, "fhirStoreType");
 	}
 
 	@Override
@@ -111,6 +118,10 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			reportEntry.setResponse(responseEntry.getResponse());
 			report.addEntry(reportEntry);
 		}
+
+		// Workaround because Blaze cannot execute a search for metadata in a search bundle
+		// TODO: remove if Blaze is fixed
+		fixBlazeCapabilityStatement(searchBundle, report);
 
 		return report;
 	}
@@ -185,5 +196,23 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Bundle.name(),
 				bundleIdType.getIdPart(), bundleIdType.getVersionIdPart()).getValue();
+	}
+
+	private void fixBlazeCapabilityStatement(Bundle searchBundle, Bundle report)
+	{
+		boolean searchContainsMetadata = searchBundle.getEntry().stream()
+				.filter(Bundle.BundleEntryComponent::hasRequest).map(Bundle.BundleEntryComponent::getRequest)
+				.anyMatch(r -> CAPABILITY_STATEMENT_PATH.equals(r.getUrl()));
+
+		if (searchContainsMetadata && FHIR_STORE_TYPE_BLAZE.equals(fhirStoreType))
+		{
+			CapabilityStatement metadata = kdsClientFactory.getKdsClient().getGenericFhirClient().capabilities()
+					.ofType(CapabilityStatement.class).execute();
+
+			Bundle.BundleEntryComponent metadataResponse = new Bundle.BundleEntryComponent().setResource(metadata);
+			Bundle.BundleEntryComponent reportEntry = report.addEntry()
+					.setResponse(new Bundle.BundleEntryResponseComponent().setStatus("200"));
+			toEntryComponentCapabilityStatementResource(metadataResponse, reportEntry);
+		}
 	}
 }
