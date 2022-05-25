@@ -66,7 +66,7 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 https://hrp/fhir/Bundle
 ```
 
-The fullUrl of the returned search bundle (`http://hrp/fhir/Bundle/../_history/..`) needs to pasted into the file 
+The fullUrl of the returned search bundle (`https://hrp/fhir/Bundle/../_history/..`) needs to pasted into the file 
 `mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start-demo.xml` by replacing `<REPLACE-WITH-SEARCH-BUNDLE-URL>`
 
 Console 4: Start Report Send Process at DIC1 using the following command
