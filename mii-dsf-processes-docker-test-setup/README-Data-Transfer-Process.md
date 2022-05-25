@@ -38,7 +38,8 @@ Console 2: Start DIC1 DSF FHIR Server and wait till started
 docker-compose up -d dic1-fhir && docker-compose logs -f dic1-fhir
 ```
 
-Console 2: Disconnect from log output (Ctrl-C) if Server started Console 2: Start DIC1 DSF BPE Server
+Console 2: Disconnect from log output (Ctrl-C) if Server started 
+Console 2: Start DIC1 DSF BPE Server
 
 ```sh
 docker-compose up -d dic1-bpe && docker-compose logs -f dic1-fhir dic1-bpe
@@ -50,7 +51,8 @@ Console 3: Start COS DSF FHIR Server and wait till started
 docker-compose up -d cos-fhir && docker-compose logs -f cos-fhir
 ```
 
-Console 3: Disconnect from log output (Ctrl-C) if Server started Console 3: Start COS DSF BPE Server
+Console 3: Disconnect from log output (Ctrl-C) if Server started 
+Console 3: Start COS DSF BPE Server
 
 ```sh
 docker-compose up -d cos-bpe && docker-compose logs -f cos-fhir cos-bpe
