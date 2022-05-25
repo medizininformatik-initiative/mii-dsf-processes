@@ -58,15 +58,30 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 
 	private void testRequestMethod(List<Bundle.BundleEntryComponent> searches)
 	{
-		if (searches.stream().map(s -> s.getRequest().getMethod()).anyMatch(m -> !Bundle.HTTPVerb.GET.equals(m)))
+		long httpGetCount = searches.stream().filter(Bundle.BundleEntryComponent::hasRequest)
+				.map(Bundle.BundleEntryComponent::getRequest).filter(Bundle.BundleEntryRequestComponent::hasMethod)
+				.map(Bundle.BundleEntryRequestComponent::getMethod).filter(Bundle.HTTPVerb.GET::equals).count();
+
+		int searchesCount = searches.size();
+
+		if (searchesCount != httpGetCount)
 			throw new RuntimeException("Search Bundle contains HTTP method other then GET");
 	}
 
 	private void testRequestUrls(List<Bundle.BundleEntryComponent> searches)
 	{
-		List<UriComponents> uriComponents = searches.stream()
-				.map(s -> UriComponentsBuilder.fromUriString(s.getRequest().getUrl()).build())
-				.collect(Collectors.toList());
+		List<Bundle.BundleEntryRequestComponent> requests = searches.stream()
+				.filter(Bundle.BundleEntryComponent::hasRequest).map(Bundle.BundleEntryComponent::getRequest)
+				.filter(Bundle.BundleEntryRequestComponent::hasUrl).collect(Collectors.toList());
+
+		int requestCount = requests.size();
+		int searchesCount = searches.size();
+
+		if (searchesCount != requestCount)
+			throw new RuntimeException("Search Bundle contains request without url");
+
+		List<UriComponents> uriComponents = requests.stream()
+				.map(r -> UriComponentsBuilder.fromUriString(r.getUrl()).build()).collect(Collectors.toList());
 
 		testContainsSummaryCount(uriComponents);
 		testContainsValidSearchParams(uriComponents);
@@ -97,5 +112,4 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 			throw new RuntimeException("Search Bundle contains invalid search params, only allowed search params are "
 					+ VALID_SEARCH_PARAMS);
 	}
-
 }

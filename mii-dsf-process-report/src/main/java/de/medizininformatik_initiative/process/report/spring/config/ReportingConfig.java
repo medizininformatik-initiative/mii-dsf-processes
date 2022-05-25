@@ -60,6 +60,7 @@ public class ReportingConfig
 	private String fhirStoreType;
 
 	// Documentation of remaining values in Data Transfer Process
+
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.base.url:#{null}}")
 	private String fhirStoreBaseUrl;
 
