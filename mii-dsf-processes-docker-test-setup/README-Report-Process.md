@@ -13,7 +13,7 @@ Add entries to your hosts file
 127.0.0.1	hrp
 ```
 
-*A total of five console windows are required. Start docker-compose commands for consoles 1 to 3 from
+*A total of four console windows are required. Start docker-compose commands for consoles 1 to 3 from
 sub-folder:* `mii-dsf-processes/mii-dsf-processes-docker-test-setup`
 
 Console 1: Start DIC1 HAPI FHIR Server
