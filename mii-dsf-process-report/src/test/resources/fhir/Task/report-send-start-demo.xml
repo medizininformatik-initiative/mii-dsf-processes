@@ -5,12 +5,12 @@
 	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportSend/0.2.0"></instantiatesUri>
 	<status value="requested"></status>
 	<intent value="order"></intent>
-	<authoredOn value="<REPLACE-WITH-DATE-AND-TIME>"></authoredOn>
+	<authoredOn value="2022-05-24T17:49:15+02:00"></authoredOn>
 	<requester>
 		<type value="Organization"></type>
 		<identifier>
 			<system value="http://highmed.org/sid/organization-identifier"></system>
-			<value value="<REPLACE-WITH-YOUR-ORGANIZATION-IDENTIFIER>"></value>
+			<value value="Test_DIC1"></value>
 		</identifier>
 	</requester>
 	<restriction>
@@ -18,7 +18,7 @@
 			<type value="Organization"></type>
 			<identifier>
 				<system value="http://highmed.org/sid/organization-identifier"></system>
-				<value value="<REPLACE-WITH-YOUR-ORGANIZATION-IDENTIFIER>"></value>
+				<value value="Test_DIC1"></value>
 			</identifier>
 		</recipient>
 	</restriction>

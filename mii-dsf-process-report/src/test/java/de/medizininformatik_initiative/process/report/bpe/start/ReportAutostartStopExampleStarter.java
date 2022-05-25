@@ -19,10 +19,13 @@ import org.hl7.fhir.r4.model.Task;
 
 public class ReportAutostartStopExampleStarter
 {
+	private static final String DIC_URL = "https://dic1/fhir";
+	private static final String DIC_IDENTIFIER = "Test_DIC1";
+
 	public static void main(String[] args) throws Exception
 	{
 		Task task = createTask();
-		ExampleStarter.forServer(args, "https://dic/fhir").startWith(task);
+		ExampleStarter.forServer(args, DIC_URL).startWith(task);
 	}
 
 	private static Task createTask()
@@ -36,9 +39,9 @@ public class ReportAutostartStopExampleStarter
 		task.setIntent(Task.TaskIntent.ORDER);
 		task.setAuthoredOn(new Date());
 		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC");
+				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue(DIC_IDENTIFIER);
 		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC");
+				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue(DIC_IDENTIFIER);
 
 		task.addInput().setValue(new StringType(PROFILE_MII_REPORT_TASK_AUTOSTART_STOP_MESSAGE_NAME)).getType()
 				.addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);

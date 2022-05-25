@@ -1,8 +1,8 @@
 <Task xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-send-start"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-autostart-stop"></profile>
 	</meta>
-	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportSend/0.2.0"></instantiatesUri>
+	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportAutostart/0.2.0"></instantiatesUri>
 	<status value="requested"></status>
 	<intent value="order"></intent>
 	<authoredOn value="<REPLACE-WITH-DATE-AND-TIME>"></authoredOn>
@@ -29,18 +29,15 @@
 				<code value="message-name"></code>
 			</coding>
 		</type>
-		<valueString value="reportSendStart"></valueString>
+		<valueString value="reportAutostartStop"></valueString>
 	</input>
 	<input>
 		<type>
 			<coding>
-				<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report"></system>
-				<code value="search-bundle-reference"></code>
+				<system value="http://highmed.org/fhir/CodeSystem/bpmn-message"></system>
+				<code value="business-key"></code>
 			</coding>
 		</type>
-		<valueReference>
-			<reference value="<REPLACE-WITH-SEARCH-BUNDLE-URL>"></reference>
-			<type value="Bundle"></type>
-		</valueReference>
+		<valueString value="<REPLACE-WITH-BUSINESS-KEY>"></valueString>
 	</input>
 </Task>

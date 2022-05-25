@@ -65,7 +65,7 @@ https://hrp/fhir/Bundle
 ```
 
 The fullUrl of the returned search bundle (`http://hrp/fhir/Bundle/../_history/..`) needs to pasted into the file 
-`mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start.xml` by replacing `<REPLACE-WITH-SEARCH-BUNDLE-ID>`
+`mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start-demo.xml` by replacing `<REPLACE-WITH-SEARCH-BUNDLE-URL>`
 
 Console 4: Start Report Send Process at DIC1 using the following command
 
@@ -75,7 +75,7 @@ example starter class with name* `ReportSendExampleStarter` *in*
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start.xml \
+-d @mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start-demo.xml \
 --ssl-no-revoke --cacert mii-dsf-processes-test-data-generator/cert/ca/testca_certificate.pem \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
