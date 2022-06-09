@@ -147,7 +147,6 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			Bundle responseEntryBundle = (Bundle) responseEntry.getResource();
 			reportEntryBundle.setTotal(responseEntryBundle.getTotal());
 			reportEntryBundle.getMeta().setLastUpdated(responseEntryBundle.getMeta().getLastUpdated());
-
 		}
 
 		reportEntry.setResource(reportEntryBundle);
