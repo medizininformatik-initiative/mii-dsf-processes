@@ -1,6 +1,6 @@
 <Task xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-autostart-stop"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-autostart-stop|0.2.0"></profile>
 	</meta>
 	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportAutostart/0.2.0"></instantiatesUri>
 	<status value="requested"></status>

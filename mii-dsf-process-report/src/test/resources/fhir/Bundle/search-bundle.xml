@@ -1,217 +1,220 @@
 <Bundle xmlns="http://hl7.org/fhir">
-  <meta>
-    <tag>
-      <system value="http://highmed.org/fhir/CodeSystem/read-access-tag"></system>
-      <code value="ALL"></code>
-    </tag>
-  </meta>
-  <type value="batch"/>
-  <identifier>
-    <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report" />
-    <value value="search-bundle" />
-  </identifier>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Consent?_profile=http://fhir.de/ConsentManagement/StructureDefinition/Consent&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="MedicationStatement?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Medication?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|1&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|2&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ResearchSubject?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|1&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|2&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|1&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|abteilungskontakt&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|versorgungsstellenkontakt&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Condition?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Procedure?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="DiagnosticReport?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ServiceRequest?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&amp;_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Consent?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="MedicationStatement?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="MedicationAdministration?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Patient?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Encounter?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Condition?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Procedure?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="DiagnosticReport?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Observation?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ServiceRequest?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="Medication?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="ResearchSubject?_summary=count"/>
-    </request>
-  </entry>
-  <entry>
-    <request>
-      <method value="GET"/>
-      <url value="metadata"/>
-    </request>
-  </entry>
+	<meta>
+		<versionId value="1"/>
+		<lastUpdated value="2022-05-31T10:00:00.000+02:00"/>
+		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle|0.2.0"/>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<type value="batch"/>
+	<identifier>
+		<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report"/>
+		<value value="search-bundle"/>
+	</identifier>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Consent?_profile=http://fhir.de/ConsentManagement/StructureDefinition/Consent&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="MedicationStatement?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Medication?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|1&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|2&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ResearchSubject?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|1&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|2&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|1&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|abteilungskontakt&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&amp;type=http://fhir.de/CodeSystem/Kontaktebene|versorgungsstellenkontakt&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Condition?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Procedure?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="DiagnosticReport?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ServiceRequest?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&amp;_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Consent?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="MedicationStatement?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="MedicationAdministration?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Patient?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Encounter?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Condition?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Procedure?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="DiagnosticReport?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Observation?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ServiceRequest?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="Medication?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="ResearchSubject?_summary=count"/>
+		</request>
+	</entry>
+	<entry>
+		<request>
+			<method value="GET"/>
+			<url value="metadata"/>
+		</request>
+	</entry>
 </Bundle> 

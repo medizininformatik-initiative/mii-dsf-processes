@@ -22,6 +22,10 @@ public interface ConstantsReport
 	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
 	String FHIR_STORE_TYPE_BLAZE = "blaze";
 
+	String PROFILE_SEARCH_BUNDLE = "http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle" + "|"
+			+ VERSION;
+	String PROFILE_SEARCH_BUNDLE_RESPONSE = "http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle-response"
+			+ "|" + VERSION;
 	String EXTENSION_REPORT_STATUS_ERROR_URL = "http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error";
 
 	String NAMING_SYSTEM_MII_REPORT = "http://medizininformatik-initiative.de/sid/report";

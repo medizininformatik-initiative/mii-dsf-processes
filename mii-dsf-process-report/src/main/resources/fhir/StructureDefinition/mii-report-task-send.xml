@@ -98,7 +98,7 @@
       <path value="Task.input.value[x]" />
       <type>
         <code value="Reference" />
-        <targetProfile value="http://hl7.org/fhir/StructureDefinition/Bundle" />
+        <targetProfile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle-response" />
       </type>
     </element>
     <element id="Task.input:search-bundle-response-reference.value[x].reference">

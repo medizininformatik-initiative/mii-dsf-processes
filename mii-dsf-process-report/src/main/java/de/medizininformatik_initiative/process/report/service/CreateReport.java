@@ -5,6 +5,7 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.BPM
 import static de.medizininformatik_initiative.process.report.ConstantsReport.FHIR_STORE_TYPE_BLAZE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_SEARCH_BUNDLE_RESPONSE;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 
 import java.util.Collections;
@@ -96,6 +97,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 	private Bundle transformToReportBundle(Bundle searchBundle, Bundle responseBundle, Target target)
 	{
 		Bundle report = new Bundle();
+		report.setMeta(responseBundle.getMeta());
+		report.getMeta().addProfile(PROFILE_SEARCH_BUNDLE_RESPONSE);
 		report.setType(responseBundle.getType());
 		report.getIdentifier().setSystem(NAMING_SYSTEM_MII_REPORT)
 				.setValue(NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX + organizationProvider.getLocalIdentifierValue());
@@ -108,12 +111,16 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			Bundle.BundleEntryComponent responseEntry = responseBundle.getEntry().get(i);
 			Bundle.BundleEntryComponent reportEntry = new Bundle.BundleEntryComponent();
 
-			if (responseEntry.getResource() instanceof Bundle || responseEntry.getResource() == null)
+			if (responseEntry.getResource() instanceof Bundle || !responseEntry.hasResource())
+			{
 				toEntryComponentBundleResource(responseEntry, reportEntry,
 						searchBundle.getEntry().get(i).getRequest().getUrl());
+			}
 
 			if (responseEntry.getResource() instanceof CapabilityStatement)
+			{
 				toEntryComponentCapabilityStatementResource(responseEntry, reportEntry);
+			}
 
 			reportEntry.setResponse(responseEntry.getResponse());
 			report.addEntry(reportEntry);
@@ -141,8 +148,9 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			reportEntryBundle.setTotal(responseEntryBundle.getTotal());
 			reportEntryBundle.getMeta().setLastUpdated(responseEntryBundle.getMeta().getLastUpdated());
 
-			reportEntry.setResource(reportEntryBundle);
 		}
+
+		reportEntry.setResource(reportEntryBundle);
 	}
 
 	private void toEntryComponentCapabilityStatementResource(Bundle.BundleEntryComponent responseEntry,

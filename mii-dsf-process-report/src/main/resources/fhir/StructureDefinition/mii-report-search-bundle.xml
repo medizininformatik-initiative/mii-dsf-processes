@@ -1,0 +1,55 @@
+<StructureDefinition xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle" />
+	<name value="MiiReportSearchBundle" />
+	<fhirVersion value="4.0.1" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<experimental value="false" />
+	<abstract value="false" />
+	<kind value="resource" />
+	<type value="Bundle" />
+	<baseDefinition value="http://hl7.org/fhir/StructureDefinition/Bundle" />
+	<derivation value="constraint" />
+	<differential>
+		<element id="Bundle.identifier">
+			<path value="Bundle.identifier" />
+			<min value="1" />
+		</element>
+		<element id="Bundle.identifier.system">
+			<path value="Bundle.identifier.system" />
+			<min value="1" />
+			<fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/report" />
+		</element>
+		<element id="Bundle.identifier.value">
+			<path value="Bundle.identifier.value" />
+			<min value="1" />
+			<fixedString value="search-bundle" />
+		</element>
+		<element id="Bundle.type">
+			<path value="Bundle.type" />
+			<fixedCode value="batch" />
+		</element>
+		<element id="Bundle.entry">
+			<path value="Bundle.entry" />
+			<min value="1" />
+		</element>
+		<element id="Bundle.entry.request">
+			<path value="Bundle.entry.request" />
+			<min value="1" />
+		</element>
+		<element id="Bundle.entry.request.method">
+			<path value="Bundle.entry.request.method" />
+			<fixedCode value="GET" />
+		</element>
+	</differential>
+</StructureDefinition>

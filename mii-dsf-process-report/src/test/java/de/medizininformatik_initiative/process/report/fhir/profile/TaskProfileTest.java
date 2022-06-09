@@ -59,6 +59,7 @@ public class TaskProfileTest
 	@ClassRule
 	public static final ValidationSupportRule validationRule = new ValidationSupportRule(VERSION, RELEASE_DATE,
 			Arrays.asList("highmed-task-base-0.5.0.xml", "extension-mii-report-status-error.xml",
+					"mii-report-search-bundle.xml", "mii-report-search-bundle-response.xml",
 					"mii-report-task-autostart-start.xml", "mii-report-task-autostart-stop.xml",
 					"mii-report-task-receive.xml", "mii-report-task-send.xml", "mii-report-task-send-start.xml"),
 			Arrays.asList("highmed-read-access-tag-0.5.0.xml", "highmed-bpmn-message-0.5.0.xml", "mii-report.xml",

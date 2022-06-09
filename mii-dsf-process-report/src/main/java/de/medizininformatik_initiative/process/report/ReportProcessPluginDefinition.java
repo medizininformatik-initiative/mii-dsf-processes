@@ -81,6 +81,9 @@ public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 				.file("fhir/StructureDefinition/mii-report-task-autostart-start.xml");
 		var sAutostartStop = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-report-task-autostart-stop.xml");
+		var sSearchBundle = StructureDefinitionResource.file("fhir/StructureDefinition/mii-report-search-bundle.xml");
+		var sSearchBundleResponse = StructureDefinitionResource
+				.file("fhir/StructureDefinition/mii-report-search-bundle-response.xml");
 		var sReceive = StructureDefinitionResource.file("fhir/StructureDefinition/mii-report-task-receive.xml");
 		var sSend = StructureDefinitionResource.file("fhir/StructureDefinition/mii-report-task-send.xml");
 		var sSendStart = StructureDefinitionResource.file("fhir/StructureDefinition/mii-report-task-send-start.xml");
@@ -93,10 +96,11 @@ public class ReportProcessPluginDefinition implements ProcessPluginDefinition
 				PROCESS_NAME_FULL_REPORT_AUTOSTART + "/" + VERSION,
 				Arrays.asList(aAutostart, cReport, sAutostartStart, sAutostartStop, vReport),
 				PROCESS_NAME_FULL_REPORT_RECEIVE + "/" + VERSION,
-				Arrays.asList(aReceive, cReport, cReportStatus, eReportStatusError, nReport, sSend, vReport,
-						vReportStatusReceive),
-				PROCESS_NAME_FULL_REPORT_SEND + "/" + VERSION, Arrays.asList(aSend, cReport, cReportStatus,
-						eReportStatusError, nReport, sReceive, sSendStart, vReport, vReportStatusSend));
+				Arrays.asList(aReceive, cReport, cReportStatus, eReportStatusError, nReport, sSend, sSearchBundle,
+						sSearchBundleResponse, vReport, vReportStatusReceive),
+				PROCESS_NAME_FULL_REPORT_SEND + "/" + VERSION,
+				Arrays.asList(aSend, cReport, cReportStatus, eReportStatusError, nReport, sReceive, sSearchBundle,
+						sSearchBundleResponse, sSendStart, vReport, vReportStatusSend));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, resolver,

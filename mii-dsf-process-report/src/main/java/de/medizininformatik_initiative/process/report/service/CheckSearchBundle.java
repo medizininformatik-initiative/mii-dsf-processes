@@ -1,6 +1,7 @@
 package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_SEARCH_BUNDLE;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,9 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 	protected void doExecute(DelegateExecution delegateExecution)
 	{
 		Bundle bundle = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE);
+
+		testProfile(bundle);
+
 		List<Bundle.BundleEntryComponent> searches = bundle.getEntry();
 
 		testNoResources(searches);
@@ -48,6 +52,13 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 
 		logger.info("Search Bundle contains only valid requests of type GET and valid search params {}",
 				VALID_SEARCH_PARAMS);
+	}
+
+	private void testProfile(Bundle bundle)
+	{
+		if (bundle.getMeta().getProfile().stream().noneMatch(p -> PROFILE_SEARCH_BUNDLE.equals(p.getValue())))
+			throw new RuntimeException(
+					"Search Bundle profile does not match expected profile '" + PROFILE_SEARCH_BUNDLE + "'");
 	}
 
 	private void testNoResources(List<Bundle.BundleEntryComponent> searches)
