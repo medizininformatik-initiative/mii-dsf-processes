@@ -66,6 +66,16 @@
 			<!-- mii-dsf-processes -->
 			<dependency>
 				<groupId>de.medizininformatik-initiative</groupId>
+				<artifactId>mii-dsf-process-projectathon-data-transfer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.medizininformatik-initiative</groupId>
+				<artifactId>mii-dsf-process-report</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.medizininformatik-initiative</groupId>
 				<artifactId>mii-dsf-processes-documentation-generator</artifactId>
 				<version>${project.version}</version>
 			</dependency>

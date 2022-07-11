@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.medizininformatik_initiative.process.projectathon.data_transfer.DataTransferProcessPluginDefinition;
+import de.medizininformatik_initiative.process.report.ReportProcessPluginDefinition;
 import de.medizininformatik_initiative.processes.test.data.generator.CertificateGenerator.CertificateFiles;
 
 public class EnvGenerator
@@ -23,6 +25,8 @@ public class EnvGenerator
 
 	private static final String USER_THUMBPRINTS = "USER_THUMBPRINTS";
 	private static final String USER_THUMBPRINTS_PERMANENTDELETE = "USER_THUMBPRINTS_PERMANENT_DELETE";
+	private static final String PROCESS_VERSION_DATA_TRANSFER = "PROCESS_VERSION_DATA_TRANSFER";
+	private static final String PROCESS_VERSION_REPORT = "PROCESS_VERSION_REPORT";
 
 	private static final class EnvEntry
 	{
@@ -73,7 +77,11 @@ public class EnvGenerator
 				new EnvEntry("HRP_" + USER_THUMBPRINTS, hrpUserThumbprints, "HRP_" + USER_THUMBPRINTS_PERMANENTDELETE,
 						hrpUserThumbprintsPermanentDelete));
 
-		writeEnvFile(Paths.get("../mii-dsf-processes-docker-test-setup/.env"), entries);
+		Map<String, String> additionalEntries = Map.of(PROCESS_VERSION_DATA_TRANSFER,
+				DataTransferProcessPluginDefinition.VERSION, PROCESS_VERSION_REPORT,
+				ReportProcessPluginDefinition.VERSION);
+
+		writeEnvFile(Paths.get("../mii-dsf-processes-docker-test-setup/.env"), entries, additionalEntries);
 	}
 
 	private Stream<String> filterAndMapToThumbprint(Map<String, CertificateFiles> clientCertificateFilesByCommonName,
@@ -85,7 +93,7 @@ public class EnvGenerator
 				.map(CertificateFiles::getCertificateSha512ThumbprintHex);
 	}
 
-	private void writeEnvFile(Path target, List<? extends EnvEntry> entries)
+	private void writeEnvFile(Path target, List<? extends EnvEntry> entries, Map<String, String> additionalEntries)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -103,6 +111,17 @@ public class EnvGenerator
 
 			if ((i + 1) < entries.size())
 				builder.append("\n\n");
+		}
+
+		if (!additionalEntries.isEmpty())
+			builder.append('\n');
+
+		for (var entry : additionalEntries.entrySet())
+		{
+			builder.append('\n');
+			builder.append(entry.getKey());
+			builder.append('=');
+			builder.append(entry.getValue());
 		}
 
 		try

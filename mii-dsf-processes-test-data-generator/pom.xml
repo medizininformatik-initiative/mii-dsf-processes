@@ -17,6 +17,14 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>de.medizininformatik-initiative</groupId>
+			<artifactId>mii-dsf-process-projectathon-data-transfer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.medizininformatik-initiative</groupId>
+			<artifactId>mii-dsf-process-report</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
 			<artifactId>log4j2-utils</artifactId>
 		</dependency>

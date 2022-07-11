@@ -175,8 +175,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC1
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic1/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_dataReceive/0.2.0,
-        medizininformatik-initiativede_reportReceive/0.2.0
+        medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
+        medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
     networks:
       dic1-bpe-frontend:
@@ -303,8 +303,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_dataReceive/0.2.0,
-        medizininformatik-initiativede_reportReceive/0.2.0
+        medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
+        medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_TYPE: blaze
     networks:
@@ -431,7 +431,7 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: cos_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_COS
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://cos/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/0.2.0
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/${PROCESS_VERSION_DATA_TRANSFER}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://cos-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PRIVATE_KEY: /run/secrets/cos_private_key.pem
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PUBLIC_KEY: /run/secrets/cos_public_key.pem
@@ -559,8 +559,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://hrp/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_reportAutostart/0.2.0,
-        medizininformatik-initiativede_reportSend/0.2.0
+        medizininformatik-initiativede_reportAutostart/${PROCESS_VERSION_REPORT},
+        medizininformatik-initiativede_reportSend/${PROCESS_VERSION_REPORT}
     networks:
       hrp-bpe-frontend:
       hrp-bpe-backend:
