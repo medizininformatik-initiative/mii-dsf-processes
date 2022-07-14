@@ -49,14 +49,9 @@ public class SendReceipt extends AbstractTaskMessageSend implements Initializing
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
 		if (execution.getVariable(BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR) != null)
-		{
 			return createReceiptError();
-		}
 		else
-		{
-			addReceiveOkToLeadingTask();
 			return createReceiptOk();
-		}
 	}
 
 	private Stream<Task.ParameterComponent> createReceiptError()
@@ -78,13 +73,6 @@ public class SendReceipt extends AbstractTaskMessageSend implements Initializing
 		}
 
 		return parameterComponent;
-	}
-
-	private void addReceiveOkToLeadingTask()
-	{
-		Task task = getLeadingTaskFromExecutionVariables().addOutput(
-				reportStatusGenerator.createReportStatusOutput(CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_OK));
-		updateLeadingTaskInExecutionVariables(task);
 	}
 
 	private Stream<Task.ParameterComponent> createReceiptOk()

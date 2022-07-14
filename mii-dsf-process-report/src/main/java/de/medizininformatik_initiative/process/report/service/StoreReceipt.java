@@ -2,6 +2,7 @@ package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_MISSING;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_OK;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.EXTENSION_REPORT_STATUS_ERROR_URL;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY;
@@ -95,15 +96,21 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 	private void writeStatusLog(Task leadingTask)
 	{
 		leadingTask.getOutput().stream().filter(o -> o.getValue() instanceof Coding).map(o -> (Coding) o.getValue())
-				.filter(o -> CODESYSTEM_MII_REPORT_STATUS.equals(o.getSystem())).forEach(
-						o -> logger
-								.info("Task with id '{}' has report-status code '{}'{}", leadingTask.getId(),
-										o.getCode(),
-										o.hasExtension()
-												? " and extension '" + o.getExtensionFirstRep().getUrl() + "|"
-														+ o.getExtensionFirstRep().getValueAsPrimitive()
-																.getValueAsString()
-														+ "'"
-												: ""));
+				.filter(c -> CODESYSTEM_MII_REPORT_STATUS.equals(c.getSystem()))
+				.forEach(c -> doWriteStatusLog(c, leadingTask.getId()));
+	}
+
+	private void doWriteStatusLog(Coding status, String taskId)
+	{
+		String code = status.getCode();
+		String extension = status.hasExtension()
+				? " and extension '" + status.getExtensionFirstRep().getUrl() + "|"
+						+ status.getExtensionFirstRep().getValueAsPrimitive().getValueAsString() + "'"
+				: "";
+
+		if (CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIPT_OK.equals(code))
+			logger.info("Task with id '{}' has report-status code '{}'{}", taskId, code, extension);
+		else
+			logger.warn("Task with id '{}' has report-status code '{}'{}", taskId, code, extension);
 	}
 }

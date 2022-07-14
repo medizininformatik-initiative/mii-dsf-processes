@@ -3,6 +3,7 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_OK;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
 
@@ -67,7 +68,12 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 					.updateConditionaly(report, Map.of("identifier", Collections
 							.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
 
-			logger.info("Stored report bundle with id '{}'...", reportId.getValue());
+			task.addOutput(
+					reportStatusGenerator.createReportStatusOutput(CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_OK));
+			updateLeadingTaskInExecutionVariables(task);
+
+			logger.info("Stored report bundle with id '{}' from organization '{}'", reportId.getValue(),
+					task.getRequester().getIdentifier().getValue());
 		}
 		catch (Exception exception)
 		{
