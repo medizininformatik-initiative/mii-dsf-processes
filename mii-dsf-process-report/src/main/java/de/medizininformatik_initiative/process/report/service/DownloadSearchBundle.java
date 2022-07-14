@@ -17,17 +17,12 @@ import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class DownloadSearchBundle extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(DownloadSearchBundle.class);
-
 	private final DataLogger dataLogger;
 
 	public DownloadSearchBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
@@ -53,7 +48,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		IdType searchBundleId = new IdType(searchBundleReference);
 		Bundle bundle = readSearchBundle(searchBundleId);
 
-		dataLogger.logBundle("Search Bundle: {}", bundle);
+		dataLogger.logBundle("Search Bundle", bundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
 	}
@@ -62,8 +57,8 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 
-		FhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(searchBundleId.getBaseUrl());
+		FhirWebserviceClient client = getFhirWebserviceClientProvider().getWebserviceClient(
+				searchBundleId.getBaseUrl());
 
 		try
 		{
@@ -74,8 +69,9 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		}
 		catch (WebApplicationException exception)
 		{
-			throw new RuntimeException("Error while reading search Bundle with id '" + searchBundleId.getValue()
-					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());
+			throw new RuntimeException(
+					"Error while reading search Bundle with id '" + searchBundleId.getValue() + "' from organization '"
+							+ task.getRequester().getReference() + "': " + exception.getMessage());
 		}
 	}
 }
