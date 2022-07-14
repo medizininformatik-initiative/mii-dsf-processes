@@ -33,6 +33,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class CreateReport extends AbstractServiceDelegate implements InitializingBean
 {
@@ -42,20 +43,20 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 	private final OrganizationProvider organizationProvider;
 	private final KdsClientFactory kdsClientFactory;
-	private final FhirContext fhirContext;
+	private final DataLogger dataLogger;
 
 	private final String fhirStoreType;
 
 	public CreateReport(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
-			KdsClientFactory kdsClientFactory, FhirContext fhirContext, String fhirStoreType)
+			KdsClientFactory kdsClientFactory, String fhirStoreType, DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.kdsClientFactory = kdsClientFactory;
-		this.fhirContext = fhirContext;
 		this.fhirStoreType = fhirStoreType;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -65,8 +66,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(kdsClientFactory, "kdsClientFactory");
-		Objects.requireNonNull(fhirContext, "fhirContext");
 		Objects.requireNonNull(fhirStoreType, "fhirStoreType");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@Override
@@ -76,12 +77,9 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
 		Bundle responseBundle = executeSearchBundle(searchBundle);
-
-		logger.debug("Response Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(responseBundle));
-
 		Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
 
-		logger.debug("Report Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(reportBundle));
+		dataLogger.logBundle("Report Bundle: {}", reportBundle);
 
 		String reportReference = storeResponseBundle(reportBundle);
 

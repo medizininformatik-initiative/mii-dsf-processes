@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 
+import javax.xml.crypto.Data;
+
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
+import de.medizininformatik_initiative.processes.kds.client.logging.HapiClientLogger;
 
 public class KdsClientImpl implements KdsClient
 {
@@ -38,11 +42,13 @@ public class KdsClientImpl implements KdsClient
 
 	private final String localIdentifierValue;
 
+	private final DataLogger dataLogger;
+
 	public KdsClientImpl(KeyStore trustStore, KeyStore keyStore, char[] keyStorePassword, int connectTimeout,
 			int socketTimeout, int connectionRequestTimeout, String kdsServerBasicAuthUsername,
 			String kdsServerBasicAuthPassword, String kdsServerBearerToken, String kdsServerBase, String proxyUrl,
 			String proxyUsername, String proxyPassword, boolean hapiClientVerbose, FhirContext fhirContext,
-			Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue)
+			Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue, DataLogger dataLogger)
 	{
 		clientFactory = createClientFactory(trustStore, keyStore, keyStorePassword, connectTimeout, socketTimeout,
 				connectionRequestTimeout);
@@ -61,6 +67,8 @@ public class KdsClientImpl implements KdsClient
 		this.kdsFhirClientClass = kdsFhirClientClass;
 
 		this.localIdentifierValue = localIdentifierValue;
+
+		this.dataLogger = dataLogger;
 	}
 
 	private void configureProxy(IRestfulClientFactory clientFactory, String proxyUrl, String proxyUsername,
@@ -138,9 +146,10 @@ public class KdsClientImpl implements KdsClient
 	{
 		try
 		{
-			Constructor<KdsFhirClient> constructor = kdsFhirClientClass.getConstructor(KdsClient.class);
+			Constructor<KdsFhirClient> constructor = kdsFhirClientClass.getConstructor(KdsClient.class,
+					DataLogger.class);
 
-			return constructor.newInstance(this);
+			return constructor.newInstance(this, dataLogger);
 		}
 		catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e)

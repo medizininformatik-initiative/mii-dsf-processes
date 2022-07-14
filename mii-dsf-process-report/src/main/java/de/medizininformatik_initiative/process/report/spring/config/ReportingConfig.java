@@ -32,6 +32,7 @@ import de.medizininformatik_initiative.process.report.service.StoreReceipt;
 import de.medizininformatik_initiative.process.report.util.ReportStatusGenerator;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 @Configuration
 public class ReportingConfig
@@ -59,55 +60,74 @@ public class ReportingConfig
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.type:other}")
 	private String fhirStoreType;
 
-	// Documentation of remaining values in Data Transfer Process
-
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.base.url:#{null}}")
 	private String fhirStoreBaseUrl;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.client:de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClientImpl}")
 	private String fhirStoreClientClass;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.trust.certificates:#{null}}")
 	private String fhirStoreTrustStore;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.certificate:#{null}}")
 	private String fhirStoreCertificate;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.private.key:#{null}}")
 	private String fhirStorePrivateKey;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.private.key.password:#{null}}")
 	private char[] fhirStorePrivateKeyPassword;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.basicauth.username:#{null}}")
 	private String fhirStoreUsername;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.basicauth.password:#{null}}")
 	private String fhirStorePassword;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.bearer.token:#{null}}")
 	private String fhirStoreBearerToken;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.connect:10000}")
 	private int fhirStoreConnectTimeout;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.connection.request:10000}")
 	private int fhirStoreConnectionRequestTimeout;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.socket:10000}")
 	private int fhirStoreSocketTimeout;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.client.verbose:false}")
 	private boolean fhirStoreHapiClientVerbose;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.url:#{null}}")
 	private String fhirStoreProxyUrl;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.username:#{null}}")
 	private String fhirStoreProxyUsername;
 
+	// Documentation of in Data Transfer Process
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.password:#{null}}")
 	private String fhirStoreProxyPassword;
+
+	@ProcessDocumentation(description = "To enable debug logging of FHIR search, result and transfer bundles set to `true`", processNames = {
+			"medizininformatik-initiativede_reportSend", "medizininformatik-initiativede_reportReceive" })
+	@Value("${de.medizininformatik.initiative.kds.fhir.dataLoggingEnabled:false}")
+	private boolean fhirDataLoggingEnabled;
 
 	@Value("${org.highmed.dsf.bpe.fhir.server.organization.identifier.value}")
 	private String localIdentifierValue;
@@ -126,7 +146,7 @@ public class ReportingConfig
 					fhirStoreConnectTimeout, fhirStoreSocketTimeout, fhirStoreConnectionRequestTimeout,
 					fhirStoreBaseUrl, fhirStoreUsername, fhirStorePassword, fhirStoreBearerToken, fhirStoreProxyUrl,
 					fhirStoreProxyUsername, fhirStoreProxyPassword, fhirStoreHapiClientVerbose, fhirContext,
-					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue);
+					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue, dataLogger());
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -180,7 +200,7 @@ public class ReportingConfig
 	@Bean
 	public DownloadSearchBundle downloadSearchBundle()
 	{
-		return new DownloadSearchBundle(clientProvider, taskHelper, readAccessHelper, fhirContext);
+		return new DownloadSearchBundle(clientProvider, taskHelper, readAccessHelper, dataLogger());
 	}
 
 	@Bean
@@ -193,7 +213,7 @@ public class ReportingConfig
 	public CreateReport createReport()
 	{
 		return new CreateReport(clientProvider, taskHelper, readAccessHelper, organizationProvider, kdsClientFactory(),
-				fhirContext, fhirStoreType);
+				fhirStoreType, dataLogger());
 	}
 
 	@Bean
@@ -240,5 +260,11 @@ public class ReportingConfig
 	{
 		return new SendReceipt(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext,
 				reportStatusGenerator());
+	}
+
+	@Bean
+	public DataLogger dataLogger()
+	{
+		return new DataLogger(fhirDataLoggingEnabled, fhirContext);
 	}
 }

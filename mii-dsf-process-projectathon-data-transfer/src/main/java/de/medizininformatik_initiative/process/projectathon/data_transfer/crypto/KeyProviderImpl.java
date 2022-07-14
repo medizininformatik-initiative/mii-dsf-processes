@@ -36,7 +36,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.rwh.utils.crypto.io.PemIo;
 
 public class KeyProviderImpl implements KeyProvider, InitializingBean
@@ -60,7 +60,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 	 */
 	public static KeyProviderImpl fromFiles(String privateKeyFile, String publicKeyFile,
 			FhirWebserviceClientProvider clientProvider, OrganizationProvider organizationProvider,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, DataLogger dataLogger)
 	{
 		logger.info("Configuring KeyProvider with private-key from {} and public-key from {}", privateKeyFile,
 				publicKeyFile);
@@ -100,7 +100,8 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 			throw new RuntimeException("Error while reading PublicKey from " + publicKeyFile, e);
 		}
 
-		return new KeyProviderImpl(privateKey, publicKey, clientProvider, organizationProvider, readAccessHelper);
+		return new KeyProviderImpl(privateKey, publicKey, clientProvider, organizationProvider, readAccessHelper,
+				dataLogger);
 	}
 
 	private final PrivateKey privateKey;
@@ -110,9 +111,10 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 	private final OrganizationProvider organizationProvider;
 
 	private final ReadAccessHelper readAccessHelper;
+	private final DataLogger dataLogger;
 
 	public KeyProviderImpl(PrivateKey privateKey, PublicKey publicKey, FhirWebserviceClientProvider clientProvider,
-			OrganizationProvider organizationProvider, ReadAccessHelper readAccessHelper)
+			OrganizationProvider organizationProvider, ReadAccessHelper readAccessHelper, DataLogger dataLogger)
 	{
 		this.privateKey = privateKey;
 		this.publicKey = publicKey;
@@ -120,6 +122,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 		this.clientProvider = clientProvider;
 		this.organizationProvider = organizationProvider;
 		this.readAccessHelper = readAccessHelper;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -128,6 +131,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 		Objects.requireNonNull(clientProvider, "clientProvider");
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(readAccessHelper, "readAccessHelper");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@EventListener({ ContextRefreshedEvent.class })
@@ -169,7 +173,6 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 		}
 		catch (Exception exception)
 		{
-			logger.warn("Error while creating PublicKey Bundle: {}", exception.getMessage());
 			throw new RuntimeException("Error while creating PublicKey Bundle: " + exception.getMessage(), exception);
 		}
 	}
@@ -201,7 +204,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 
 		readAccessHelper.addAll(bundle);
 
-		LoggingHelper.logDebugBundle("Created Bundle", bundle);
+		dataLogger.logBundle("Created PublicKey Bundle", bundle);
 
 		return bundle;
 	}

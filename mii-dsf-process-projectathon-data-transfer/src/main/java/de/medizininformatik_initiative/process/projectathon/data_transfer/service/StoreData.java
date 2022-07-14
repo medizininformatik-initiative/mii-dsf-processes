@@ -30,20 +30,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class StoreData extends AbstractServiceDelegate
 {
 	private static final Logger logger = LoggerFactory.getLogger(StoreData.class);
 
 	private final EndpointProvider endpointProvider;
+	private final DataLogger dataLogger;
 
 	public StoreData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider)
+			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider, DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.endpointProvider = endpointProvider;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -52,6 +54,7 @@ public class StoreData extends AbstractServiceDelegate
 		super.afterPropertiesSet();
 
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@Override
@@ -85,7 +88,7 @@ public class StoreData extends AbstractServiceDelegate
 		Binary binary = new Binary().setContentType(MediaType.APPLICATION_OCTET_STREAM)
 				.setSecurityContext(securityContext).setData(content);
 
-		LoggingHelper.logDebugBinary("Created Binary", binary);
+		dataLogger.logBinary("Encrypted Binary", binary);
 
 		return binary;
 	}

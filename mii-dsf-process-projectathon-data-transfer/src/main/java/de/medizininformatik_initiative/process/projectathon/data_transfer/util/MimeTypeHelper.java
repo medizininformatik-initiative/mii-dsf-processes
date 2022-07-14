@@ -23,7 +23,7 @@ public class MimeTypeHelper
 	 * @throws RuntimeException
 	 *             if the detected and the declared base mime-type do not match
 	 */
-	public static void validate(byte[] data, String declared)
+	public void validate(byte[] data, String declared)
 	{
 		MediaType declaredMimeType = MediaType.parse(declared);
 		MediaType detectedMimeType = MediaType.EMPTY;

@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.processes.kds.client;
+package de.medizininformatik_initiative.processes.kds.client.logging;
 
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;

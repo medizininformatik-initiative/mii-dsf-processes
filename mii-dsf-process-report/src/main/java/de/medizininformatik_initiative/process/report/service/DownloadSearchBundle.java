@@ -22,19 +22,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class DownloadSearchBundle extends AbstractServiceDelegate implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(DownloadSearchBundle.class);
 
-	private final FhirContext fhirContext;
+	private final DataLogger dataLogger;
 
 	public DownloadSearchBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, FhirContext fhirContext)
+			ReadAccessHelper readAccessHelper, DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
-		this.fhirContext = fhirContext;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	{
 		super.afterPropertiesSet();
 
-		Objects.requireNonNull(fhirContext, "fhirContext");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		IdType searchBundleId = new IdType(searchBundleReference);
 		Bundle bundle = readSearchBundle(searchBundleId);
 
-		logger.debug("Search Bundle: {}", fhirContext.newXmlParser().encodeResourceToString(bundle));
+		dataLogger.logBundle("Search Bundle: {}", bundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
 	}
@@ -73,8 +74,6 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		}
 		catch (WebApplicationException exception)
 		{
-			logger.error("Error while reading search Bundle with id '{}' from organization '{}': {}",
-					searchBundleId.getValue(), task.getRequester().getReference(), exception.getMessage());
 			throw new RuntimeException("Error while reading search Bundle with id '" + searchBundleId.getValue()
 					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());
 		}

@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class ReadData extends AbstractServiceDelegate
 {
@@ -62,10 +62,7 @@ public class ReadData extends AbstractServiceDelegate
 		String coordinatingSiteIdentifier = getCoordinatingSiteIdentifier(task);
 
 		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		LoggingHelper.logDebugResource("Read DocumentReference", documentReference);
-
 		Binary binary = readBinary(documentReference, task.getId());
-		LoggingHelper.logDebugBinary("Read Binary", binary);
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
 				Variables.stringValue(projectIdentifier));
@@ -146,10 +143,6 @@ public class ReadData extends AbstractServiceDelegate
 
 		if (!validBinaryUrl(urls.get(0)))
 		{
-			logger.warn(
-					"Attachment URL {} in DocumentReference with id='{}' belonging to task with id='{}', not a valid Binary reference,"
-							+ " should be a relative Binary reference or an absolute Binary reference to KDS FHIR server at {}",
-					urls.get(0), documentReference.getId(), taskId, kdsClientFactory.getKdsClient().getFhirBaseUrl());
 			throw new IllegalArgumentException(
 					"Attachment URL " + urls.get(0) + " in DocumentReference with id='" + documentReference.getId()
 							+ "' belonging to task with id='" + taskId + "' not a valid Binary reference");

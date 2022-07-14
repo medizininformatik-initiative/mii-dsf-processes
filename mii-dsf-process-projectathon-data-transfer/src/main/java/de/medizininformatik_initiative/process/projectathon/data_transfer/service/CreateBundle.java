@@ -22,18 +22,20 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class CreateBundle extends AbstractServiceDelegate implements InitializingBean
 {
 	private final OrganizationProvider organizationProvider;
+	private final DataLogger dataLogger;
 
 	public CreateBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -42,6 +44,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 		super.afterPropertiesSet();
 
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@Override
@@ -49,13 +52,13 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+
 		DocumentReference documentReference = (DocumentReference) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
 		Binary binary = (Binary) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_BINARY);
-
 		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, binary);
 
-		LoggingHelper.logDebugBundle("Created Bundle", bundle);
+		dataLogger.logBundle("Created Transfer Bundle", bundle);
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET,
 				FhirResourceValues.create(bundle));

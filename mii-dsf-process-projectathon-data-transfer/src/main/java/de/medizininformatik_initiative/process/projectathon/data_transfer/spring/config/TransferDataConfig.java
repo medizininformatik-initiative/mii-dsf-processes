@@ -29,8 +29,10 @@ import de.medizininformatik_initiative.process.projectathon.data_transfer.servic
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.StoreData;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataCos;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataDic;
+import de.medizininformatik_initiative.process.projectathon.data_transfer.util.MimeTypeHelper;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 @Configuration
 public class TransferDataConfig
@@ -117,6 +119,11 @@ public class TransferDataConfig
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.proxy.password:#{null}}")
 	private String fhirStoreProxyPassword;
 
+	@ProcessDocumentation(description = "To enable debug logging of FHIR search, result and transfer bundles set to `true`", processNames = {
+			"medizininformatik-initiativede_dataSend", "medizininformatik-initiativede_dataReceive" })
+	@Value("${de.medizininformatik.initiative.kds.fhir.dataLoggingEnabled:false}")
+	private boolean fhirDataLoggingEnabled;
+
 	@ProcessDocumentation(required = true, processNames = {
 			"medizininformatik-initiativede_dataReceive" }, description = "Location of the COS private-key as 4096 Bit RSA PEM encoded, not encrypted file", recommendation = "Use docker secret file to configure", example = "/run/secrets/cos_private_key.pem")
 	@Value("${de.medizininformatik.initiative.cos.private.key:#{null}}")
@@ -144,7 +151,7 @@ public class TransferDataConfig
 					fhirStoreConnectTimeout, fhirStoreSocketTimeout, fhirStoreConnectionRequestTimeout,
 					fhirStoreBaseUrl, fhirStoreUsername, fhirStorePassword, fhirStoreBearerToken, fhirStoreProxyUrl,
 					fhirStoreProxyUsername, fhirStoreProxyPassword, fhirStoreHapiClientVerbose, fhirContext,
-					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue);
+					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue, dataLogger());
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -167,6 +174,18 @@ public class TransferDataConfig
 		}
 	}
 
+	@Bean
+	public DataLogger dataLogger()
+	{
+		return new DataLogger(fhirDataLoggingEnabled, fhirContext);
+	}
+
+	@Bean
+	public MimeTypeHelper mimeTypeHelper()
+	{
+		return new MimeTypeHelper();
+	}
+
 	// projectathonDataSend
 
 	@Bean
@@ -178,13 +197,14 @@ public class TransferDataConfig
 	@Bean
 	public ValidateDataDic validateDataDic()
 	{
-		return new ValidateDataDic(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider);
+		return new ValidateDataDic(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider,
+				mimeTypeHelper());
 	}
 
 	@Bean
 	public CreateBundle createBundle()
 	{
-		return new CreateBundle(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider);
+		return new CreateBundle(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider, dataLogger());
 	}
 
 	@Bean
@@ -197,7 +217,7 @@ public class TransferDataConfig
 	@Bean
 	public StoreData storeData()
 	{
-		return new StoreData(fhirClientProvider, taskHelper, readAccessHelper, endpointProvider);
+		return new StoreData(fhirClientProvider, taskHelper, readAccessHelper, endpointProvider, dataLogger());
 	}
 
 	@Bean
@@ -225,19 +245,20 @@ public class TransferDataConfig
 	public KeyProvider keyProvider()
 	{
 		return KeyProviderImpl.fromFiles(cosPrivateKeyFile, cosPublicKeyFile, fhirClientProvider, organizationProvider,
-				readAccessHelper);
+				readAccessHelper, dataLogger());
 	}
 
 	@Bean
 	public DecryptData decryptData()
 	{
-		return new DecryptData(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider, keyProvider());
+		return new DecryptData(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider, keyProvider(),
+				dataLogger());
 	}
 
 	@Bean
 	public ValidateDataCos validateDataCos()
 	{
-		return new ValidateDataCos(fhirClientProvider, taskHelper, readAccessHelper);
+		return new ValidateDataCos(fhirClientProvider, taskHelper, readAccessHelper, mimeTypeHelper());
 	}
 
 	@Bean

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static org.hl7.fhir.r4.model.Bundle.BundleType.TRANSACTION;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -23,10 +24,21 @@ import de.medizininformatik_initiative.process.projectathon.data_transfer.util.M
 
 public class ValidateDataCos extends AbstractServiceDelegate implements InitializingBean
 {
+	private final MimeTypeHelper mimeTypeHelper;
+
 	public ValidateDataCos(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, MimeTypeHelper mimeTypeHelper)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
+
+		this.mimeTypeHelper = mimeTypeHelper;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+		Objects.requireNonNull(mimeTypeHelper, "mimeTypeHelper");
 	}
 
 	@Override
@@ -86,6 +98,6 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 
 		byte[] dataB = binaries.get(0).getData();
 		String mimeTypeB = binaries.get(0).getContentType();
-		MimeTypeHelper.validate(dataB, mimeTypeB);
+		mimeTypeHelper.validate(dataB, mimeTypeB);
 	}
 }

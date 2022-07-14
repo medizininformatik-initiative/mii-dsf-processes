@@ -178,6 +178,7 @@ services:
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
         medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
     networks:
       dic1-bpe-frontend:
       dic1-bpe-backend:
@@ -307,6 +308,7 @@ services:
         medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_TYPE: blaze
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
     networks:
       dic2-bpe-frontend:
       dic2-bpe-backend:
@@ -433,6 +435,7 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://cos/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/${PROCESS_VERSION_DATA_TRANSFER}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://cos-fhir-store:8080/fhir
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PRIVATE_KEY: /run/secrets/cos_private_key.pem
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PUBLIC_KEY: /run/secrets/cos_public_key.pem
     networks:
@@ -500,6 +503,7 @@ services:
       ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS: ${HRP_USER_THUMBPRINTS}
       ORG_HIGHMED_DSF_FHIR_SERVER_USER_THUMBPRINTS_PERMANENT_DELETE: ${HRP_USER_THUMBPRINTS_PERMANENT_DELETE}
       ORG_HIGHMED_DSF_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
     networks:
       hrp-fhir-frontend:
         ipv4_address: 172.20.0.115

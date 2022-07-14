@@ -17,13 +17,15 @@ import de.medizininformatik_initiative.process.projectathon.data_transfer.util.M
 public class ValidateDataDic extends AbstractServiceDelegate implements InitializingBean
 {
 	private final OrganizationProvider organizationProvider;
+	private final MimeTypeHelper mimeTypeHelper;
 
 	public ValidateDataDic(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, MimeTypeHelper mimeTypeHelper)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
+		this.mimeTypeHelper = mimeTypeHelper;
 	}
 
 	@Override
@@ -32,6 +34,7 @@ public class ValidateDataDic extends AbstractServiceDelegate implements Initiali
 		super.afterPropertiesSet();
 
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
+		Objects.requireNonNull(mimeTypeHelper, "mimeTypeHelper");
 	}
 
 	@Override
@@ -42,6 +45,6 @@ public class ValidateDataDic extends AbstractServiceDelegate implements Initiali
 		String mimeTypeBinary = binary.getContentType();
 		byte[] dataBinary = binary.getData();
 
-		MimeTypeHelper.validate(dataBinary, mimeTypeBinary);
+		mimeTypeHelper.validate(dataBinary, mimeTypeBinary);
 	}
 }

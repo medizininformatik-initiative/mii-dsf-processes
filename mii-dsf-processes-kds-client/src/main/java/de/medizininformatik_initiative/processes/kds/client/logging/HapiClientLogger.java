@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.processes.kds.client;
+package de.medizininformatik_initiative.processes.kds.client.logging;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;

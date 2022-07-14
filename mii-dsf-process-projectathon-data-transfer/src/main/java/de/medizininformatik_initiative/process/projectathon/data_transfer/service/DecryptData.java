@@ -19,20 +19,23 @@ import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.RsaAesGcmUtil;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.LoggingHelper;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class DecryptData extends AbstractServiceDelegate implements InitializingBean
 {
 	private final OrganizationProvider organizationProvider;
 	private final KeyProvider keyProvider;
+	private final DataLogger dataLogger;
 
 	public DecryptData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, KeyProvider keyProvider)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, KeyProvider keyProvider,
+			DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.keyProvider = keyProvider;
+		this.dataLogger = dataLogger;
 	}
 
 	@Override
@@ -42,6 +45,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(keyProvider, "keyProvider");
+		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
 
 	@Override
@@ -55,7 +59,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		Bundle bundleDecrypted = decryptBundle(keyProvider.getPrivateKey(), bundleEncrypted,
 				sendingOrganizationIdentifier, localOrganizationIdentifier);
 
-		LoggingHelper.logDebugBundle("Decrypted Bundle", bundleDecrypted);
+		dataLogger.logBundle("Decrypted Transfer Bundle", bundleDecrypted);
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET,
 				FhirResourceValues.create(bundleDecrypted));

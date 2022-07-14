@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
+import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.rwh.utils.crypto.CertificateHelper;
 import de.rwh.utils.crypto.io.CertificateReader;
 import de.rwh.utils.crypto.io.PemIo;
@@ -50,11 +51,14 @@ public class KdsClientFactory
 
 	private final String localIdentifierValue;
 
+	private final DataLogger dataLogger;
+
 	public KdsClientFactory(Path trustStorePath, Path certificatePath, Path privateKeyPath, char[] privateKeyPassword,
 			int connectTimeout, int socketTimeout, int connectionRequestTimeout, String kdsServerBase,
 			String kdsServerBasicAuthUsername, String kdsServerBasicAuthPassword, String kdsServerBearerToken,
 			String proxyUrl, String proxyUsername, String proxyPassword, boolean hapiClientVerbose,
-			FhirContext fhirContext, Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue)
+			FhirContext fhirContext, Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue,
+			DataLogger dataLogger)
 	{
 		this.trustStorePath = trustStorePath;
 		this.certificatePath = certificatePath;
@@ -79,6 +83,8 @@ public class KdsClientFactory
 		this.kdsFhirClientClass = kdsFhirClientClass;
 
 		this.localIdentifierValue = localIdentifierValue;
+
+		this.dataLogger = dataLogger;
 	}
 
 	public void testConnection()
@@ -136,7 +142,7 @@ public class KdsClientFactory
 		return new KdsClientImpl(trustStore, keyStore, keyStorePassword, connectTimeout, socketTimeout,
 				connectionRequestTimeout, kdsServerBasicAuthUsername, kdsServerBasicAuthPassword, kdsServerBearerToken,
 				kdsServerBase, proxyUrl, proxyUsername, proxyPassword, hapiClientVerbose, fhirContext,
-				kdsFhirClientClass, localIdentifierValue);
+				kdsFhirClientClass, localIdentifierValue, dataLogger);
 	}
 
 	private KeyStore readTrustStore(Path trustPath)
