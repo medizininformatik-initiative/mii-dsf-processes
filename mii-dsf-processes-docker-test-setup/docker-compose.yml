@@ -72,7 +72,7 @@ services:
 
 
   dic1-fhir:
-    image: ghcr.io/highmed/fhir:0.6.0
+    image: ghcr.io/highmed/fhir:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -124,7 +124,7 @@ services:
       - db
       - proxy
   dic1-bpe:
-    image: ghcr.io/highmed/bpe:0.6.0
+    image: ghcr.io/highmed/bpe:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -201,7 +201,7 @@ services:
 
 
   dic2-fhir:
-    image: ghcr.io/highmed/fhir:0.6.0
+    image: ghcr.io/highmed/fhir:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -253,7 +253,7 @@ services:
       - db
       - proxy
   dic2-bpe:
-    image: ghcr.io/highmed/bpe:0.6.0
+    image: ghcr.io/highmed/bpe:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -330,7 +330,7 @@ services:
           - dic2-fhir-store
 
   cos-fhir:
-    image: ghcr.io/highmed/fhir:0.6.0
+    image: ghcr.io/highmed/fhir:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -382,7 +382,7 @@ services:
       - db
       - proxy
   cos-bpe:
-    image: ghcr.io/highmed/bpe:0.6.0
+    image: ghcr.io/highmed/bpe:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -460,7 +460,7 @@ services:
 
 
   hrp-fhir:
-    image: ghcr.io/highmed/fhir:0.6.0
+    image: ghcr.io/highmed/fhir:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -513,7 +513,7 @@ services:
       - db
       - proxy
   hrp-bpe:
-    image: ghcr.io/highmed/bpe:0.6.0
+    image: ghcr.io/highmed/bpe:0.7.0
     restart: on-failure
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]

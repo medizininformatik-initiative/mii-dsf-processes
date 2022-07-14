@@ -57,8 +57,8 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 
-		FhirWebserviceClient client = getFhirWebserviceClientProvider().getWebserviceClient(
-				searchBundleId.getBaseUrl());
+		FhirWebserviceClient client = getFhirWebserviceClientProvider()
+				.getWebserviceClient(searchBundleId.getBaseUrl());
 
 		try
 		{
@@ -69,9 +69,8 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		}
 		catch (WebApplicationException exception)
 		{
-			throw new RuntimeException(
-					"Error while reading search Bundle with id '" + searchBundleId.getValue() + "' from organization '"
-							+ task.getRequester().getReference() + "': " + exception.getMessage());
+			throw new RuntimeException("Error while reading search Bundle with id '" + searchBundleId.getValue()
+					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());
 		}
 	}
 }
