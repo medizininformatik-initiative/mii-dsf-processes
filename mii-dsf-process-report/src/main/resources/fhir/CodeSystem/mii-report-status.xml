@@ -29,7 +29,7 @@
 	<concept>
 		<code value="not-reachable" />
 		<display value="Not reachable" />
-		<definition value="Report could not be sent to HRP" />
+		<definition value="HRP cannot be reached" />
 	</concept>
 	<concept>
 		<code value="receipt-missing" />
@@ -49,9 +49,11 @@
 	<concept>
 		<code value="receive-ok" />
 		<display value="Receive ok" />
+		<definition value="Report received from DIC" />
 	</concept>
 	<concept>
 		<code value="receive-error" />
 		<display value="Receive error" />
+		<definition value="Error receiving report from DIC" />
 	</concept>
 </CodeSystem>
