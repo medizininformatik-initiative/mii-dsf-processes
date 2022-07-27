@@ -48,7 +48,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		IdType searchBundleId = new IdType(searchBundleReference);
 		Bundle bundle = readSearchBundle(searchBundleId);
 
-		dataLogger.logBundle("Search Bundle", bundle);
+		dataLogger.logResource("Search Bundle", bundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
 	}

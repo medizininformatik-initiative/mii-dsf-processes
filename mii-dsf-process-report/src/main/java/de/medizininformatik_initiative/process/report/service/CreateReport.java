@@ -77,7 +77,7 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		Bundle responseBundle = executeSearchBundle(searchBundle);
 		Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
 
-		dataLogger.logBundle("Report Bundle: {}", reportBundle);
+		dataLogger.logResource("Report Bundle: {}", reportBundle);
 
 		String reportReference = storeResponseBundle(reportBundle);
 

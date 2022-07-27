@@ -88,7 +88,7 @@ public class StoreData extends AbstractServiceDelegate
 		Binary binary = new Binary().setContentType(MediaType.APPLICATION_OCTET_STREAM)
 				.setSecurityContext(securityContext).setData(content);
 
-		dataLogger.logBinary("Encrypted Binary", binary);
+		dataLogger.logResource("Encrypted Binary", binary);
 
 		return binary;
 	}

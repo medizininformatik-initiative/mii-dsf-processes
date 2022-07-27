@@ -59,7 +59,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		Bundle bundleDecrypted = decryptBundle(keyProvider.getPrivateKey(), bundleEncrypted,
 				sendingOrganizationIdentifier, localOrganizationIdentifier);
 
-		dataLogger.logBundle("Decrypted Transfer Bundle", bundleDecrypted);
+		dataLogger.logResource("Decrypted Transfer Bundle", bundleDecrypted);
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET,
 				FhirResourceValues.create(bundleDecrypted));

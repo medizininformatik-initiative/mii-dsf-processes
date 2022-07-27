@@ -204,7 +204,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 
 		readAccessHelper.addAll(bundle);
 
-		dataLogger.logBundle("Created PublicKey Bundle", bundle);
+		dataLogger.logResource("Created PublicKey Bundle", bundle);
 
 		return bundle;
 	}

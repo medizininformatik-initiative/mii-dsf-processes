@@ -28,7 +28,7 @@ public class KdsFhirClientImpl implements KdsFhirClient
 				.where(DocumentReference.IDENTIFIER.exactly().systemAndIdentifier(system, code))
 				.returnBundle(Bundle.class).execute();
 
-		dataLogger.logBundle("DocumentReference Search-Response Bundle based on system|code=" + system + "|" + code,
+		dataLogger.logResource("DocumentReference Search-Response Bundle based on system|code=" + system + "|" + code,
 				toReturn);
 
 		return toReturn;
@@ -40,7 +40,7 @@ public class KdsFhirClientImpl implements KdsFhirClient
 		Binary toReturn = kdsClient.getGenericFhirClient().read().resource(Binary.class)
 				.withId(new IdType(url).getIdPart()).execute();
 
-		dataLogger.logBinary("Read Binary from url=" + url, toReturn);
+		dataLogger.logResource("Read Binary from url=" + url, toReturn);
 
 		return toReturn;
 	}
@@ -48,12 +48,12 @@ public class KdsFhirClientImpl implements KdsFhirClient
 	@Override
 	public Bundle executeTransactionBundle(Bundle toExecute)
 	{
-		dataLogger.logBundle("Executing Transaction Bundle", toExecute);
+		dataLogger.logResource("Executing Transaction Bundle", toExecute);
 
 		Bundle toReturn = kdsClient.getGenericFhirClient().transaction().withBundle(toExecute)
 				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
 
-		dataLogger.logBundle("Transaction Bundle Response", toReturn);
+		dataLogger.logResource("Transaction Bundle Response", toReturn);
 
 		return toReturn;
 	}
@@ -61,12 +61,12 @@ public class KdsFhirClientImpl implements KdsFhirClient
 	@Override
 	public Bundle executeBatchBundle(Bundle toExecute)
 	{
-		dataLogger.logBundle("Executing Batch Bundle", toExecute);
+		dataLogger.logResource("Executing Batch Bundle", toExecute);
 
 		Bundle toReturn = kdsClient.getGenericFhirClient().transaction().withBundle(toExecute)
 				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
 
-		dataLogger.logBundle("Batch Bundle Response", toReturn);
+		dataLogger.logResource("Batch Bundle Response", toReturn);
 
 		return toReturn;
 	}

@@ -58,7 +58,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 		Binary binary = (Binary) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_BINARY);
 		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, binary);
 
-		dataLogger.logBundle("Created Transfer Bundle", bundle);
+		dataLogger.logResource("Created Transfer Bundle", bundle);
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET,
 				FhirResourceValues.create(bundle));
