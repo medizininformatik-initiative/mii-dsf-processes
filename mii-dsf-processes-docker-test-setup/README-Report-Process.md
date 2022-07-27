@@ -93,7 +93,7 @@ curl -H "Accept: application/xml+fhir" \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
 --pass password \
-https://hrp/fhir/Bundle?identifier=http://medizininformatik-initiative.de/sid/report|Report_Test_DIC1
+https://hrp/fhir/Bundle?identifier=http://highmed.org/sid/organization-identifier|Test_DIC1
 ```
 
 Console 4: Stop everything

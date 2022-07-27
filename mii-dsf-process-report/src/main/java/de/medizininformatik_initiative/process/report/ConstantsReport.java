@@ -28,9 +28,6 @@ public interface ConstantsReport
 			+ "|" + VERSION;
 	String EXTENSION_REPORT_STATUS_ERROR_URL = "http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-report-status-error";
 
-	String NAMING_SYSTEM_MII_REPORT = "http://medizininformatik-initiative.de/sid/report";
-	String NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX = "Report_";
-
 	String CODESYSTEM_MII_REPORT = "http://medizininformatik-initiative.de/fhir/CodeSystem/report";
 	String CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE = "search-bundle";
 	String CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE = "search-bundle-reference";

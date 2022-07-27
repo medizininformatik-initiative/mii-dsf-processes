@@ -20,8 +20,8 @@
 	</meta>
 	<type value="batch-response"></type>
 	<identifier>
-		<system value="http://medizininformatik-initiative.de/sid/report"></system>
-		<value value="Report_Test_DIC1"></value>
+		<system value="http://highmed.org/sid/organization-identifier"></system>
+		<value value="Test_DIC1"></value>
 	</identifier>
 	<entry>
 		<resource>

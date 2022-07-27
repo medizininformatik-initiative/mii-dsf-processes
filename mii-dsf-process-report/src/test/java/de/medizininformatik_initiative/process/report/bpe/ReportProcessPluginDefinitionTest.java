@@ -18,7 +18,7 @@ import de.medizininformatik_initiative.process.report.ReportProcessPluginDefinit
 public class ReportProcessPluginDefinitionTest
 {
 	@Test
-	public void testResourceLoading() throws Exception
+	public void testResourceLoading()
 	{
 		ProcessPluginDefinition definition = new ReportProcessPluginDefinition();
 		ResourceProvider provider = definition.getResourceProvider(FhirContext.forR4(), getClass().getClassLoader(),
@@ -33,11 +33,11 @@ public class ReportProcessPluginDefinitionTest
 		var reportReceive = provider.getResources(PROCESS_NAME_FULL_REPORT_RECEIVE + "/" + VERSION,
 				s -> ResourceProvider.empty());
 		assertNotNull(reportReceive);
-		assertEquals(10, reportReceive.count());
+		assertEquals(9, reportReceive.count());
 
 		var reportSend = provider.getResources(PROCESS_NAME_FULL_REPORT_SEND + "/" + VERSION,
 				s -> ResourceProvider.empty());
 		assertNotNull(reportSend);
-		assertEquals(11, reportSend.count());
+		assertEquals(10, reportSend.count());
 	}
 }

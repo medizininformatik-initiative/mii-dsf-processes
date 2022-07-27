@@ -4,8 +4,7 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.BPM
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_ERROR;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_STATUS_VALUE_RECEIVE_OK;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
+import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 
 import java.util.Collections;
 import java.util.Map;
@@ -89,7 +88,7 @@ public class InsertReport extends AbstractServiceDelegate implements Initializin
 
 	private Identifier getReportIdentifier(Task task)
 	{
-		return new Identifier().setSystem(NAMING_SYSTEM_MII_REPORT)
-				.setValue(NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX + task.getRequester().getIdentifier().getValue());
+		return new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
+				.setValue(task.getRequester().getIdentifier().getValue());
 	}
 }

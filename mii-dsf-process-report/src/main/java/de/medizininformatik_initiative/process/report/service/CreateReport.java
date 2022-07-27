@@ -3,10 +3,9 @@ package de.medizininformatik_initiative.process.report.service;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.FHIR_STORE_TYPE_BLAZE;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_SEARCH_BUNDLE_RESPONSE;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
+import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
@@ -98,8 +96,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 		report.setMeta(responseBundle.getMeta());
 		report.getMeta().addProfile(PROFILE_SEARCH_BUNDLE_RESPONSE);
 		report.setType(responseBundle.getType());
-		report.getIdentifier().setSystem(NAMING_SYSTEM_MII_REPORT)
-				.setValue(NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX + organizationProvider.getLocalIdentifierValue());
+		report.getIdentifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
+				.setValue(organizationProvider.getLocalIdentifierValue());
 
 		getReadAccessHelper().addLocal(report);
 		getReadAccessHelper().addOrganization(report, target.getOrganizationIdentifierValue());
@@ -192,10 +190,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 	{
 		IdType bundleIdType = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
 				.updateConditionaly(responseBundle,
-						Map.of("identifier",
-								Collections.singletonList(
-										NAMING_SYSTEM_MII_REPORT + "|" + NAMING_SYSTEM_MII_REPORT_VALUE_PREFIX
-												+ organizationProvider.getLocalIdentifierValue())));
+						Map.of("identifier", Collections.singletonList(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER
+								+ "|" + organizationProvider.getLocalIdentifierValue())));
 
 		logger.info("Stored report bundle with id '{}'", bundleIdType.getValue());
 
