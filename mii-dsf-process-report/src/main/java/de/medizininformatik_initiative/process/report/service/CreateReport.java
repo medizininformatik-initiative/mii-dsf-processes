@@ -122,7 +122,8 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 			report.addEntry(reportEntry);
 		}
 
-		// Workaround because Blaze cannot execute a search for metadata in a search bundle
+		// Workaround because Blaze cannot execute a search for metadata in a batch bundle:
+		// https://github.com/samply/blaze/issues/778
 		// TODO: remove if Blaze is fixed
 		fixBlazeCapabilityStatement(searchBundle, report);
 
