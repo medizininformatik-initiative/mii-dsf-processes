@@ -76,6 +76,7 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 	{
 		RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
 
+		String currentInstanceId = execution.getActivityInstanceId();
 		List<ProcessInstance> activeInstances = runtimeService.createProcessInstanceQuery()
 				.processDefinitionId(PROCESS_NAME_FULL_REPORT_AUTOSTART).active().list();
 
@@ -83,8 +84,9 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 				PROCESS_NAME_FULL_REPORT_AUTOSTART, activeInstances.size() == 0 ? ", nothing to delete"
 						: activeInstances.size() == 1 ? ", deleting it" : ", deleting all of them");
 
-		activeInstances.forEach(i -> runtimeService.deleteProcessInstance(i.getProcessInstanceId(),
-				"Only one process instance with id '" + PROCESS_NAME_FULL_REPORT_AUTOSTART + "' can exist"));
+		activeInstances.stream().filter(i -> !currentInstanceId.equals(i.getProcessInstanceId()))
+				.forEach(i -> runtimeService.deleteProcessInstance(i.getProcessInstanceId(),
+						"Only one process instance with id '" + PROCESS_NAME_FULL_REPORT_AUTOSTART + "' can exist"));
 	}
 
 	private String getTimerInterval()
