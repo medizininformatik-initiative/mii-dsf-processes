@@ -26,7 +26,6 @@ import de.medizininformatik_initiative.process.report.service.StartTimer;
 import de.medizininformatik_initiative.process.report.service.StopTimer;
 import de.medizininformatik_initiative.process.report.service.StoreReceipt;
 import de.medizininformatik_initiative.process.report.util.ReportStatusGenerator;
-import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.medizininformatik_initiative.processes.kds.client.spring.config.PropertiesConfig;
 
 @Configuration
@@ -83,7 +82,8 @@ public class ReportingConfig
 	@Bean
 	public SelectTargetHrp selectTargetHrp()
 	{
-		return new SelectTargetHrp(clientProvider, taskHelper, readAccessHelper);
+		return new SelectTargetHrp(clientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean

@@ -127,11 +127,6 @@ public class TaskProfileTest
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
 		task.addInput().setValue(new StringType(PROFILE_MII_REPORT_TASK_AUTOSTART_START_MESSAGE_NAME)).getType()
 				.addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
-		task.addInput()
-				.setValue(new Reference("http://foo.bar/fhir/Bundle/" + UUID.randomUUID())
-						.setType(ResourceType.Bundle.name()))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
-				.setCode(CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE);
 
 		return task;
 	}
@@ -242,11 +237,6 @@ public class TaskProfileTest
 
 		task.addInput().setValue(new StringType(PROFILE_MII_REPORT_TASK_SEND_START_MESSAGE_NAME)).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
-		task.addInput()
-				.setValue(new Reference("http://foo.bar/fhir/Bundle/" + UUID.randomUUID())
-						.setType(ResourceType.Bundle.name()))
-				.getType().addCoding().setSystem(CODESYSTEM_MII_REPORT)
-				.setCode(CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE);
 
 		return task;
 	}

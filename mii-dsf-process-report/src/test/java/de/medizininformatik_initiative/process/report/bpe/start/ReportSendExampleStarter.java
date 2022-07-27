@@ -35,28 +35,11 @@ public class ReportSendExampleStarter
 	{
 		ExampleStarter starter = ExampleStarter.forServer(args, DIC_URL);
 
-		String searchBundleReference = getSearchBundleReference(starter);
-		Task task = createTask(searchBundleReference);
-
+		Task task = createTask();
 		starter.startWith(task);
 	}
 
-	private static String getSearchBundleReference(ExampleStarter starter) throws Exception
-	{
-		FhirWebserviceClient client = starter.createClient(HRP_URL);
-		Bundle searchResult = client.searchWithStrictHandling(Bundle.class, Map.of("identifier",
-				Collections.singletonList(CODESYSTEM_MII_REPORT + "|" + CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE)));
-
-		if (searchResult.getTotal() != 1 && searchResult.getEntryFirstRep().getResource() instanceof Bundle)
-			throw new IllegalStateException("Expected a single search Bundle");
-
-		Bundle bundle = (Bundle) searchResult.getEntryFirstRep().getResource();
-		IdType id = new IdType(HRP_URL, ResourceType.Bundle.name(), bundle.getIdElement().getIdPart(),
-				bundle.getIdElement().getVersionIdPart());
-		return id.getValue();
-	}
-
-	private static Task createTask(String searchBundleReference)
+	private static Task createTask()
 	{
 		Task task = new Task();
 		task.setIdElement(new IdType("urn:uuid:" + UUID.randomUUID().toString()));
@@ -73,10 +56,6 @@ public class ReportSendExampleStarter
 
 		task.addInput().setValue(new StringType(PROFILE_MII_REPORT_TASK_SEND_START_MESSAGE_NAME)).getType().addCoding()
 				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
-
-		task.addInput().setValue(new Reference(searchBundleReference).setType(ResourceType.Bundle.name())).getType()
-				.addCoding().setSystem(CODESYSTEM_MII_REPORT)
-				.setCode(CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE);
 
 		return task;
 	}

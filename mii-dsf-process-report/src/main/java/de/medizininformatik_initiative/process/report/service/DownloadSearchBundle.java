@@ -1,8 +1,12 @@
 package de.medizininformatik_initiative.process.report.service;
 
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE;
+import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.ws.rs.WebApplicationException;
@@ -13,9 +17,9 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
+import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Task;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -44,33 +48,41 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	@Override
 	protected void doExecute(DelegateExecution delegateExecution)
 	{
-		String searchBundleReference = (String) execution.getVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE);
-		IdType searchBundleId = new IdType(searchBundleReference);
-		Bundle bundle = readSearchBundle(searchBundleId);
+		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
-		dataLogger.logResource("Search Bundle", bundle);
+		String searchBundleIdentifier = CODESYSTEM_MII_REPORT + "|" + CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE;
+		Bundle bundle = searchSearchBundle(target, searchBundleIdentifier);
+		dataLogger.logResource("Search Response", bundle);
+
+		Bundle searchBundle = extractSearchBundle(bundle, searchBundleIdentifier);
+		dataLogger.logResource("Search Bundle", searchBundle);
 
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
 	}
 
-	private Bundle readSearchBundle(IdType searchBundleId)
+	private Bundle searchSearchBundle(Target target, String searchBundleIdentifier)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
-
-		FhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(searchBundleId.getBaseUrl());
+		FhirWebserviceClient client = getFhirWebserviceClientProvider().getWebserviceClient(target.getEndpointUrl());
 
 		try
 		{
-			if (searchBundleId.hasVersionIdPart())
-				return client.read(Bundle.class, searchBundleId.getIdPart(), searchBundleId.getVersionIdPart());
-			else
-				return client.read(Bundle.class, searchBundleId.getIdPart());
+			return client.searchWithStrictHandling(Bundle.class,
+					Map.of("identifier", Collections.singletonList(searchBundleIdentifier)));
 		}
 		catch (WebApplicationException exception)
 		{
-			throw new RuntimeException("Error while reading search Bundle with id '" + searchBundleId.getValue()
+			Task task = getLeadingTaskFromExecutionVariables();
+			throw new RuntimeException("Error while reading search Bundle with identifier '" + searchBundleIdentifier
 					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());
 		}
+	}
+
+	private Bundle extractSearchBundle(Bundle bundle, String searchBundleIdentifier)
+	{
+		if (bundle.getTotal() != 1 && bundle.getEntryFirstRep().getResource() instanceof Bundle)
+			throw new IllegalStateException("Expected a single search Bundle with identifier '" + searchBundleIdentifier
+					+ "' but found " + bundle.getTotal());
+
+		return (Bundle) bundle.getEntryFirstRep().getResource();
 	}
 }

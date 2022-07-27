@@ -14,7 +14,6 @@ public interface ConstantsReport
 
 	String BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL = "reportTimerInterval";
 	String BPMN_EXECUTION_VARIABLE_REPORT_STOP_TIMER = "reportStopTimer";
-	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE = "searchBundleReference";
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE = "searchBundle";
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "searchBundleResponseReference";
 	String BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR = "receiveError";

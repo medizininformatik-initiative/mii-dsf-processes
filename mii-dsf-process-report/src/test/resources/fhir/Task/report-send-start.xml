@@ -31,16 +31,4 @@
 		</type>
 		<valueString value="reportSendStart"></valueString>
 	</input>
-	<input>
-		<type>
-			<coding>
-				<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/report"></system>
-				<code value="search-bundle-reference"></code>
-			</coding>
-		</type>
-		<valueReference>
-			<reference value="<REPLACE-WITH-SEARCH-BUNDLE-URL>"></reference>
-			<type value="Bundle"></type>
-		</valueReference>
-	</input>
 </Task>

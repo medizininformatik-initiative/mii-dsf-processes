@@ -1,121 +1,109 @@
 package de.medizininformatik_initiative.process.report.service;
 
-import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
+import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_HRP;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
+import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Objects;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
+import org.highmed.dsf.fhir.organization.EndpointProvider;
+import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Endpoint;
-import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-public class SelectTargetHrp extends AbstractServiceDelegate
+public class SelectTargetHrp extends AbstractServiceDelegate implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(SelectTargetHrp.class);
 
+	private final OrganizationProvider organizationProvider;
+	private final EndpointProvider endpointProvider;
+
 	public SelectTargetHrp(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
+
+		this.organizationProvider = organizationProvider;
+		this.endpointProvider = endpointProvider;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+
+		Objects.requireNonNull(organizationProvider, "organizationProvider");
+		Objects.requireNonNull(endpointProvider, "endpointProvider");
 	}
 
 	@Override
 	protected void doExecute(DelegateExecution delegateExecution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Organization organization = getHrpOrganization();
+		String organizationIdentifier = extractHrpIdentifier(organization);
 
-		IdType searchBundleId = getSearchBundleId(task);
-		Bundle endpointOrganizationBundle = getEndpointOrganizationBundle(searchBundleId);
+		Endpoint endpoint = getHrpEndpoint(organizationIdentifier);
+		String endpointIdentifier = extractEndpointIdentifier(endpoint);
 
-		Organization organization = extractOrganization(endpointOrganizationBundle, searchBundleId);
-		Endpoint endpoint = extractEndpoint(endpointOrganizationBundle, searchBundleId);
-		Target target = createTarget(organization, endpoint);
+		Target target = createHrpTarget(organizationIdentifier, endpointIdentifier, endpoint.getAddress());
 
-		logger.info("Using search Bundle from organization '{}' and url '{}'", target.getOrganizationIdentifierValue(),
-				searchBundleId.getValue());
+		logger.info("Using HRP with identifier '{}' and endpoint '{}'", target.getOrganizationIdentifierValue(),
+				target.getEndpointUrl());
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_REFERENCE,
-				Variables.stringValue(searchBundleId.getValue()));
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
-	private IdType getSearchBundleId(Task task)
+	private Organization getHrpOrganization()
 	{
-		Reference reference = getTaskHelper()
-				.getFirstInputParameterReferenceValue(task, CODESYSTEM_MII_REPORT,
-						CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE)
-				.orElseThrow(() -> new RuntimeException("No search bundle reference input parameter found"));
-
-		IdType idType = new IdType(reference.getReference());
-
-		if (!idType.hasBaseUrl())
-			throw new RuntimeException(
-					"Search Bundle reference '" + idType.getValue() + "' does not contain a base url");
-
-		return idType;
+		return organizationProvider
+				.getOrganizationsByConsortiumAndRole(
+						NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
+						CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_HRP)
+				.findFirst()
+				.orElseThrow(() -> new RuntimeException("Could not find any organization with role HRP in consortium '"
+						+ NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM
+						+ "'"));
 	}
 
-	private Bundle getEndpointOrganizationBundle(IdType searchBundleId)
+	private Endpoint getHrpEndpoint(String identifier)
 	{
-		Bundle bundle = getFhirWebserviceClientProvider().getLocalWebserviceClient().searchWithStrictHandling(
-				Endpoint.class, Map.of("address", Collections.singletonList(searchBundleId.getBaseUrl()), "_include",
-						Collections.singletonList("Endpoint:organization")));
-
-		if (bundle.getEntry().size() != 2)
-			throw new RuntimeException("Search for organization and endpoint based on url '" + searchBundleId.getValue()
-					+ "' did return " + bundle.getEntry().size() + " results, expected 2");
-
-		return bundle;
+		return endpointProvider.getFirstDefaultEndpoint(identifier).orElseThrow(
+				() -> new RuntimeException("Could not find any endpoint of HRP with identifier '" + identifier + "'"));
 	}
 
-	private Organization extractOrganization(Bundle endpointOrganizationBundle, IdType searchBundleId)
+	private String extractHrpIdentifier(Organization organization)
 	{
-		return endpointOrganizationBundle.getEntry().stream().filter(e -> e.getResource() instanceof Organization)
-				.map(e -> (Organization) e.getResource()).findFirst()
-				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url '"
-						+ searchBundleId.getValue() + "' did not return any organization"));
-	}
-
-	private Endpoint extractEndpoint(Bundle endpointOrganizationBundle, IdType searchBundleId)
-	{
-		return endpointOrganizationBundle.getEntry().stream().filter(e -> e.getResource() instanceof Endpoint)
-				.map(e -> (Endpoint) e.getResource()).findFirst()
-				.orElseThrow(() -> new RuntimeException("Search for organization and endpoint based on url '"
-						+ searchBundleId.getValue() + "' did not return any endpoint"));
-	}
-
-	private Target createTarget(Organization organization, Endpoint endpoint)
-	{
-		String organizationIdentifier = organization.getIdentifier().stream()
+		return organization.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst()
 				.orElseThrow(() -> new RuntimeException("organization is missing identifier of type '"
 						+ NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER + "'"));
+	}
 
-		String endpointIdentifier = endpoint.getIdentifier().stream()
+	private String extractEndpointIdentifier(Endpoint endpoint)
+	{
+		return endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).map(Identifier::getValue)
 				.findFirst().orElseThrow(() -> new RuntimeException(
 						"Endpoint is missing identifier of type '" + NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER + "'"));
+	}
 
-		return Target.createUniDirectionalTarget(organizationIdentifier, endpointIdentifier, endpoint.getAddress());
+	private Target createHrpTarget(String organizationIdentifier, String endpointIdentifier, String endpointAddress)
+	{
+		return Target.createUniDirectionalTarget(organizationIdentifier, endpointIdentifier, endpointAddress);
 	}
 }
