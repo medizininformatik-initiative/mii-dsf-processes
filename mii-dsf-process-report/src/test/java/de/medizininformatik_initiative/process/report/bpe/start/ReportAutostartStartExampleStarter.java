@@ -26,8 +26,6 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 
-import ca.uhn.fhir.context.FhirContext;
-
 public class ReportAutostartStartExampleStarter
 {
 	private static final String DIC_URL = "https://dic1/fhir";
