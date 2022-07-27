@@ -4,12 +4,16 @@ import static de.medizininformatik_initiative.process.report.ConstantsReport.BPM
 import static de.medizininformatik_initiative.process.report.ConstantsReport.BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_TIMER_INTERVAL;
+import static de.medizininformatik_initiative.process.report.ConstantsReport.PROCESS_NAME_FULL_REPORT_AUTOSTART;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.REPORT_TIMER_INTERVAL_DEFAULT_VALUE;
 import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 
+import java.util.List;
 import java.util.Objects;
 
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
@@ -52,6 +56,9 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 	@Override
 	protected void doExecute(DelegateExecution execution) throws Exception
 	{
+		logger.info("Stopping active instances of process with id '{}'", PROCESS_NAME_FULL_REPORT_AUTOSTART);
+		stopActiveInstancesOfProcess();
+
 		logger.debug("Setting variable '{}' to false", BPMN_EXECUTION_VARIABLE_REPORT_STOP_TIMER);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_REPORT_STOP_TIMER, Variables.booleanValue(false));
 
@@ -63,6 +70,21 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 				TargetValues.create(Target.createUniDirectionalTarget(organizationProvider.getLocalIdentifierValue(),
 						endpointProvider.getLocalEndpointIdentifier().getValue(),
 						endpointProvider.getLocalEndpointAddress())));
+	}
+
+	private void stopActiveInstancesOfProcess()
+	{
+		RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
+
+		List<ProcessInstance> activeInstances = runtimeService.createProcessInstanceQuery()
+				.processDefinitionId(PROCESS_NAME_FULL_REPORT_AUTOSTART).active().list();
+
+		logger.debug("Found {} active instances of process with id '{}' {}", activeInstances.size(),
+				PROCESS_NAME_FULL_REPORT_AUTOSTART, activeInstances.size() == 0 ? ", nothing to delete"
+						: activeInstances.size() == 1 ? ", deleting it" : ", deleting all of them");
+
+		activeInstances.forEach(i -> runtimeService.deleteProcessInstance(i.getProcessInstanceId(),
+				"Only one process instance with id '" + PROCESS_NAME_FULL_REPORT_AUTOSTART + "' can exist"));
 	}
 
 	private String getTimerInterval()
