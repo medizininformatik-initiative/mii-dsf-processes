@@ -1,0 +1,35 @@
+<ValueSet xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system
+					value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report-status-receive" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MII_KDS_Report_Status_Receive" />
+	<title value="MII KDS Report Status Receive" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="ValueSet with values for the KDS report receive status" />
+	<immutable value="true" />
+	<compose>
+		<include>
+			<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/kds-report-status" />
+			<concept>
+				<code value="receive-ok" />
+				<display value="Receive ok" />
+			</concept>
+			<concept>
+				<code value="receive-error" />
+				<display value="Receive error" />
+			</concept>
+		</include>
+	</compose>
+</ValueSet> 

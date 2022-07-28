@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.medizininformatik_initiative.process.kds.report.KdsReportProcessPluginDefinition;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.DataTransferProcessPluginDefinition;
-import de.medizininformatik_initiative.process.report.ReportProcessPluginDefinition;
 import de.medizininformatik_initiative.processes.test.data.generator.CertificateGenerator.CertificateFiles;
 
 public class EnvGenerator
@@ -79,7 +79,7 @@ public class EnvGenerator
 
 		Map<String, String> additionalEntries = Map.of(PROCESS_VERSION_DATA_TRANSFER,
 				DataTransferProcessPluginDefinition.VERSION, PROCESS_VERSION_REPORT,
-				ReportProcessPluginDefinition.VERSION);
+				KdsReportProcessPluginDefinition.VERSION);
 
 		writeEnvFile(Paths.get("../mii-dsf-processes-docker-test-setup/.env"), entries, additionalEntries);
 	}

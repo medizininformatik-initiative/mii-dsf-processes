@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.medizininformatik-initiative</groupId>
-			<artifactId>mii-dsf-process-report</artifactId>
+			<artifactId>mii-dsf-process-kds-report</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
