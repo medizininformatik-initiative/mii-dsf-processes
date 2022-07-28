@@ -13,7 +13,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
-
 import de.medizininformatik_initiative.process.kds.report.message.SendKdsReport;
 import de.medizininformatik_initiative.process.kds.report.message.SendReceipt;
 import de.medizininformatik_initiative.process.kds.report.message.StartSendKdsReport;
@@ -55,8 +54,8 @@ public class KdsReportConfig
 	@Autowired
 	private PropertiesConfig kdsFhirClientConfig;
 
-	@ProcessDocumentation(processNames = { "medizininformatik-initiativede_kdsReportSend" },
-			description = "The KDS FHIR server type, possible values are [blaze, other] ; must be set, if a Blaze server is used")
+	@ProcessDocumentation(processNames = {
+			"medizininformatik-initiativede_kdsReportSend" }, description = "The KDS FHIR server type, possible values are [blaze, other] ; must be set, if a Blaze server is used")
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.type:other}")
 	private String fhirStoreType;
 

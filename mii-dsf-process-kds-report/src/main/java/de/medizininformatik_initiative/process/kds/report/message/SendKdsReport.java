@@ -24,7 +24,6 @@ import org.hl7.fhir.r4.model.Task;
 import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
-
 import de.medizininformatik_initiative.process.kds.report.util.KdsReportStatusGenerator;
 
 public class SendKdsReport extends AbstractTaskMessageSend implements InitializingBean
@@ -50,8 +49,8 @@ public class SendKdsReport extends AbstractTaskMessageSend implements Initializi
 	@Override
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
-		String bundleId = (String) execution.getVariable(
-				BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE);
+		String bundleId = (String) execution
+				.getVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE);
 
 		Task.ParameterComponent parameterComponent = new Task.ParameterComponent();
 		parameterComponent.getType().addCoding().setSystem(CODESYSTEM_MII_KDS_REPORT)
@@ -72,8 +71,8 @@ public class SendKdsReport extends AbstractTaskMessageSend implements Initializi
 			if (exception instanceof WebApplicationException)
 			{
 				WebApplicationException webApplicationException = (WebApplicationException) exception;
-				if (webApplicationException.getResponse() != null && webApplicationException.getResponse().getStatus()
-						== Response.Status.FORBIDDEN.getStatusCode())
+				if (webApplicationException.getResponse() != null && webApplicationException.getResponse()
+						.getStatus() == Response.Status.FORBIDDEN.getStatusCode())
 				{
 					statusCode = CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_NOT_ALLOWED;
 				}
@@ -94,7 +93,9 @@ public class SendKdsReport extends AbstractTaskMessageSend implements Initializi
 
 	private String createErrorMessage(Exception exception)
 	{
-		return exception.getClass().getSimpleName() + ((exception.getMessage() != null && !exception.getMessage()
-				.isBlank()) ? (": " + exception.getMessage()) : "");
+		return exception.getClass().getSimpleName()
+				+ ((exception.getMessage() != null && !exception.getMessage().isBlank())
+						? (": " + exception.getMessage())
+						: "");
 	}
 }
