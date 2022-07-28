@@ -87,7 +87,7 @@ public class CreateReport extends AbstractServiceDelegate implements Initializin
 
 	private Bundle executeSearchBundle(Bundle searchBundle)
 	{
-		return kdsClientFactory.getKdsClient().getFhirClient().executeBatchBundle(searchBundle);
+		return kdsClientFactory.getKdsClient().executeBatchBundle(searchBundle);
 	}
 
 	private Bundle transformToReportBundle(Bundle searchBundle, Bundle responseBundle, Target target)

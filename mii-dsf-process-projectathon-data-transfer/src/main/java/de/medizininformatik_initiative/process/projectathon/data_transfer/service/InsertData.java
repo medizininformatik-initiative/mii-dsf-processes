@@ -51,7 +51,7 @@ public class InsertData extends AbstractServiceDelegate
 	{
 		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
-		Bundle stored = kdsClientFactory.getKdsClient().getFhirClient().executeTransactionBundle(bundle);
+		Bundle stored = kdsClientFactory.getKdsClient().executeTransactionBundle(bundle);
 
 		List<IdType> idsOfCreatedResources = stored.getEntry().stream().filter(Bundle.BundleEntryComponent::hasResponse)
 				.map(Bundle.BundleEntryComponent::getResponse).map(Bundle.BundleEntryResponseComponent::getLocation)

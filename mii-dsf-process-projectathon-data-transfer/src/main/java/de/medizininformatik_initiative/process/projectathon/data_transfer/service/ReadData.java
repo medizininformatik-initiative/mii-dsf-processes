@@ -105,7 +105,7 @@ public class ReadData extends AbstractServiceDelegate
 
 	private DocumentReference readDocumentReference(String projectIdentifier, String taskId)
 	{
-		List<DocumentReference> documentReferences = kdsClientFactory.getKdsClient().getFhirClient()
+		List<DocumentReference> documentReferences = kdsClientFactory.getKdsClient()
 				.searchDocumentReferences(ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER, projectIdentifier)
 				.getEntry().stream().map(Bundle.BundleEntryComponent::getResource)
 				.filter(r -> r instanceof DocumentReference).map(r -> ((DocumentReference) r)).collect(toList());
@@ -164,6 +164,6 @@ public class ReadData extends AbstractServiceDelegate
 
 	private Binary readBinary(String url)
 	{
-		return kdsClientFactory.getKdsClient().getFhirClient().readBinary(url);
+		return kdsClientFactory.getKdsClient().readBinary(url);
 	}
 }

@@ -1,20 +1,28 @@
 package de.medizininformatik_initiative.processes.kds.client;
 
+import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Bundle;
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 
 public interface KdsClient
 {
+	String getLocalIdentifierValue();
+
 	FhirContext getFhirContext();
 
-	void testConnection();
-
-	KdsFhirClient getFhirClient();
+	String getFhirBaseUrl();
 
 	IGenericClient getGenericFhirClient();
 
-	String getLocalIdentifierValue();
+	void testConnection();
 
-	String getFhirBaseUrl();
+	Bundle searchDocumentReferences(String system, String code);
+
+	Binary readBinary(String url);
+
+	Bundle executeTransactionBundle(Bundle toExecute);
+
+	Bundle executeBatchBundle(Bundle toExecute);
 }

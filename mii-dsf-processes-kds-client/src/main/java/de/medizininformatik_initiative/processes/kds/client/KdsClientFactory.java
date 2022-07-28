@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.rwh.utils.crypto.CertificateHelper;
 import de.rwh.utils.crypto.io.CertificateReader;
@@ -47,7 +46,6 @@ public class KdsClientFactory
 	private final boolean hapiClientVerbose;
 
 	private final FhirContext fhirContext;
-	private final Class<KdsFhirClient> kdsFhirClientClass;
 
 	private final String localIdentifierValue;
 
@@ -57,8 +55,7 @@ public class KdsClientFactory
 			int connectTimeout, int socketTimeout, int connectionRequestTimeout, String kdsServerBase,
 			String kdsServerBasicAuthUsername, String kdsServerBasicAuthPassword, String kdsServerBearerToken,
 			String proxyUrl, String proxyUsername, String proxyPassword, boolean hapiClientVerbose,
-			FhirContext fhirContext, Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue,
-			DataLogger dataLogger)
+			FhirContext fhirContext, String localIdentifierValue, DataLogger dataLogger)
 	{
 		this.trustStorePath = trustStorePath;
 		this.certificatePath = certificatePath;
@@ -80,7 +77,6 @@ public class KdsClientFactory
 		this.hapiClientVerbose = hapiClientVerbose;
 
 		this.fhirContext = fhirContext;
-		this.kdsFhirClientClass = kdsFhirClientClass;
 
 		this.localIdentifierValue = localIdentifierValue;
 
@@ -110,9 +106,9 @@ public class KdsClientFactory
 	public KdsClient getKdsClient()
 	{
 		if (configured())
-			return createKdsClient();
+			return createKdsClientImpl();
 		else
-			return new KdsClientStub(fhirContext, localIdentifierValue);
+			return createKdsClientStub();
 	}
 
 	private boolean configured()
@@ -120,7 +116,12 @@ public class KdsClientFactory
 		return kdsServerBase != null && !kdsServerBase.isBlank();
 	}
 
-	protected KdsClient createKdsClient()
+	protected KdsClient createKdsClientStub()
+	{
+		return new KdsClientStub(fhirContext, localIdentifierValue);
+	}
+
+	protected KdsClient createKdsClientImpl()
 	{
 		KeyStore trustStore = null;
 		char[] keyStorePassword = null;
@@ -142,7 +143,7 @@ public class KdsClientFactory
 		return new KdsClientImpl(trustStore, keyStore, keyStorePassword, connectTimeout, socketTimeout,
 				connectionRequestTimeout, kdsServerBasicAuthUsername, kdsServerBasicAuthPassword, kdsServerBearerToken,
 				kdsServerBase, proxyUrl, proxyUsername, proxyPassword, hapiClientVerbose, fhirContext,
-				kdsFhirClientClass, localIdentifierValue, dataLogger);
+				localIdentifierValue, dataLogger);
 	}
 
 	private KeyStore readTrustStore(Path trustPath)

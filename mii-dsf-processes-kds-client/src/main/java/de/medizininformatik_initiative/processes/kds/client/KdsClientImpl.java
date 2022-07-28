@@ -1,12 +1,16 @@
 package de.medizininformatik_initiative.processes.kds.client;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import static ca.uhn.fhir.rest.api.Constants.HEADER_PREFER;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 
+import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CapabilityStatement;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.IdType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +21,6 @@ import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
-import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.medizininformatik_initiative.processes.kds.client.logging.HapiClientLogger;
 
@@ -36,7 +39,6 @@ public class KdsClientImpl implements KdsClient
 	private final boolean hapiClientVerbose;
 
 	private final FhirContext fhirContext;
-	private final Class<KdsFhirClient> kdsFhirClientClass;
 
 	private final String localIdentifierValue;
 
@@ -46,7 +48,7 @@ public class KdsClientImpl implements KdsClient
 			int socketTimeout, int connectionRequestTimeout, String kdsServerBasicAuthUsername,
 			String kdsServerBasicAuthPassword, String kdsServerBearerToken, String kdsServerBase, String proxyUrl,
 			String proxyUsername, String proxyPassword, boolean hapiClientVerbose, FhirContext fhirContext,
-			Class<KdsFhirClient> kdsFhirClientClass, String localIdentifierValue, DataLogger dataLogger)
+			String localIdentifierValue, DataLogger dataLogger)
 	{
 		clientFactory = createClientFactory(trustStore, keyStore, keyStorePassword, connectTimeout, socketTimeout,
 				connectionRequestTimeout);
@@ -62,7 +64,6 @@ public class KdsClientImpl implements KdsClient
 		this.hapiClientVerbose = hapiClientVerbose;
 
 		this.fhirContext = fhirContext;
-		this.kdsFhirClientClass = kdsFhirClientClass;
 
 		this.localIdentifierValue = localIdentifierValue;
 
@@ -130,37 +131,21 @@ public class KdsClientImpl implements KdsClient
 	}
 
 	@Override
-	public void testConnection()
+	public String getLocalIdentifierValue()
 	{
-		CapabilityStatement statement = getGenericFhirClient().capabilities().ofType(CapabilityStatement.class)
-				.execute();
-
-		logger.info("Connection test OK {} - {}", statement.getSoftware().getName(),
-				statement.getSoftware().getVersion());
-	}
-
-	@Override
-	public KdsFhirClient getFhirClient()
-	{
-		try
-		{
-			Constructor<KdsFhirClient> constructor = kdsFhirClientClass.getConstructor(KdsClient.class,
-					DataLogger.class);
-
-			return constructor.newInstance(this, dataLogger);
-		}
-		catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e)
-		{
-			logger.warn("Error while creating KDS FHIR client: {}", e.getMessage());
-			throw new RuntimeException(e);
-		}
+		return localIdentifierValue;
 	}
 
 	@Override
 	public FhirContext getFhirContext()
 	{
 		return fhirContext;
+	}
+
+	@Override
+	public String getFhirBaseUrl()
+	{
+		return kdsServerBase;
 	}
 
 	@Override
@@ -176,14 +161,62 @@ public class KdsClientImpl implements KdsClient
 	}
 
 	@Override
-	public String getLocalIdentifierValue()
+	public void testConnection()
 	{
-		return localIdentifierValue;
+		CapabilityStatement statement = getGenericFhirClient().capabilities().ofType(CapabilityStatement.class)
+				.execute();
+
+		logger.info("Connection test OK {} - {}", statement.getSoftware().getName(),
+				statement.getSoftware().getVersion());
 	}
 
 	@Override
-	public String getFhirBaseUrl()
+	public Bundle searchDocumentReferences(String system, String code)
 	{
-		return kdsServerBase;
+		Bundle toReturn = getGenericFhirClient().search().forResource(DocumentReference.class)
+				.where(DocumentReference.IDENTIFIER.exactly().systemAndIdentifier(system, code))
+				.returnBundle(Bundle.class).execute();
+
+		dataLogger.logResource("DocumentReference Search-Response Bundle based on system|code=" + system + "|" + code,
+				toReturn);
+
+		return toReturn;
+	}
+
+	@Override
+	public Binary readBinary(String url)
+	{
+		Binary toReturn = getGenericFhirClient().read().resource(Binary.class).withId(new IdType(url).getIdPart())
+				.execute();
+
+		dataLogger.logResource("Read Binary from url=" + url, toReturn);
+
+		return toReturn;
+	}
+
+	@Override
+	public Bundle executeTransactionBundle(Bundle toExecute)
+	{
+		dataLogger.logResource("Executing Transaction Bundle", toExecute);
+
+		Bundle toReturn = getGenericFhirClient().transaction().withBundle(toExecute)
+				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
+
+		dataLogger.logResource("Transaction Bundle Response", toReturn);
+
+		return toReturn;
+	}
+
+	@Override
+	public Bundle executeBatchBundle(Bundle toExecute)
+	{
+		dataLogger.logResource("Executing Batch Bundle", toExecute);
+
+		Bundle toReturn = getGenericFhirClient().transaction().withBundle(toExecute)
+				.withAdditionalHeader(HEADER_PREFER, "handling=strict").execute();
+
+		dataLogger.logResource("Batch Bundle Response", toReturn);
+
+		return toReturn;
 	}
 }

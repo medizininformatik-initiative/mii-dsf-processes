@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
-import de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClient;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 @Configuration
@@ -24,10 +23,6 @@ public class PropertiesConfig
 	@ProcessDocumentation(required = true, description = "The base address of the KDS FHIR server to read/store FHIR resources", example = "http://foo.bar/fhir")
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.base.url:#{null}}")
 	private String fhirStoreBaseUrl;
-
-	@ProcessDocumentation(description = "Client implementation used to connect to the KDS FHIR server in order to read/store FHIR resources")
-	@Value("${de.medizininformatik.initiative.kds.fhir.server.client:de.medizininformatik_initiative.processes.kds.client.fhir.KdsFhirClientImpl}")
-	private String fhirStoreClientClass;
 
 	@ProcessDocumentation(description = "PEM encoded file with one or more trusted root certificate to validate the KDS FHIR server certificate when connecting via https", recommendation = "Use docker secret file to configure", example = "/run/secrets/hospital_ca.pem")
 	@Value("${de.medizininformatik.initiative.kds.fhir.server.trust.certificates:#{null}}")
@@ -93,25 +88,16 @@ public class PropertiesConfig
 	private String localIdentifierValue;
 
 	@Bean
-	@SuppressWarnings("unchecked")
 	public KdsClientFactory kdsClientFactory()
 	{
 		Path trustStorePath = checkExists(fhirStoreTrustStore);
 		Path certificatePath = checkExists(fhirStoreCertificate);
 		Path privateKeyPath = checkExists(fhirStorePrivateKey);
 
-		try
-		{
-			return new KdsClientFactory(trustStorePath, certificatePath, privateKeyPath, fhirStorePrivateKeyPassword,
-					fhirStoreConnectTimeout, fhirStoreSocketTimeout, fhirStoreConnectionRequestTimeout,
-					fhirStoreBaseUrl, fhirStoreUsername, fhirStorePassword, fhirStoreBearerToken, fhirStoreProxyUrl,
-					fhirStoreProxyUsername, fhirStoreProxyPassword, fhirStoreHapiClientVerbose, fhirContext,
-					(Class<KdsFhirClient>) Class.forName(fhirStoreClientClass), localIdentifierValue, dataLogger());
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return new KdsClientFactory(trustStorePath, certificatePath, privateKeyPath, fhirStorePrivateKeyPassword,
+				fhirStoreConnectTimeout, fhirStoreSocketTimeout, fhirStoreConnectionRequestTimeout, fhirStoreBaseUrl,
+				fhirStoreUsername, fhirStorePassword, fhirStoreBearerToken, fhirStoreProxyUrl, fhirStoreProxyUsername,
+				fhirStoreProxyPassword, fhirStoreHapiClientVerbose, fhirContext, localIdentifierValue, dataLogger());
 	}
 
 	private Path checkExists(String file)
