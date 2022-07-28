@@ -103,6 +103,16 @@
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>
+									<groupId>de.medizininformatik-initiative</groupId>
+									<artifactId>mii-dsf-processes-kds-client</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>ca.uhn.hapi.fhir</groupId>
+									<artifactId>hapi-fhir-client</artifactId>
+									<version>${hapi.version}</version>
+								</artifactItem>
+								<artifactItem>
 									<groupId>org.apache.tika</groupId>
 									<artifactId>tika-core</artifactId>
 									<version>${apache.tika.version}</version>
@@ -125,6 +135,16 @@
 									<groupId>${project.groupId}</groupId>
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>de.medizininformatik-initiative</groupId>
+									<artifactId>mii-dsf-processes-kds-client</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>ca.uhn.hapi.fhir</groupId>
+									<artifactId>hapi-fhir-client</artifactId>
+									<version>${hapi.version}</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.apache.tika</groupId>
@@ -151,6 +171,16 @@
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>
+									<groupId>de.medizininformatik-initiative</groupId>
+									<artifactId>mii-dsf-processes-kds-client</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>ca.uhn.hapi.fhir</groupId>
+									<artifactId>hapi-fhir-client</artifactId>
+									<version>${hapi.version}</version>
+								</artifactItem>
+								<artifactItem>
 									<groupId>org.apache.tika</groupId>
 									<artifactId>tika-core</artifactId>
 									<version>${apache.tika.version}</version>
@@ -169,6 +199,16 @@
 						</goals>
 						<configuration>
 							<artifactItems>
+								<artifactItem>
+									<groupId>de.medizininformatik-initiative</groupId>
+									<artifactId>mii-dsf-processes-kds-client</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>ca.uhn.hapi.fhir</groupId>
+									<artifactId>hapi-fhir-client</artifactId>
+									<version>${hapi.version}</version>
+								</artifactItem>
 								<artifactItem>
 									<groupId>org.apache.tika</groupId>
 									<artifactId>tika-core</artifactId>
