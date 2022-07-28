@@ -1,8 +1,5 @@
 package de.medizininformatik_initiative.process.report.bpe.start;
 
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE;
-import static de.medizininformatik_initiative.process.report.ConstantsReport.CODESYSTEM_MII_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_MII_REPORT_TASK_SEND_START;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_MII_REPORT_TASK_SEND_START_MESSAGE_NAME;
 import static de.medizininformatik_initiative.process.report.ConstantsReport.PROFILE_MII_REPORT_TASK_SEND_START_PROCESS_URI_AND_LATEST_VERSION;
@@ -10,16 +7,11 @@ import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.highmed.dsf.bpe.start.ExampleStarter;
-import org.highmed.fhir.client.FhirWebserviceClient;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
@@ -28,8 +20,6 @@ public class ReportSendExampleStarter
 {
 	private static final String DIC_URL = "https://dic1/fhir";
 	private static final String DIC_IDENTIFIER = "Test_DIC1";
-
-	private static final String HRP_URL = "https://hrp/fhir";
 
 	public static void main(String[] args) throws Exception
 	{
