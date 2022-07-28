@@ -177,7 +177,7 @@ services:
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
         medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
-      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://hapi.fhir.org/baseR4
+      DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
     networks:
       dic1-bpe-frontend:
@@ -321,7 +321,7 @@ services:
     image: ghcr.io/num-codex/blaze
     restart: on-failure
     ports:
-      - 127.0.0.1:8081:8080
+      - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
     networks:

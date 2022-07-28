@@ -66,8 +66,8 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 		logger.debug("Setting variable '{}' to {}", BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL, timerInterval);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_REPORT_TIMER_INTERVAL, Variables.stringValue(timerInterval));
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET,
-				TargetValues.create(Target.createUniDirectionalTarget(organizationProvider.getLocalIdentifierValue(),
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(
+				Target.createUniDirectionalTarget(organizationProvider.getLocalIdentifierValue(),
 						endpointProvider.getLocalEndpointIdentifier().getValue(),
 						endpointProvider.getLocalEndpointAddress())));
 	}
@@ -78,21 +78,22 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 
 		String currentInstanceId = execution.getActivityInstanceId();
 		List<ProcessInstance> activeInstances = runtimeService.createProcessInstanceQuery()
-				.processDefinitionId(PROCESS_NAME_FULL_REPORT_AUTOSTART).active().list();
+				.processDefinitionKey(PROCESS_NAME_FULL_REPORT_AUTOSTART).active().list();
 
-		logger.debug("Found {} active instances of process with id '{}' {}", activeInstances.size(),
-				PROCESS_NAME_FULL_REPORT_AUTOSTART, activeInstances.size() == 0 ? ", nothing to delete"
-						: activeInstances.size() == 1 ? ", deleting it" : ", deleting all of them");
+		logger.debug("Found {} active instance{} of process with id '{}'{}", activeInstances.size(),
+				activeInstances.size() == 1 ? "" : "s", PROCESS_NAME_FULL_REPORT_AUTOSTART,
+				activeInstances.size() == 0 ? ", nothing to delete" :
+						activeInstances.size() == 1 ? ", deleting it" : ", deleting all of them");
 
-		activeInstances.stream().filter(i -> !currentInstanceId.equals(i.getProcessInstanceId()))
-				.forEach(i -> runtimeService.deleteProcessInstance(i.getProcessInstanceId(),
+		activeInstances.stream().filter(i -> !currentInstanceId.equals(i.getProcessInstanceId())).forEach(
+				i -> runtimeService.deleteProcessInstance(i.getProcessInstanceId(),
 						"Only one process instance with id '" + PROCESS_NAME_FULL_REPORT_AUTOSTART + "' can exist"));
 	}
 
 	private String getTimerInterval()
 	{
 		return getTaskHelper().getFirstInputParameterStringValue(getLeadingTaskFromExecutionVariables(),
-				CODESYSTEM_MII_REPORT, CODESYSTEM_MII_REPORT_VALUE_TIMER_INTERVAL)
+						CODESYSTEM_MII_REPORT, CODESYSTEM_MII_REPORT_VALUE_TIMER_INTERVAL)
 				.orElse(REPORT_TIMER_INTERVAL_DEFAULT_VALUE);
 	}
 }

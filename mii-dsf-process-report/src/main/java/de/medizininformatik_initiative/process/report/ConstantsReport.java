@@ -18,7 +18,7 @@ public interface ConstantsReport
 	String BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "searchBundleResponseReference";
 	String BPMN_EXECUTION_VARIABLE_RECEIVE_ERROR = "receiveError";
 
-	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1M";
+	String REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1W";
 	String FHIR_STORE_TYPE_BLAZE = "blaze";
 
 	String PROFILE_SEARCH_BUNDLE = "http://medizininformatik-initiative.de/fhir/Bundle/mii-report-search-bundle" + "|"

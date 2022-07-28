@@ -57,7 +57,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		Bundle searchBundle = extractSearchBundle(bundle, searchBundleIdentifier);
 		dataLogger.logResource("Search Bundle", searchBundle);
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(bundle));
+		execution.setVariable(BPMN_EXECUTION_VARIABLE_SEARCH_BUNDLE, FhirResourceValues.create(searchBundle));
 	}
 
 	private Bundle searchSearchBundle(Target target, String searchBundleIdentifier)

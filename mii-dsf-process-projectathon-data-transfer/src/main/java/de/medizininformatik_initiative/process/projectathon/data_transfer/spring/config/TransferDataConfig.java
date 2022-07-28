@@ -9,6 +9,7 @@ import org.highmed.dsf.tools.generator.ProcessDocumentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -29,6 +30,7 @@ import de.medizininformatik_initiative.process.projectathon.data_transfer.util.M
 import de.medizininformatik_initiative.processes.kds.client.spring.config.PropertiesConfig;
 
 @Configuration
+@ComponentScan(basePackages = "de.medizininformatik_initiative")
 public class TransferDataConfig
 {
 	@Autowired
