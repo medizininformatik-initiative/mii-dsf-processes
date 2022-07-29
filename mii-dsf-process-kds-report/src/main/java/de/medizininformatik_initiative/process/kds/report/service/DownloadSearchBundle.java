@@ -106,8 +106,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 
 	private Bundle extractSearchBundle(Bundle bundle, String searchBundleIdentifier)
 	{
-		if (bundle.getTotal() != 1 && bundle.getEntryFirstRep().hasResource()
-				&& bundle.getEntryFirstRep().getResource() instanceof Bundle)
+		if (bundle.getTotal() != 1 && !(bundle.getEntryFirstRep().getResource() instanceof Bundle))
 			throw new IllegalStateException("Expected a single search Bundle with identifier '" + searchBundleIdentifier
 					+ "' but found " + bundle.getTotal());
 
