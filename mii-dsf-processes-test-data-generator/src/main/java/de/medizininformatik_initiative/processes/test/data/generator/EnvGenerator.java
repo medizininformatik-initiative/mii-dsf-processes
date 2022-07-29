@@ -26,7 +26,7 @@ public class EnvGenerator
 	private static final String USER_THUMBPRINTS = "USER_THUMBPRINTS";
 	private static final String USER_THUMBPRINTS_PERMANENTDELETE = "USER_THUMBPRINTS_PERMANENT_DELETE";
 	private static final String PROCESS_VERSION_DATA_TRANSFER = "PROCESS_VERSION_DATA_TRANSFER";
-	private static final String PROCESS_VERSION_REPORT = "PROCESS_VERSION_REPORT";
+	private static final String PROCESS_VERSION_REPORT = "PROCESS_VERSION_KDS_REPORT";
 
 	private static final class EnvEntry
 	{

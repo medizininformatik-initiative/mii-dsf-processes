@@ -176,7 +176,7 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic1/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
-        medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
+        medizininformatik-initiativede_kdsReportReceive/${PROCESS_VERSION_KDS_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
     networks:
@@ -305,7 +305,7 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
-        medizininformatik-initiativede_reportReceive/${PROCESS_VERSION_REPORT}
+        medizininformatik-initiativede_kdsReportReceive/${PROCESS_VERSION_KDS_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_TYPE: blaze
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: true
@@ -563,8 +563,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://hrp/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
-        medizininformatik-initiativede_reportAutostart/${PROCESS_VERSION_REPORT},
-        medizininformatik-initiativede_reportSend/${PROCESS_VERSION_REPORT}
+        medizininformatik-initiativede_kdsReportAutostart/${PROCESS_VERSION_KDS_REPORT},
+        medizininformatik-initiativede_kdsReportSend/${PROCESS_VERSION_KDS_REPORT}
     networks:
       hrp-bpe-frontend:
       hrp-bpe-backend:
