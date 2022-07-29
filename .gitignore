@@ -1,5 +1,5 @@
 ###
-# mii processes projectathon common ignores
+# mii processes common ignores
 ###
 **/.classpath
 **/.project
@@ -8,6 +8,8 @@
 **/target/
 
 **/*.iml
+
+**/dependency-reduced-pom.xml
 
 ###
 # test data generator ignores
