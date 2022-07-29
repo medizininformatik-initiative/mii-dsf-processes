@@ -19,7 +19,7 @@ public interface ConstantsKdsReport
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE = "kdsReportSearchBundleResponseReference";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR = "kdsReportReceiveError";
 
-	String KDS_REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P1W";
+	String KDS_REPORT_TIMER_INTERVAL_DEFAULT_VALUE = "P7D";
 	String FHIR_STORE_TYPE_BLAZE = "blaze";
 
 	String PROFILE_KDS_REPORT_SEARCH_BUNDLE = "http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle"
