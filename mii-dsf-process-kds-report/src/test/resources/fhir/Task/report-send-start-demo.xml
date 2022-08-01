@@ -1,8 +1,8 @@
 <Task xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-send-start|0.2.0"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-send-start|0.3.0"></profile>
 	</meta>
-	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportSend/0.2.0"></instantiatesUri>
+	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportSend/0.3.0"></instantiatesUri>
 	<status value="requested"></status>
 	<intent value="order"></intent>
 	<authoredOn value="2022-08-01T17:49:15+01:00"></authoredOn>

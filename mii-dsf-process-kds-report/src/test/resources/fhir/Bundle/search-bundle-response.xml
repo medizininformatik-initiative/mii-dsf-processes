@@ -2,7 +2,7 @@
 	<meta>
 		<versionId value="1"/>
 		<lastUpdated value="2022-08-01T10:00:00.000+01:00"/>
-		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle-response|0.2.0"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle-response|0.3.0"></profile>
 		<tag>
 			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag"></system>
 			<code value="LOCAL"></code>

@@ -1,8 +1,8 @@
 <Task xmlns="http://hl7.org/fhir">
    <meta>
-      <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|0.2.0" />
+      <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send|0.3.0" />
    </meta>
-   <instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/dataSend/0.2.0" />
+   <instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/dataSend/0.3.0" />
    <status value="requested" />
    <intent value="order" />
    <authoredOn value="<REPLACE-WITH-DATE-AND-TIME>" />
