@@ -38,12 +38,12 @@
 	</concept>
 	<concept>
 		<code value="receipt-ok" />
-		<display value="Receive ok" />
+		<display value="Receipt ok" />
 		<definition value="Ok received from HRP" />
 	</concept>
 	<concept>
 		<code value="receipt-error" />
-		<display value="Receive error" />
+		<display value="Receipt error" />
 		<definition value="Error received from HRP" />
 	</concept>
 	<concept>
