@@ -1,0 +1,49 @@
+<CodeSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/kds-report" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MII_KDS_Report" />
+	<title value="MII KDS Report" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="CodeSystem with standard values for the KDS report process" />
+	<caseSensitive value="true" />
+	<hierarchyMeaning value="grouped-by" />
+	<versionNeeded value="false" />
+	<content value="complete" />
+	<concept>
+		<code value="kds-report-status" />
+		<display value="KDS Report Status" />
+		<definition value="KDS Report status of local organization" />
+	</concept>
+	<concept>
+		<code value="search-bundle" />
+		<display value="Search Bundle" />
+		<definition value="Search Bundle on which the report is based" />
+	</concept>
+	<concept>
+		<code value="search-bundle-reference" />
+		<display value="Search Bundle Reference" />
+		<definition value="Reference to a search Bundle containing GET requests on which the KDS report is based on" />
+	</concept>
+	<concept>
+		<code value="search-bundle-response-reference" />
+		<display value="Search Bundle Response Reference" />
+		<definition value="Reference to a response search Bundle containing the KDS report" />
+	</concept>
+	<concept>
+		<code value="timer-interval" />
+		<display value="Timer Interval" />
+		<definition value="Interval between two autostart of the KDS report process" />
+	</concept>
+</CodeSystem> 

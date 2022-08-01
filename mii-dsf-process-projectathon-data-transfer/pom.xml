@@ -3,12 +3,12 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>mii-process-projectathon-data-transfer</artifactId>
+	<artifactId>mii-dsf-process-projectathon-data-transfer</artifactId>
 
 	<parent>
 		<groupId>de.medizininformatik-initiative</groupId>
 		<artifactId>mii-dsf-processes</artifactId>
-		<version>0.1.0</version>
+		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -22,23 +22,23 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>ca.uhn.hapi.fhir</groupId>
-			<artifactId>hapi-fhir-client</artifactId>
-			<scope>provided</scope>
+			<groupId>de.medizininformatik-initiative</groupId>
+			<artifactId>mii-dsf-processes-kds-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>de.medizininformatik-initiative</groupId>
-			<artifactId>mii-dsf-processes-documentation-generator</artifactId>
+			<groupId>org.highmed.dsf</groupId>
+			<artifactId>dsf-tools-documentation-generator</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
 			<artifactId>log4j2-utils</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -73,10 +73,10 @@
 						<argument>-classpath</argument>
 						<classpath/>
 						<argument>
-							de.medizininformatik_initiative.processes.documentation.generator.DocumentationGenerator
+							org.highmed.dsf.tools.generator.DocumentationGenerator
 						</argument>
 						<argument>
-							de.medizininformatik_initiative.processes.projectathon.data_transfer
+							de.medizininformatik_initiative.process.projectathon.data_transfer
 						</argument>
 					</arguments>
 					<includeProjectDependencies>true</includeProjectDependencies>
@@ -87,10 +87,30 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include>de.medizininformatik-initiative:mii-dsf-processes-kds-client</include>
+									<include>org.apache.tika:tika-core</include>
+								</includes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-process-plugin-to-docker-test-setup/dic</id>
+						<id>copy-process-plugin-to-docker-test-setup/dic1</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
@@ -102,19 +122,14 @@
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
-								../mii-dsf-processes-docker-test-setup/dic/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/dic1/bpe/process
 							</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-dependencies/dic</id>
+						<id>copy-dependencies/dic1</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
@@ -127,7 +142,9 @@
 									<version>${hapi.version}</version>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>../mii-dsf-processes-docker-test-setup/dic/bpe/plugin</outputDirectory>
+							<outputDirectory>
+								../mii-dsf-processes-docker-test-setup/dic1/bpe/plugin
+							</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -143,14 +160,9 @@
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
-								../mii-dsf-processes-docker-test-setup/cos/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/cos/bpe/process
 							</outputDirectory>
 						</configuration>
 					</execution>
@@ -168,24 +180,9 @@
 									<version>${hapi.version}</version>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>../mii-dsf-processes-docker-test-setup/cos/bpe/plugin</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-dependencies/assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.tika</groupId>
-									<artifactId>tika-core</artifactId>
-									<version>${apache.tika.version}</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<outputDirectory>
+								../mii-dsf-processes-docker-test-setup/cos/bpe/plugin
+							</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -197,16 +194,16 @@
 					<filesets>
 						<fileset>
 							<directory>
-								../mii-dsf-processes-docker-test-setup/dic/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/dic1/bpe/process
 							</directory>
 							<includes>
-								<include>**</include>
+								<include>${project.artifactId}-${project.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 						<fileset>
 							<directory>
-								../mii-dsf-processes-docker-test-setup/dic/bpe/plugin
+								../mii-dsf-processes-docker-test-setup/dic1/bpe/plugin
 							</directory>
 							<includes>
 								<include>hapi-fhir-client-${hapi.version}.jar</include>
@@ -215,10 +212,10 @@
 						</fileset>
 						<fileset>
 							<directory>
-								../mii-dsf-processes-docker-test-setup/cos/bpe/process/${project.artifactId}-${project.version}
+								../mii-dsf-processes-docker-test-setup/cos/bpe/process
 							</directory>
 							<includes>
-								<include>**</include>
+								<include>${project.artifactId}-${project.version}.jar</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
@@ -232,27 +229,6 @@
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 					</filesets>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>tar-gz-assembly</id>
-						<phase>install</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptors>
-						<descriptor>src/assembly/tar-gz.xml</descriptor>
-					</descriptors>
-					<overrideUid>0</overrideUid>
-					<overrideGid>2202</overrideGid>
 				</configuration>
 			</plugin>
 		</plugins>

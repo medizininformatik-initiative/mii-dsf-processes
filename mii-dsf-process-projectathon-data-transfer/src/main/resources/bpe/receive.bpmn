@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_18azqkl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
-  <bpmn:process id="medizininformatik-initiativede_dataReceive" isExecutable="true" camunda:versionTag="0.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_18azqkl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+  <bpmn:process id="medizininformatik-initiativede_dataReceive" isExecutable="true" camunda:versionTag="#{version}">
     <bpmn:startEvent id="DataReceiveMessageStartEvent" name="start data receive process">
       <bpmn:outgoing>Flow_1gyqorb</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1qwi1k6" messageRef="Message_157qpi8" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1gyqorb" sourceRef="DataReceiveMessageStartEvent" targetRef="DownloadDataFromDic" />
-    <bpmn:serviceTask id="DownloadDataFromDic" name="download data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DownloadData">
+    <bpmn:serviceTask id="DownloadDataFromDic" name="download data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.DownloadData">
       <bpmn:incoming>Flow_1gyqorb</bpmn:incoming>
       <bpmn:outgoing>Flow_064nbas</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_064nbas" sourceRef="DownloadDataFromDic" targetRef="DecryptData" />
-    <bpmn:serviceTask id="DecryptData" name="decrypt data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.DecryptData">
+    <bpmn:serviceTask id="DecryptData" name="decrypt data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.DecryptData">
       <bpmn:incoming>Flow_064nbas</bpmn:incoming>
       <bpmn:outgoing>Flow_1c3t0x1</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -19,12 +19,12 @@
       <bpmn:incoming>Flow_1w6vljw</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1w6vljw" sourceRef="insertData" targetRef="DataReceiveEndEvent" />
-    <bpmn:serviceTask id="insertData" name="insert data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.InsertData">
+    <bpmn:serviceTask id="insertData" name="insert data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.InsertData">
       <bpmn:incoming>Flow_0j6v09z</bpmn:incoming>
       <bpmn:outgoing>Flow_1w6vljw</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1c3t0x1" sourceRef="DecryptData" targetRef="validateData" />
-    <bpmn:serviceTask id="validateData" name="validate data" camunda:class="de.medizininformatik_initiative.processes.projectathon.data_transfer.service.ValidateDataCos">
+    <bpmn:serviceTask id="validateData" name="validate data" camunda:class="de.medizininformatik_initiative.process.projectathon.data_transfer.service.ValidateDataCos">
       <bpmn:incoming>Flow_1c3t0x1</bpmn:incoming>
       <bpmn:outgoing>Flow_0j6v09z</bpmn:outgoing>
     </bpmn:serviceTask>

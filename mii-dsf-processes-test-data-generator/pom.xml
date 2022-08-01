@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.medizininformatik-initiative</groupId>
 		<artifactId>mii-dsf-processes</artifactId>
-		<version>0.1.0</version>
+		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -16,6 +16,14 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>de.medizininformatik-initiative</groupId>
+			<artifactId>mii-dsf-process-projectathon-data-transfer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.medizininformatik-initiative</groupId>
+			<artifactId>mii-dsf-process-kds-report</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>de.hs-heilbronn.mi</groupId>
 			<artifactId>log4j2-utils</artifactId>
