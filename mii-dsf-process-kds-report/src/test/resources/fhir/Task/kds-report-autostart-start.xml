@@ -1,8 +1,8 @@
 <Task xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-report-task-autostart-start|0.3.0"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-kds-report-task-autostart-start|0.3.0"></profile>
 	</meta>
-	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/reportAutostart/0.3.0"></instantiatesUri>
+	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/kdsReportAutostart/0.3.0"></instantiatesUri>
 	<status value="requested"></status>
 	<intent value="order"></intent>
 	<authoredOn value="<REPLACE-WITH-DATE-AND-TIME>"></authoredOn>
@@ -38,6 +38,6 @@
 				<code value="message-name"></code>
 			</coding>
 		</type>
-		<valueString value="reportAutostartStart"></valueString>
+		<valueString value="kdsReportAutostartStart"></valueString>
 	</input>
 </Task>

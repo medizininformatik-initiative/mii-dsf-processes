@@ -52,7 +52,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 		Task task = getLeadingTaskFromExecutionVariables();
 
 		IdType reportReference = getReportReference(task);
-		logger.info("Downloading report with id '{}'...", reportReference.getValue());
+		logger.info("Downloading KDS report with id '{}'...", reportReference.getValue());
 
 		Bundle reportBundle = downloadReportBundle(reportReference, task);
 		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE,
@@ -67,10 +67,11 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 				.filter(Reference::hasReference).map(Reference::getReference).collect(toList());
 
 		if (reportReferences.size() < 1)
-			throw new IllegalArgumentException("No report reference present in task with id='" + task.getId() + "'");
+			throw new IllegalArgumentException(
+					"No KDS report reference present in task with id='" + task.getId() + "'");
 
 		if (reportReferences.size() > 1)
-			logger.warn("Found {} report references in task with id '{}', using only the first",
+			logger.warn("Found {} KDS report references in task with id '{}', using only the first",
 					reportReferences.size(), task.getId());
 
 		return new IdType(reportReferences.get(0));

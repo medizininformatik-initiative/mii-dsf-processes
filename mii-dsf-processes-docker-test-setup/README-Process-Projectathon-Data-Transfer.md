@@ -1,4 +1,4 @@
-# Data Transfer Process: Testing using Docker Setup
+# Process Projectathon Data Transfer: Testing using Docker Setup
 
 Build the project from the root directory of this repository by executing the following command.
 

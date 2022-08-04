@@ -1,4 +1,4 @@
 # Testing using Docker Setup
 
-- To test the `Data Transfer Process`, follow the instructions in [README-Data-Transfer-Process.md](./README-Data-Transfer-Process.md)
-- To test the `Report Process`, follow the instructions in [README-Report-Process.md](./README-Report-Process.md)
+- To test the `Process Projectathon Data Transfer`, follow the instructions in [README-Process-Projectathon-Data-Transfer.md](./README-Process-Projectathon-Data-Transfer.md)
+- To test the `Process KDS Report`, follow the instructions in [README-Process-KDS-Report.md](./README-Process-KDS-Report.md)
