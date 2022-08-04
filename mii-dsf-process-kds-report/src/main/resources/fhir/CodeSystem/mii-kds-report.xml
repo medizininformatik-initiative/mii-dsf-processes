@@ -29,7 +29,7 @@
 	<concept>
 		<code value="search-bundle" />
 		<display value="Search Bundle" />
-		<definition value="Search Bundle on which the report is based" />
+		<definition value="Search Bundle on which the KDS report is based" />
 	</concept>
 	<concept>
 		<code value="search-bundle-reference" />

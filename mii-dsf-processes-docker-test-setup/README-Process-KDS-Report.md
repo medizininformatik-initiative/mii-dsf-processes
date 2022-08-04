@@ -1,4 +1,4 @@
-# Report Process: Testing using Docker Setup
+# Process KDS Report: Testing using Docker Setup
 
 Build the project from the root directory of this repository by executing the following command.
 
@@ -58,7 +58,7 @@ Console 4: Add the search Bundle to HRP DSF FHIR Server
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-report/src/test/resources/fhir/Bundle/search-bundle.xml \
+-d @mii-dsf-process-kds-report/src/test/resources/fhir/Bundle/search-bundle.xml \
 --ssl-no-revoke --cacert mii-dsf-processes-test-data-generator/cert/ca/testca_certificate.pem \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
@@ -66,15 +66,15 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 https://hrp/fhir/Bundle
 ```
 
-Console 4: Start Report Send Process at DIC1 using the following command
+Console 4: Start KDS Report Send Process at DIC1 using the following command
 
 *Unfortunately this command does not work on Windows. An alternative for starting the process is using WSL or the
-example starter class with name* `ReportSendExampleStarter` *in* 
-`mii-dsf-process-report/src/test/java/../bpe/start`
+example starter class with name* `KdsReportSendExampleStarter` *in* 
+`mii-dsf-process-kds-report/src/test/java/../bpe/start`
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-report/src/test/resources/fhir/Task/report-send-start-demo.xml \
+-d @mii-dsf-process-kds-report/src/test/resources/fhir/Task/kds-report-send-start-demo.xml \
 --ssl-no-revoke --cacert mii-dsf-processes-test-data-generator/cert/ca/testca_certificate.pem \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \

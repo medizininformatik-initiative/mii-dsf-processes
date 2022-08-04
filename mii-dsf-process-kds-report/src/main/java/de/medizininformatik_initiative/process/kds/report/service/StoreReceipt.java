@@ -106,8 +106,8 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 				: "";
 
 		if (ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIPT_OK.equals(code))
-			logger.info("Task with id '{}' has report-status code '{}'{}", taskId, code, extension);
+			logger.info("Task with id '{}' has KDS report-status code '{}'{}", taskId, code, extension);
 		else
-			logger.warn("Task with id '{}' has report-status code '{}'{}", taskId, code, extension);
+			logger.warn("Task with id '{}' has KDS report-status code '{}'{}", taskId, code, extension);
 	}
 }

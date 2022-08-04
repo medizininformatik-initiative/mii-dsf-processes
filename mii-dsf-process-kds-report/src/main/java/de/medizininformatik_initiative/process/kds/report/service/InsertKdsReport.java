@@ -69,7 +69,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 					.createKdsReportStatusOutput(ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_OK));
 			updateLeadingTaskInExecutionVariables(task);
 
-			logger.info("Stored report bundle with id '{}' from organization '{}'", reportId.getValue(),
+			logger.info("Stored KDS report bundle with id '{}' from organization '{}'", reportId.getValue(),
 					task.getRequester().getIdentifier().getValue());
 		}
 		catch (Exception exception)
