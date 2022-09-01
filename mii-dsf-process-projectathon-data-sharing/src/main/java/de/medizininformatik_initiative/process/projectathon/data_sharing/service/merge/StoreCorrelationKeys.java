@@ -31,8 +31,8 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate
 		Task task = getLeadingTaskFromExecutionVariables();
 
 		List<Target> targets = getTaskHelper()
-				.getInputParameterStringValues(task, ConstantsDataSharing.CODESYSTEM_MII_DATA_SHARING,
-						ConstantsDataSharing.CODESYSTEM_MII_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY)
+				.getInputParameterStringValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY)
 				.map(correlationKey -> Target.createBiDirectionalTarget("", "", "", correlationKey))
 				.collect(Collectors.toList());
 

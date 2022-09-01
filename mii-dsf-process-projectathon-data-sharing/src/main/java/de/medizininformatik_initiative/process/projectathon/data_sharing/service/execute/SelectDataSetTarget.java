@@ -26,8 +26,9 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
-	public SelectDataSetTarget(OrganizationProvider organizationProvider, EndpointProvider endpointProvider,
-			FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper, ReadAccessHelper readAccessHelper)
+	public SelectDataSetTarget(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 

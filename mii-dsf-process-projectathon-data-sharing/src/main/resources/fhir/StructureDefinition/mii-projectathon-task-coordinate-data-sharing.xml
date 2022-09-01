@@ -27,8 +27,8 @@
     </element>
     <element id="Task.input">
       <path value="Task.input" />
-      <min value="1" />
-      <max value="1" />
+      <min value="5" />
+      <max value="*" />
     </element>
     <element id="Task.input:message-name">
       <path value="Task.input" />
@@ -47,6 +47,181 @@
       <path value="Task.input" />
       <sliceName value="correlation-key" />
       <max value="0" />
+    </element>
+    <element id="Task.input:medic-identifier">
+      <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
+        <valueString value="Parameter" />
+      </extension>
+      <path value="Task.input" />
+      <sliceName value="medic-identifier" />
+      <min value="1" />
+      <max value="*" />
+    </element>
+    <element id="Task.input:medic-identifier.type">
+      <path value="Task.input.type" />
+      <binding>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="TaskInputParameterType" />
+        </extension>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:medic-identifier.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:medic-identifier.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:medic-identifier.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="medic-identifier" />
+    </element>
+    <element id="Task.input:medic-identifier.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="Reference" />
+        <targetProfile value="http://highmed.org/fhir/StructureDefinition/organization" />
+      </type>
+    </element>
+    <element id="Task.input:medic-identifier.value[x].reference">
+      <path value="Task.input.value[x].reference" />
+      <max value="0" />
+    </element>
+    <element id="Task.input:medic-identifier.value[x].identifier">
+      <path value="Task.input.value[x].identifier" />
+      <min value="1" />
+    </element>
+    <element id="Task.input:cos-identifier">
+      <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
+        <valueString value="Parameter" />
+      </extension>
+      <path value="Task.input" />
+      <sliceName value="cos-identifier" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:cos-identifier.type">
+      <path value="Task.input.type" />
+      <binding>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="TaskInputParameterType" />
+        </extension>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:cos-identifier.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:cos-identifier.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:cos-identifier.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="cos-identifier" />
+    </element>
+    <element id="Task.input:cos-identifier.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="Reference" />
+        <targetProfile value="http://highmed.org/fhir/StructureDefinition/organization" />
+      </type>
+    </element>
+    <element id="Task.input:cos-identifier.value[x].reference">
+      <path value="Task.input.value[x].reference" />
+      <max value="0" />
+    </element>
+    <element id="Task.input:cos-identifier.value[x].identifier">
+      <path value="Task.input.value[x].identifier" />
+      <min value="1" />
+    </element>
+    <element id="Task.input:project-identifier">
+      <path value="Task.input" />
+      <sliceName value="project-identifier" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:project-identifier.type">
+      <path value="Task.input.type" />
+      <binding>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:project-identifier.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:project-identifier.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:project-identifier.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="project-identifier" />
+    </element>
+    <element id="Task.input:project-identifier.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="Identifier" />
+      </type>
+    </element>
+    <element id="Task.input:project-identifier.value[x].system">
+      <path value="Task.input.value[x].system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/sid/project-identifier" />
+    </element>
+    <element id="Task.input:project-identifier.value[x].value">
+      <path value="Task.input.value[x].value" />
+      <min value="1" />
+    </element>
+    <element id="Task.input:contract-location">
+      <path value="Task.input" />
+      <sliceName value="contract-location" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:contract-location.type">
+      <path value="Task.input.type" />
+      <binding>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:contract-location.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:contract-location.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:contract-location.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="contract-location" />
+    </element>
+    <element id="Task.input:contract-location.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="url" />
+      </type>
     </element>
   </differential>
 </StructureDefinition>

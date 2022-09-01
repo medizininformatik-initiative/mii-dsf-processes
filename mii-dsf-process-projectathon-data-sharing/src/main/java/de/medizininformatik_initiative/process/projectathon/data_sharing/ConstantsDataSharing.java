@@ -53,6 +53,19 @@ public interface ConstantsDataSharing
 
 	// CODESYSTEM DATA SHARING
 
-	String CODESYSTEM_MII_DATA_SHARING = "http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing";
-	String CODESYSTEM_MII_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY = "medic-correlation-key";
+	String CODESYSTEM_DATA_SHARING = "http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing";
+	String CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER = "medic-identifier";
+	String CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY = "medic-correlation-key";
+	String CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER = "cos-identifier";
+	String CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER = "project-identifier";
+	String CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION = "contract-location";
+
+	// NAMINGSYSTEM PROJECT IDENTIFIER
+
+	String NAMINGSYSTEM_PROJECT_IDENTIFIER = "http://medizininformatik-initiative.de/sid/project-identifier";
+
+	// BPMN VARIABLES
+
+	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
+	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contract-location";
 }

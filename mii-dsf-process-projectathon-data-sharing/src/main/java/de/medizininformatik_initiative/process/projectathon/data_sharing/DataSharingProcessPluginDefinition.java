@@ -10,6 +10,7 @@ import org.highmed.dsf.bpe.ProcessPluginDefinition;
 import org.highmed.dsf.fhir.resources.AbstractResource;
 import org.highmed.dsf.fhir.resources.ActivityDefinitionResource;
 import org.highmed.dsf.fhir.resources.CodeSystemResource;
+import org.highmed.dsf.fhir.resources.NamingSystemResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
@@ -65,7 +66,8 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 				.file("fhir/ActivityDefinition/mii-projectathon-merge-data-sharing.xml");
 
 		var cDaSh = CodeSystemResource.file("fhir/CodeSystem/mii-data-sharing.xml");
-		var vDaSh = ValueSetResource.file("fhir/ValueSet/mii-data-sharing.xml");
+
+		var nP = NamingSystemResource.file("fhir/NamingSystem/mii-project-identifier.xml");
 
 		var sTcooDaSh = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-coordinate-data-sharing.xml");
@@ -78,13 +80,15 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 		var sTsenMerDaSh = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-send-merged-data-set.xml");
 
+		var vDaSh = ValueSetResource.file("fhir/ValueSet/mii-data-sharing.xml");
+
 		Map<String, List<AbstractResource>> resourcesByProcessKeyAndVersion = Map.of(//
 				ConstantsDataSharing.PROCESS_NAME_FULL_COORDINATE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aCooDaSh, cDaSh, sTcooDaSh, sTsenMerDaSh, vDaSh), //
+				Arrays.asList(aCooDaSh, cDaSh, nP, sTcooDaSh, sTsenMerDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aExeDaSh, cDaSh, sTexeDaSh, vDaSh), //
+				Arrays.asList(aExeDaSh, cDaSh, nP, sTexeDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aMerDaSh, cDaSh, sTmerDaSh, sTsenDaSh, vDaSh));
+				Arrays.asList(aMerDaSh, cDaSh, nP, sTmerDaSh, sTsenDaSh, vDaSh));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,

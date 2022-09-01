@@ -22,8 +22,28 @@
 	<versionNeeded value="false" />
 	<content value="complete" />
 	<concept>
+		<code value="medic-identifier" />
+		<display value="MeDIC Identifier" />
+		<definition value="Identifier of a MeDIC participating in an approved data sharing project" />
+	</concept>
+	<concept>
 		<code value="medic-correlation-key" />
 		<display value="MeDIC Correlation Key" />
 		<definition value="Key to correlate messages from participating MeDICs in an approved data sharing project" />
 	</concept>
-</CodeSystem> 
+	<concept>
+		<code value="cos-identifier" />
+		<display value="COS Identifier" />
+		<definition value="Identifier of a COS participating in an approved data sharing project" />
+	</concept>
+	<concept>
+		<code value="project-identifier" />
+		<display value="Project Identifier" />
+		<definition value="Project identifier an approved data sharing project" />
+	</concept>
+	<concept>
+		<code value="contract-location" />
+		<display value="Contract Location" />
+		<definition value="Location where the contract of an approved data sharing project can be found" />
+	</concept>
+</CodeSystem>

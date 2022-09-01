@@ -34,8 +34,7 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 
 	private Task.ParameterComponent transformToInput(Target target)
 	{
-		return getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_MII_DATA_SHARING,
-				ConstantsDataSharing.CODESYSTEM_MII_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY,
-				target.getCorrelationKey());
+		return getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY, target.getCorrelationKey());
 	}
 }

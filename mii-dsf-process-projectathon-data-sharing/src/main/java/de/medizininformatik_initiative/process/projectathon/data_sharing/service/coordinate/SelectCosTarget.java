@@ -1,13 +1,7 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -18,13 +12,14 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.highmed.dsf.fhir.variables.Targets;
-import org.highmed.dsf.fhir.variables.TargetsValues;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectCosTarget extends AbstractServiceDelegate implements InitializingBean
 {
@@ -33,8 +28,9 @@ public class SelectCosTarget extends AbstractServiceDelegate implements Initiali
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
-	public SelectCosTarget(OrganizationProvider organizationProvider, EndpointProvider endpointProvider,
-			FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper, ReadAccessHelper readAccessHelper)
+	public SelectCosTarget(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
@@ -54,23 +50,26 @@ public class SelectCosTarget extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		logger.info(SelectCosTarget.class.getName());
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		String cos = getCosIdentifier();
+		String cos = getCosIdentifier(projectIdentifier);
 		Target target = getCosTarget(cos);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
-	private String getCosIdentifier()
+	private String getCosIdentifier(String projectIdentifier)
 	{
-		return organizationProvider.getOrganizationsByConsortiumAndRole(
-				ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
-				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS).map(Organization::getIdentifierFirstRep)
-				.filter(i -> ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-				.map(Identifier::getValue).findFirst().get();
+		Task task = getLeadingTaskFromExecutionVariables();
+		return getTaskHelper()
+				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER)
+				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue)
+				.peek(i -> logger.debug("Project '{}' has participating COS '{}'", projectIdentifier, i)).findFirst()
+				.orElseThrow(
+						() -> new RuntimeException("No COS identifier found in Task with id='" + task.getId() + "'"));
 	}
-
 
 	private Target getCosTarget(String identifier)
 	{

@@ -25,8 +25,9 @@ public class SelectHrpTarget extends AbstractServiceDelegate implements Initiali
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
-	public SelectHrpTarget(OrganizationProvider organizationProvider, EndpointProvider endpointProvider,
-			FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper, ReadAccessHelper readAccessHelper)
+	public SelectHrpTarget(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
@@ -60,7 +61,8 @@ public class SelectHrpTarget extends AbstractServiceDelegate implements Initiali
 				ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_HRP).map(Organization::getIdentifierFirstRep)
 				.filter(i -> ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-				.map(Identifier::getValue).findFirst().get();
+				.map(Identifier::getValue).findFirst()
+				.orElseThrow(() -> new RuntimeException("No organization with role HRP found"));
 	}
 
 	private Target getHrpTarget(String identifier)
@@ -71,6 +73,6 @@ public class SelectHrpTarget extends AbstractServiceDelegate implements Initiali
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_HRP, identifier)
 				.map(e -> Target.createUniDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress()))
-				.get();
+				.orElseThrow(() -> new RuntimeException("No endpoint of organization with role HRP found"));
 	}
 }

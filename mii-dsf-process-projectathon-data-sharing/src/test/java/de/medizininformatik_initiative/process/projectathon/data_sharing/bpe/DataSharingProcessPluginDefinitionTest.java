@@ -25,16 +25,16 @@ public class DataSharingProcessPluginDefinitionTest
 		var coordinate = provider.getResources(ConstantsDataSharing.PROCESS_NAME_FULL_COORDINATE_DATA_SHARING + "/"
 				+ DataSharingProcessPluginDefinition.VERSION, s -> ResourceProvider.empty());
 		assertNotNull(coordinate);
-		assertEquals(5, coordinate.count());
+		assertEquals(6, coordinate.count());
 
 		var execute = provider.getResources(ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "/"
 				+ DataSharingProcessPluginDefinition.VERSION, s -> ResourceProvider.empty());
 		assertNotNull(execute);
-		assertEquals(4, execute.count());
+		assertEquals(5, execute.count());
 
 		var merge = provider.getResources(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/"
 				+ DataSharingProcessPluginDefinition.VERSION, s -> ResourceProvider.empty());
 		assertNotNull(merge);
-		assertEquals(5, merge.count());
+		assertEquals(6, merge.count());
 	}
 }

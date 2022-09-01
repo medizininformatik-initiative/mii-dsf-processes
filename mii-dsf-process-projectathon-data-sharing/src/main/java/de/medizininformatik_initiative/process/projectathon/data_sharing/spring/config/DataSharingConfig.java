@@ -15,6 +15,7 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.message
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendExecuteDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergeDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectDicTargets;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget;
@@ -46,17 +47,23 @@ public class DataSharingConfig
 	// COORDINATE DATA SHARING PROCESS
 
 	@Bean
+	public PrepareDataSharing prepareDataSharing()
+	{
+		return new PrepareDataSharing(clientProvider, taskHelper, readAccessHelper);
+	}
+
+	@Bean
 	public SelectDicTargets selectDicTargets()
 	{
-		return new SelectDicTargets(organizationProvider, endpointProvider, clientProvider, taskHelper,
-				readAccessHelper);
+		return new SelectDicTargets(clientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean
 	public SelectCosTarget selectCosTarget()
 	{
-		return new SelectCosTarget(organizationProvider, endpointProvider, clientProvider, taskHelper,
-				readAccessHelper);
+		return new SelectCosTarget(clientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean
@@ -78,8 +85,8 @@ public class DataSharingConfig
 	@Bean
 	public SelectDataSetTarget selectDataSetTarget()
 	{
-		return new SelectDataSetTarget(organizationProvider, endpointProvider, clientProvider, taskHelper,
-				readAccessHelper);
+		return new SelectDataSetTarget(clientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean
@@ -99,8 +106,8 @@ public class DataSharingConfig
 	@Bean
 	public SelectHrpTarget selectHrpTarget()
 	{
-		return new SelectHrpTarget(organizationProvider, endpointProvider, clientProvider, taskHelper,
-				readAccessHelper);
+		return new SelectHrpTarget(clientProvider, taskHelper, readAccessHelper, organizationProvider,
+				endpointProvider);
 	}
 
 	@Bean

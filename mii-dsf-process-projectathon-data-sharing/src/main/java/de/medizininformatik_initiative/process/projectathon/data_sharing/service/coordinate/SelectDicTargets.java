@@ -19,10 +19,13 @@ import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.Targets;
 import org.highmed.dsf.fhir.variables.TargetsValues;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectDicTargets extends AbstractServiceDelegate implements InitializingBean
 {
@@ -31,8 +34,9 @@ public class SelectDicTargets extends AbstractServiceDelegate implements Initial
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
-	public SelectDicTargets(OrganizationProvider organizationProvider, EndpointProvider endpointProvider,
-			FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper, ReadAccessHelper readAccessHelper)
+	public SelectDicTargets(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
@@ -52,22 +56,24 @@ public class SelectDicTargets extends AbstractServiceDelegate implements Initial
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		logger.info(SelectDicTargets.class.getName());
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		Stream<String> medics = getMedicIdentifiers();
+		Stream<String> medics = getMedicIdentifiers(projectIdentifier);
 		List<Target> targets = getMedicTargets(medics);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targets)));
 	}
 
-	private Stream<String> getMedicIdentifiers()
+	private Stream<String> getMedicIdentifiers(String projectIdentifier)
 	{
-		return organizationProvider.getOrganizationsByConsortiumAndRole(
-				ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
-				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_MEDIC).map(Organization::getIdentifierFirstRep)
-				.filter(i -> ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-				.map(Identifier::getValue);
+		Task task = getLeadingTaskFromExecutionVariables();
+		return getTaskHelper()
+				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER)
+				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue)
+				.peek(i -> logger.debug("Project '{}' has participating MeDIC '{}'", projectIdentifier, i));
 	}
 
 	private List<Target> getMedicTargets(Stream<String> identifiers)
