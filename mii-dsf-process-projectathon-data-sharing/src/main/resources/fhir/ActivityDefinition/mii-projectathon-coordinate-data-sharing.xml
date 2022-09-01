@@ -1,0 +1,132 @@
+<ActivityDefinition xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<extension
+		url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
+		<extension url="message-name">
+			<valueString value="coordinateDataSharing" />
+		</extension>
+		<extension url="task-profile">
+			<valueCanonical
+					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-coordinate-data-sharing|#{version}" />
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="HRP" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+		<extension url="recipient">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="HRP" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+	</extension>
+
+	<extension
+			url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
+		<extension url="message-name">
+			<valueString value="sendMergedDataSet" />
+		</extension>
+		<extension url="task-profile">
+			<valueCanonical
+					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-merged-data-set|#{version}" />
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="COS" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="REMOTE_ROLE" />
+			</valueCoding>
+		</extension>
+		<extension url="recipient">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="HRP" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+	</extension>
+	<url
+		value="http://medizininformatik-initiative.de/bpe/Process/coordinateDataSharing" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="CoordinateDataSharing" />
+	<title value="Coordinate Data Sharing Process" />
+	<subtitle value="Coordinate Data Sharing Process with multiple DIC and one COS" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<contact>
+		<name value="Medizininformatik-Initiative" />
+		<telecom>
+			<system value="email" />
+			<value value="info@medizininformatik-initiative.de" />
+		</telecom>
+	</contact>
+	<description
+		value="Process to coordinate the extraction and merging of data from an approved data sharing project" />
+	<kind value="Task" />
+</ActivityDefinition>

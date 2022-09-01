@@ -10,10 +10,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>mii-dsf-process-projectathon-data-transfer</module>
 		<module>mii-dsf-process-kds-report</module>
-		<module>mii-dsf-processes-test-data-generator</module>
+		<module>mii-dsf-process-projectathon-data-sharing</module>
+		<module>mii-dsf-process-projectathon-data-transfer</module>
 		<module>mii-dsf-processes-kds-client</module>
+		<module>mii-dsf-processes-test-data-generator</module>
 	</modules>
 
 	<properties>

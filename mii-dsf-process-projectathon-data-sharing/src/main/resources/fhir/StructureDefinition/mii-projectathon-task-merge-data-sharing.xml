@@ -1,0 +1,91 @@
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <meta>
+    <tag>
+      <system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+      <code value="ALL" />
+    </tag>
+  </meta>
+  <url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-merge-data-sharing" />
+  <!-- version managed by bpe -->
+  <version value="#{version}" />
+  <name value="TaskMergeDataSharing" />
+  <!-- status managed by bpe -->
+  <status value="unknown" />
+  <experimental value="false" />
+  <!-- date managed by bpe -->
+  <date value="#{date}" />
+  <fhirVersion value="4.0.1" />
+  <kind value="resource" />
+  <abstract value="false" />
+  <type value="Task" />
+  <baseDefinition value="http://highmed.org/fhir/StructureDefinition/task-base" />
+  <derivation value="constraint" />
+  <differential>
+    <element id="Task.instantiatesUri">
+      <path value="Task.instantiatesUri" />
+      <fixedUri value="http://medizininformatik-initiative.de/bpe/Process/mergeDataSharing/#{version}" />
+    </element>
+    <element id="Task.input">
+      <path value="Task.input" />
+      <min value="3" />
+      <max value="*" />
+    </element>
+    <element id="Task.input:message-name">
+      <path value="Task.input" />
+      <sliceName value="message-name" />
+    </element>
+    <element id="Task.input:message-name.value[x]">
+      <path value="Task.input.value[x]" />
+      <fixedString value="mergeDataSharing" />
+    </element>
+    <element id="Task.input:business-key">
+      <path value="Task.input" />
+      <sliceName value="business-key" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:correlation-key">
+      <path value="Task.input" />
+      <sliceName value="correlation-key" />
+      <max value="0" />
+    </element>
+    <element id="Task.input:medic-correlation-key">
+      <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
+        <valueString value="Parameter" />
+      </extension>
+      <path value="Task.input" />
+      <sliceName value="medic-correlation-key" />
+      <min value="1" />
+    </element>
+    <element id="Task.input:medic-correlation-key.type">
+      <path value="Task.input.type" />
+      <binding>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="TaskInputParameterType" />
+        </extension>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:medic-correlation-key.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:medic-correlation-key.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:medic-correlation-key.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="medic-correlation-key" />
+    </element>
+    <element id="Task.input:medic-correlation-key.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

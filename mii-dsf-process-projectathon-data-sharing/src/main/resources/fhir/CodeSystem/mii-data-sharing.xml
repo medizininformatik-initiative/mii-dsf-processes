@@ -1,0 +1,29 @@
+<CodeSystem xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="DataSharing" />
+	<title value="Data Sharing" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<publisher value="Medizininformatik-Initiative" />
+	<description value="CodeSystem with standard values for the MII data sharing processes" />
+	<caseSensitive value="true" />
+	<hierarchyMeaning value="grouped-by" />
+	<versionNeeded value="false" />
+	<content value="complete" />
+	<concept>
+		<code value="medic-correlation-key" />
+		<display value="MeDIC Correlation Key" />
+		<definition value="Key to correlate messages from participating MeDICs in an approved data sharing project" />
+	</concept>
+</CodeSystem> 

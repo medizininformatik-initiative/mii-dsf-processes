@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1uxomks" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="medizininformatik-initiativede_executeDataSharing" isExecutable="true" camunda:versionTag="#{version}">
+    <bpmn:sequenceFlow id="Flow_031nt59" sourceRef="executeDataSharingStartEvent" targetRef="selectDataSetTarget" />
+    <bpmn:sequenceFlow id="Flow_0et3g5v" sourceRef="selectDataSetTarget" targetRef="sendDataSetEndEvent" />
+    <bpmn:startEvent id="executeDataSharingStartEvent" name="start execute data sharing process">
+      <bpmn:outgoing>Flow_031nt59</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1rz1n9d" messageRef="Message_3j9kns3" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="selectDataSetTarget" name="select data set target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget">
+      <bpmn:incoming>Flow_031nt59</bpmn:incoming>
+      <bpmn:outgoing>Flow_0et3g5v</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="sendDataSetEndEvent" name="send data set">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/mergeDataSharing/#{version}</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">sendDataSet</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-data-set|#{version}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0et3g5v</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_177k6m4" messageRef="Message_07oua04" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendDataSet" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_3j9kns3" name="executeDataSharing" />
+  <bpmn:message id="Message_07oua04" name="sendDataSet" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_executeDataSharing">
+      <bpmndi:BPMNEdge id="Flow_0et3g5v_di" bpmnElement="Flow_0et3g5v">
+        <di:waypoint x="410" y="117" />
+        <di:waypoint x="482" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="310" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="153" y="142" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ne2wp_di" bpmnElement="selectDataSetTarget">
+        <dc:Bounds x="310" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0d4rm08_di" bpmnElement="sendDataSetEndEvent">
+        <dc:Bounds x="482" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="467" y="142" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

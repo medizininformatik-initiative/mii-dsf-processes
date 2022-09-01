@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1uxomks" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="medizininformatik-initiativede_mergeDataSharing" isExecutable="true" camunda:versionTag="#{version}">
+    <bpmn:sequenceFlow id="Flow_031nt59" sourceRef="mergeDataSharingStartEvent" targetRef="storeCorrelationKeys" />
+    <bpmn:startEvent id="mergeDataSharingStartEvent" name="start merge data sharing process">
+      <bpmn:outgoing>Flow_031nt59</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1rz1n9d" messageRef="Message_0o1qqa7" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="storeCorrelationKeys" name="store correlation keys" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys">
+      <bpmn:incoming>Flow_031nt59</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xbi6oe</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="SubProcess_0szmntn">
+      <bpmn:incoming>Flow_0xbi6oe</bpmn:incoming>
+      <bpmn:outgoing>Flow_0usmzqr</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${targets.entries}" camunda:elementVariable="target" />
+      <bpmn:startEvent id="StartEvent_18et3pb">
+        <bpmn:outgoing>SequenceFlow_1jv4kfm</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="EndEvent_1yf8pjt">
+        <bpmn:incoming>SequenceFlow_0r89tc0</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:receiveTask id="receiveDataSet" name="receiveDataSet" messageRef="Message_10o3b8y">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="correlationKey">${target.correlationKey}</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>SequenceFlow_1jv4kfm</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0r89tc0</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:sequenceFlow id="SequenceFlow_0r89tc0" sourceRef="receiveDataSet" targetRef="EndEvent_1yf8pjt" />
+      <bpmn:sequenceFlow id="SequenceFlow_1jv4kfm" sourceRef="StartEvent_18et3pb" targetRef="receiveDataSet" />
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="SubProcess_0szmntn">
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1tbnu9y">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0xbi6oe" sourceRef="storeCorrelationKeys" targetRef="SubProcess_0szmntn" />
+    <bpmn:sequenceFlow id="Flow_0usmzqr" sourceRef="SubProcess_0szmntn" targetRef="selectHrpTarget" />
+    <bpmn:sequenceFlow id="Flow_1wnb3d4" sourceRef="selectHrpTarget" targetRef="sendMergedDataSetEndEvent" />
+    <bpmn:serviceTask id="selectHrpTarget" name="select hrp target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget">
+      <bpmn:incoming>Flow_0usmzqr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wnb3d4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="sendMergedDataSetEndEvent" name="send merged data set">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/coordinateDataSharing/#{version}</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">sendMergedDataSet</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-merged-data-set|#{version}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wnb3d4</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1vjx5ry" messageRef="Message_0lnamjn" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0o1qqa7" name="mergeDataSharing" />
+  <bpmn:message id="Message_10o3b8y" name="sendDataSet" />
+  <bpmn:message id="Message_0lnamjn" name="sendMergedDataSet" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_mergeDataSharing">
+      <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="290" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xbi6oe_di" bpmnElement="Flow_0xbi6oe">
+        <di:waypoint x="390" y="117" />
+        <di:waypoint x="460" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0usmzqr_di" bpmnElement="Flow_0usmzqr">
+        <di:waypoint x="810" y="117" />
+        <di:waypoint x="890" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wnb3d4_di" bpmnElement="Flow_1wnb3d4">
+        <di:waypoint x="990" y="117" />
+        <di:waypoint x="1062" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="mergeDataSharingStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="142" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_162649g_di" bpmnElement="storeCorrelationKeys">
+        <dc:Bounds x="290" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18ii2b8_di" bpmnElement="sendMergedDataSetEndEvent">
+        <dc:Bounds x="1062" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1036" y="142" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1at3s4d_di" bpmnElement="selectHrpTarget">
+        <dc:Bounds x="890" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
+        <dc:Bounds x="460" y="57" width="350" height="133" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0r89tc0_di" bpmnElement="SequenceFlow_0r89tc0">
+        <di:waypoint x="685" y="117" />
+        <di:waypoint x="742" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jv4kfm_di" bpmnElement="SequenceFlow_1jv4kfm">
+        <di:waypoint x="516" y="117" />
+        <di:waypoint x="585" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_18et3pb_di" bpmnElement="StartEvent_18et3pb">
+        <dc:Bounds x="480" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1yf8pjt_di" bpmnElement="EndEvent_1yf8pjt">
+        <dc:Bounds x="742" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReceiveTask_1n4t6gv_di" bpmnElement="receiveDataSet">
+        <dc:Bounds x="585" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
+        <dc:Bounds x="792" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
