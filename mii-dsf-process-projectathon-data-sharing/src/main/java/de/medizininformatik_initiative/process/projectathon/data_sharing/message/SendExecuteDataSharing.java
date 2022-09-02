@@ -31,29 +31,46 @@ public class SendExecuteDataSharing extends AbstractTaskMessageSend
 	{
 		String cosIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
+		Task.ParameterComponent cosIdentifierInput = getCosIdentifierInput(cosIdentifier);
+
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		Task.ParameterComponent projectIdentifierInput = getProjectIdentifierInput(projectIdentifier);
+
 		String contractLocation = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION);
+		Task.ParameterComponent contractLocationInput = getContractLocationInput(contractLocation);
 
-		Task.ParameterComponent cosIdentifierComponent = getTaskHelper().createInput(
-				ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+		return Stream.of(cosIdentifierInput, projectIdentifierInput, contractLocationInput);
+	}
+
+	private Task.ParameterComponent getCosIdentifierInput(String cosIdentifier)
+	{
+		return getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER,
 				new Reference().setIdentifier(new Identifier()
 						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue(cosIdentifier))
 						.setType(ResourceType.Organization.name()));
+	}
 
-		Task.ParameterComponent projectIdentifierComponent = new Task.ParameterComponent();
-		projectIdentifierComponent.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+	private Task.ParameterComponent getProjectIdentifierInput(String projectIdentifier)
+	{
+		Task.ParameterComponent projectIdentifierInput = new Task.ParameterComponent();
+		projectIdentifierInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
-		projectIdentifierComponent.setValue(new Identifier()
-				.setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER).setValue(projectIdentifier));
+		projectIdentifierInput.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
+				.setValue(projectIdentifier));
 
-		Task.ParameterComponent contractLocationComponent = new Task.ParameterComponent();
-		contractLocationComponent.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+		return projectIdentifierInput;
+	}
+
+	private Task.ParameterComponent getContractLocationInput(String contractLocation)
+	{
+		Task.ParameterComponent contractLocationInput = new Task.ParameterComponent();
+		contractLocationInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
-		contractLocationComponent.setValue(new UrlType(contractLocation));
+		contractLocationInput.setValue(new UrlType(contractLocation));
 
-		return Stream.of(cosIdentifierComponent, projectIdentifierComponent, contractLocationComponent);
+		return contractLocationInput;
 	}
 }

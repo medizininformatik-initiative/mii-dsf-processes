@@ -202,6 +202,15 @@ public class TaskProfileTest
 				.setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
 				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
 
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
+						.setValue("Test_Project"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
+
+		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
+				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY);
 		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
 				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY);
