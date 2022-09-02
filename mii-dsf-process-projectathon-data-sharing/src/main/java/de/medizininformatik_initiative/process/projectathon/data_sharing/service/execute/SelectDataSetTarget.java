@@ -12,12 +12,10 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Organization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectDataSetTarget extends AbstractServiceDelegate
 {
@@ -48,22 +46,17 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		logger.info(SelectCosTarget.class.getName());
-
-		String cos = getCosIdentifier();
+		String cosIdentifier = getCosIdentifier(execution);
 		String correlationKey = getCorrelationKey();
-		Target target = getCosTarget(cos, correlationKey);
+		Target target = getCosTarget(cosIdentifier, correlationKey);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
-	private String getCosIdentifier()
+	private String getCosIdentifier(DelegateExecution execution)
 	{
-		return organizationProvider.getOrganizationsByConsortiumAndRole(
-				ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
-				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS).map(Organization::getIdentifierFirstRep)
-				.filter(i -> ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
-				.map(Identifier::getValue).findFirst().get();
+		return (String) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
+
 	}
 
 	private String getCorrelationKey()

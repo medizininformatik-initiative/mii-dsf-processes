@@ -15,9 +15,10 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.message
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendExecuteDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergeDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareDataSharing;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareCoordination;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectDicTargets;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.PrepareExecution;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys;
@@ -47,9 +48,9 @@ public class DataSharingConfig
 	// COORDINATE DATA SHARING PROCESS
 
 	@Bean
-	public PrepareDataSharing prepareDataSharing()
+	public PrepareCoordination prepareCoordination()
 	{
-		return new PrepareDataSharing(clientProvider, taskHelper, readAccessHelper);
+		return new PrepareCoordination(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean
@@ -81,6 +82,12 @@ public class DataSharingConfig
 	}
 
 	// EXECUTE DATA SHARING PROCESS
+
+	@Bean
+	public PrepareExecution prepareExecution()
+	{
+		return new PrepareExecution(clientProvider, taskHelper, readAccessHelper);
+	}
 
 	@Bean
 	public SelectDataSetTarget selectDataSetTarget()

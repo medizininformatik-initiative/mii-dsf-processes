@@ -67,5 +67,6 @@ public interface ConstantsDataSharing
 	// BPMN VARIABLES
 
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
+	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cos-identifier";
 	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contract-location";
 }

@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
@@ -7,6 +7,7 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.UrlType;
 import org.slf4j.Logger;
@@ -14,11 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
-public class PrepareDataSharing extends AbstractServiceDelegate
+public class PrepareExecution extends AbstractServiceDelegate
 {
-	private static final Logger logger = LoggerFactory.getLogger(PrepareDataSharing.class);
+	private static final Logger logger = LoggerFactory.getLogger(PrepareExecution.class);
 
-	public PrepareDataSharing(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public PrepareExecution(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
@@ -33,13 +34,17 @@ public class PrepareDataSharing extends AbstractServiceDelegate
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
 				Variables.stringValue(projectIdentifier));
 
+		String cosIdentifier = getCosIdentifier(task);
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER,
+				Variables.stringValue(cosIdentifier));
+
 		String contractLocation = getContractLocation(task);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION,
 				Variables.stringValue(contractLocation));
 
 		logger.info(
-				"Starting coordination of approved data sharing project [project-identifier: {}, contract-location: {}]",
-				projectIdentifier, contractLocation);
+				"Starting extraction and transfer of approved data sharing project [project-identifier: {}, cos-identifier: {}, contract-location: {}]",
+				projectIdentifier, cosIdentifier, contractLocation);
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -51,6 +56,16 @@ public class PrepareDataSharing extends AbstractServiceDelegate
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
 						"No project identifier present in task with id='" + task.getId() + "'"));
+	}
+
+	private String getCosIdentifier(Task task)
+	{
+		return getTaskHelper()
+				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER)
+				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue).findFirst()
+				.orElseThrow(
+						() -> new RuntimeException("No COS identifier found in Task with id='" + task.getId() + "'"));
 	}
 
 	private String getContractLocation(Task task)

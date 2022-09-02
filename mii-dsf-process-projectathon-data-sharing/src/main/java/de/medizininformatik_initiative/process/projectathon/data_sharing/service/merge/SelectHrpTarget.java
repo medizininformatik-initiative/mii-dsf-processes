@@ -47,8 +47,6 @@ public class SelectHrpTarget extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		logger.info(SelectHrpTarget.class.getName());
-
 		String hrp = getHrpIdentifier();
 		Target target = getHrpTarget(hrp);
 

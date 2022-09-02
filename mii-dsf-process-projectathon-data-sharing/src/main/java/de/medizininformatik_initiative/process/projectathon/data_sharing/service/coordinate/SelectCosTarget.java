@@ -12,9 +12,6 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -50,25 +47,16 @@ public class SelectCosTarget extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		String projectIdentifier = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-
-		String cos = getCosIdentifier(projectIdentifier);
+		String cos = getCosIdentifier(execution);
 		Target target = getCosTarget(cos);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
-	private String getCosIdentifier(String projectIdentifier)
+	private String getCosIdentifier(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
-		return getTaskHelper()
-				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
-						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER)
-				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue)
-				.peek(i -> logger.debug("Project '{}' has participating COS '{}'", projectIdentifier, i)).findFirst()
-				.orElseThrow(
-						() -> new RuntimeException("No COS identifier found in Task with id='" + task.getId() + "'"));
+		return (String) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
+
 	}
 
 	private Target getCosTarget(String identifier)
