@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.crypto;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.crypto;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;

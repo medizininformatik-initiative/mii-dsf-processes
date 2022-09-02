@@ -22,15 +22,15 @@ public class DataTransferProcessPluginDefinitionTest
 				new StandardEnvironment());
 		assertNotNull(provider);
 
-		var send = provider.getResources(
-				ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "/" + DataTransferProcessPluginDefinition.VERSION,
-				s -> ResourceProvider.empty());
-		assertNotNull(send);
-		assertEquals(7, send.count());
-
 		var receive = provider.getResources(ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "/"
 				+ DataTransferProcessPluginDefinition.VERSION, s -> ResourceProvider.empty());
 		assertNotNull(receive);
 		assertEquals(7, receive.count());
+
+		var send = provider.getResources(
+				ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "/" + DataTransferProcessPluginDefinition.VERSION,
+				s -> ResourceProvider.empty());
+		assertNotNull(send);
+		assertEquals(5, send.count());
 	}
 }

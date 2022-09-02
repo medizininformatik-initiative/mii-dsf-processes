@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.PropertyResolver;
 
 import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.spring.config.TransferDataConfig;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
@@ -80,7 +81,7 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 				ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "/" + VERSION,
 				Arrays.asList(aRec, cC, cD, nP, sTstaDrec, vC, vD), //
 				ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "/" + VERSION,
-				Arrays.asList(aSen, cC, cD, nP, sTstaDsen, vC, vD));
+				Arrays.asList(aSen, cD, nP, sTstaDsen, vD));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,
@@ -91,5 +92,10 @@ public class DataTransferProcessPluginDefinition implements ProcessPluginDefinit
 	public void onProcessesDeployed(ApplicationContext pluginApplicationContext, List<String> activeProcesses)
 	{
 		pluginApplicationContext.getBean(KdsClientFactory.class).testConnection();
+
+		if (activeProcesses.contains(ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE))
+		{
+			pluginApplicationContext.getBean(KeyProvider.class).createPublicKeyIfNotExists();
+		}
 	}
 }

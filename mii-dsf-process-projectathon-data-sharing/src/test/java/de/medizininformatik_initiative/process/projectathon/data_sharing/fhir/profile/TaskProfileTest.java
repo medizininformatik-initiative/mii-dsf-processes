@@ -104,7 +104,7 @@ public class TaskProfileTest
 
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
-						.setValue("Test_Project"))
+						.setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
 
@@ -159,7 +159,7 @@ public class TaskProfileTest
 
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
-						.setValue("Test_Project"))
+						.setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
 
@@ -204,7 +204,7 @@ public class TaskProfileTest
 
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
-						.setValue("Test_Project"))
+						.setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
 
@@ -252,6 +252,12 @@ public class TaskProfileTest
 		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
 				.setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
 				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_CORRELATION_KEY);
+
+		task.addInput()
+				.setValue(new Reference().setReference("https://dic1/fhir/Binary/" + UUID.randomUUID().toString())
+						.setType(ResourceType.Binary.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE);
 
 		return task;
 	}

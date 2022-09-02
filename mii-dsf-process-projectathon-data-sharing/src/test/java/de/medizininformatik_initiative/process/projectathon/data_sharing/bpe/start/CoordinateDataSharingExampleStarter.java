@@ -69,7 +69,7 @@ public class CoordinateDataSharingExampleStarter
 
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
-						.setValue("Test_Project"))
+						.setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
 

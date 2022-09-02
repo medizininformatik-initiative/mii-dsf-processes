@@ -45,7 +45,7 @@
       <bpmn:outgoing>Flow_12n8hz7</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="Flow_00ok4yz" sourceRef="receiveMergedDataSet" targetRef="coordinateDataSharingEndEvent" />
-    <bpmn:intermediateCatchEvent id="receiveMergedDataSet" name="receive merged data set">
+    <bpmn:intermediateCatchEvent id="receiveMergedDataSet" name="receive merged data-set">
       <bpmn:incoming>Flow_0lny8fc</bpmn:incoming>
       <bpmn:outgoing>Flow_00ok4yz</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1k93pld" messageRef="Message_3lh87td" />

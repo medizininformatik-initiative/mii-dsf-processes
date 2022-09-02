@@ -35,6 +35,6 @@ public class DataSharingProcessPluginDefinitionTest
 		var merge = provider.getResources(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/"
 				+ DataSharingProcessPluginDefinition.VERSION, s -> ResourceProvider.empty());
 		assertNotNull(merge);
-		assertEquals(6, merge.count());
+		assertEquals(8, merge.count());
 	}
 }

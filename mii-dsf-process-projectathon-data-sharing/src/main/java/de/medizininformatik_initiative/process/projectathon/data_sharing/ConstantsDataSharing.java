@@ -59,6 +59,12 @@ public interface ConstantsDataSharing
 	String CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER = "cos-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER = "project-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION = "contract-location";
+	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE = "data-set-reference";
+
+	// CODESYSTEM CRYPTOGRAPHY
+
+	String CODESYSTEM_CRYPTOGRAPHY = "http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography";
+	String CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY = "public-key";
 
 	// NAMINGSYSTEM PROJECT IDENTIFIER
 
@@ -69,4 +75,10 @@ public interface ConstantsDataSharing
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
 	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cos-identifier";
 	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contract-location";
+
+	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "document-reference";
+	String BPMN_EXECUTION_VARIABLE_BINARY = "binary";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET = "data-set";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "data-set-encrypted";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "data-set-reference";
 }

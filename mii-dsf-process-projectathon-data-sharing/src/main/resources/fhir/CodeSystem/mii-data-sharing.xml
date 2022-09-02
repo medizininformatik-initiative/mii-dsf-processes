@@ -46,4 +46,9 @@
 		<display value="Contract Location" />
 		<definition value="Location where the contract of an approved data sharing project can be found" />
 	</concept>
+	<concept>
+		<code value="data-set-reference" />
+		<display value="Data Set Reference" />
+		<definition value="Reference to a Binary data-set on a DSF FHIR server, can be encrypted" />
+	</concept>
 </CodeSystem>

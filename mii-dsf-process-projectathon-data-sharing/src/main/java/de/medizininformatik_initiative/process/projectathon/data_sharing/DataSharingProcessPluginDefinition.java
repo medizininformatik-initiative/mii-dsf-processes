@@ -14,10 +14,13 @@ import org.highmed.dsf.fhir.resources.NamingSystemResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.PropertyResolver;
 
 import ca.uhn.fhir.context.FhirContext;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.crypto.KeyProvider;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.spring.config.DataSharingConfig;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class DataSharingProcessPluginDefinition implements ProcessPluginDefinition
 {
@@ -65,6 +68,7 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 		var aMerDaSh = ActivityDefinitionResource
 				.file("fhir/ActivityDefinition/mii-projectathon-merge-data-sharing.xml");
 
+		var cC = CodeSystemResource.file("fhir/CodeSystem/mii-cryptography.xml");
 		var cDaSh = CodeSystemResource.file("fhir/CodeSystem/mii-data-sharing.xml");
 
 		var nP = NamingSystemResource.file("fhir/NamingSystem/mii-project-identifier.xml");
@@ -80,6 +84,7 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 		var sTsenMerDaSh = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-send-merged-data-set.xml");
 
+		var vC = ValueSetResource.file("fhir/ValueSet/mii-cryptography.xml");
 		var vDaSh = ValueSetResource.file("fhir/ValueSet/mii-data-sharing.xml");
 
 		Map<String, List<AbstractResource>> resourcesByProcessKeyAndVersion = Map.of(//
@@ -88,10 +93,25 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 				ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "/" + VERSION, //
 				Arrays.asList(aExeDaSh, cDaSh, nP, sTexeDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aMerDaSh, cDaSh, nP, sTmerDaSh, sTsenDaSh, vDaSh));
+				Arrays.asList(aMerDaSh, cC, cDaSh, nP, sTmerDaSh, sTsenDaSh, vC, vDaSh));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,
 				resourcesByProcessKeyAndVersion);
+	}
+
+	@Override
+	public void onProcessesDeployed(ApplicationContext pluginApplicationContext, List<String> activeProcesses)
+	{
+		if (activeProcesses.contains(ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING)
+				|| activeProcesses.contains(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING))
+		{
+			pluginApplicationContext.getBean(KdsClientFactory.class).testConnection();
+		}
+
+		if (activeProcesses.contains(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING))
+		{
+			pluginApplicationContext.getBean(KeyProvider.class).createPublicKeyIfNotExists();
+		}
 	}
 }

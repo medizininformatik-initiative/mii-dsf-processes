@@ -141,7 +141,6 @@ services:
       - app_dic1_client_certificate.pem
       - app_dic1_client_certificate_private_key.pem
       - app_client_certificate_private_key.pem.password
-      - cos_public_key.pem
     volumes:
       - type: bind
         source: ./dic1/bpe/plugin
@@ -175,6 +174,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC1
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic1/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
+        medizininformatik-initiativede_coordinateDataSharing/${PROCESS_VERSION_DATA_SHARING},
+        medizininformatik-initiativede_mergeDataSharing/${PROCESS_VERSION_DATA_SHARING},
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
         medizininformatik-initiativede_kdsReportReceive/${PROCESS_VERSION_KDS_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic1-fhir-store:8080/fhir
@@ -270,7 +271,6 @@ services:
       - app_dic2_client_certificate.pem
       - app_dic2_client_certificate_private_key.pem
       - app_client_certificate_private_key.pem.password
-      - cos_public_key.pem
     volumes:
       - type: bind
         source: ./dic2/bpe/plugin
@@ -304,6 +304,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_DIC2
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://dic2/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
+        medizininformatik-initiativede_coordinateDataSharing/${PROCESS_VERSION_DATA_SHARING},
+        medizininformatik-initiativede_mergeDataSharing/${PROCESS_VERSION_DATA_SHARING},
         medizininformatik-initiativede_dataReceive/${PROCESS_VERSION_DATA_TRANSFER},
         medizininformatik-initiativede_kdsReportReceive/${PROCESS_VERSION_KDS_REPORT}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://dic2-fhir-store:8080/fhir
@@ -317,11 +319,22 @@ services:
       - db
       - dic2-fhir
     # - dic2-fhir-store not defining a dependency here, dic2-fhir-store* needs to be started manually
+  dic2-fhir-store-hapi:
+    build: ./dic2/hapi
+    restart: on-failure
+    ports:
+      - 127.0.0.1:8081:8080
+    environment:
+      TZ: Europe/Berlin
+    networks:
+      dic2-bpe-backend:
+        aliases:
+          - dic2-fhir-store
   dic2-fhir-store-blaze:
     image: ghcr.io/num-codex/blaze
     restart: on-failure
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:8081:8080
     environment:
       TZ: Europe/Berlin
     networks:
@@ -433,7 +446,10 @@ services:
       ORG_HIGHMED_DSF_BPE_DB_USER_CAMUNDA_USERNAME: cos_camunda_server_user
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_COS
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://cos/fhir
-      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: medizininformatik-initiativede_dataSend/${PROCESS_VERSION_DATA_TRANSFER}
+      ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
+        medizininformatik-initiativede_coordinateDataSharing/${PROCESS_VERSION_DATA_SHARING},
+        medizininformatik-initiativede_executeDataSharing/${PROCESS_VERSION_DATA_SHARING},
+        medizininformatik-initiativede_dataSend/${PROCESS_VERSION_DATA_TRANSFER}
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_SERVER_BASE_URL: http://cos-fhir-store:8080/fhir
       DE_MEDIZININFORMATIK_INITIATIVE_KDS_FHIR_DATALOGGINGENABLED: 'true'
       DE_MEDIZININFORMATIK_INITIATIVE_COS_PRIVATE_KEY: /run/secrets/cos_private_key.pem
@@ -563,6 +579,8 @@ services:
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_ORGANIZATION_IDENTIFIER_VALUE: Test_HRP
       ORG_HIGHMED_DSF_BPE_FHIR_SERVER_BASE_URL: https://hrp/fhir
       ORG_HIGHMED_DSF_BPE_PROCESS_EXCLUDED: >-
+        medizininformatik-initiativede_executeDataSharing/${PROCESS_VERSION_DATA_SHARING},
+        medizininformatik-initiativede_mergeDataSharing/${PROCESS_VERSION_DATA_SHARING},
         medizininformatik-initiativede_kdsReportAutostart/${PROCESS_VERSION_KDS_REPORT},
         medizininformatik-initiativede_kdsReportSend/${PROCESS_VERSION_KDS_REPORT}
     networks:

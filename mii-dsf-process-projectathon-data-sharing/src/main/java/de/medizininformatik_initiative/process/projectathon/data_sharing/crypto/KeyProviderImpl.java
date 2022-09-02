@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.crypto;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.crypto;
 
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.hl7.fhir.r4.model.Bundle.BundleType.COLLECTION;
@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.rwh.utils.crypto.io.PemIo;
 
@@ -139,8 +139,8 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 			if (publicKey != null)
 			{
 				Bundle output = clientProvider.getLocalWebserviceClient().search(Bundle.class,
-						Map.of("identifier", Collections.singletonList(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY
-								+ "|" + ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY)));
+						Map.of("identifier", Collections.singletonList(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY
+								+ "|" + ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY)));
 
 				Bundle bundleOnServer = null;
 
@@ -154,15 +154,14 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 					logger.info("Creating new PublicKey Bundle on DSF FHIR server...");
 					Bundle bundleToCreate = createPublicKeyBundle();
 					bundleOnServer = clientProvider.getLocalWebserviceClient().createConditionaly(bundleToCreate,
-							"identifier=" + ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY + "|"
-									+ ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
+							"identifier=" + ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY + "|"
+									+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
 				}
 				else
 				{
 					throw new RuntimeException("Exist " + output.getTotal() + " Bundle with identifier="
-							+ ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY + "|"
-							+ ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY
-							+ ", expected only one");
+							+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY + "|"
+							+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY + ", expected only one");
 				}
 
 				logger.info("PublicKey Bundle has id='{}'", bundleOnServer.getId());
@@ -183,8 +182,8 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 		binary.setId(UUID.randomUUID().toString());
 
 		DocumentReference documentReference = new DocumentReference().setStatus(CURRENT).setDocStatus(FINAL);
-		documentReference.getMasterIdentifier().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY)
-				.setValue(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
+		documentReference.getMasterIdentifier().setSystem(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY)
+				.setValue(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
 		documentReference.addAuthor().setType(ResourceType.Organization.name()).getIdentifier()
 				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
 				.setValue(organizationProvider.getLocalIdentifierValue());
@@ -193,8 +192,8 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 				.setUrl("urn:uuid:" + binary.getId()).setHash(DigestUtils.sha256(publicKey.getEncoded()));
 
 		Bundle bundle = new Bundle().setType(COLLECTION);
-		bundle.getIdentifier().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY)
-				.setValue(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
+		bundle.getIdentifier().setSystem(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY)
+				.setValue(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY);
 		bundle.setTimestamp(date);
 		bundle.addEntry().setResource(documentReference).setFullUrl("urn:uuid:" + documentReference.getId());
 		bundle.addEntry().setResource(binary).setFullUrl("urn:uuid:" + binary.getId());

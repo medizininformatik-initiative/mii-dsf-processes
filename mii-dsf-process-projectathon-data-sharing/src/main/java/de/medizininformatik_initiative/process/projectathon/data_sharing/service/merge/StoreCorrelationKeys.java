@@ -45,7 +45,7 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate
 				TargetsValues.create(new Targets(targets)));
 
 		logger.info(
-				"Starting data set reception and merging of approved data sharing project [project-identifier: {}, medic-count: {}]",
+				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, medic-count: {}]",
 				projectIdentifier, targets.size());
 	}
 
