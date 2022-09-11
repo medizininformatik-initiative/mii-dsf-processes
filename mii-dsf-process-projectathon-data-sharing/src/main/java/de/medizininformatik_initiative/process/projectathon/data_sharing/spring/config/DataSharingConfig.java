@@ -29,12 +29,14 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.service
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.ReadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.StoreDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.ValidateDataSetExecute;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DecryptDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DownloadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.InsertDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.ValidateDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.ValidateDataSetMerge;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.util.MimeTypeHelper;
 import de.medizininformatik_initiative.processes.kds.client.spring.config.PropertiesConfig;
 
 @Configuration
@@ -130,6 +132,12 @@ public class DataSharingConfig
 	}
 
 	@Bean
+	public ValidateDataSetExecute validateDataSetExecute()
+	{
+		return new ValidateDataSetExecute(clientProvider, taskHelper, readAccessHelper, mimeTypeHelper());
+	}
+
+	@Bean
 	public CreateDataSetBundle createDataSetBundle()
 	{
 		return new CreateDataSetBundle(clientProvider, taskHelper, readAccessHelper, organizationProvider,
@@ -189,15 +197,22 @@ public class DataSharingConfig
 	}
 
 	@Bean
-	public ValidateDataSet validateDataSet()
+	public MimeTypeHelper mimeTypeHelper()
 	{
-		return new ValidateDataSet(clientProvider, taskHelper, readAccessHelper);
+		return new MimeTypeHelper();
+	}
+
+	@Bean
+	public ValidateDataSetMerge validateDataSetMerge()
+	{
+		return new ValidateDataSetMerge(clientProvider, taskHelper, readAccessHelper, mimeTypeHelper());
 	}
 
 	@Bean
 	public InsertDataSet insertDataSet()
 	{
-		return new InsertDataSet(clientProvider, taskHelper, readAccessHelper);
+		return new InsertDataSet(clientProvider, taskHelper, readAccessHelper, fhirContext,
+				kdsFhirClientConfig.kdsClientFactory());
 	}
 
 	@Bean

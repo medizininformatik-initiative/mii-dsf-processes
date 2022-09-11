@@ -35,7 +35,7 @@ public class DeleteDataSet extends AbstractServiceDelegate
 
 		logger.info(
 				"Permanently deleted encrypted Binary with id='{}' provided for project-identifier='{}' "
-						+ "referenced in Task with id='{}'...",
+						+ "referenced in Task with id='{}'",
 				binaryId.getValue(), projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
 	}
 

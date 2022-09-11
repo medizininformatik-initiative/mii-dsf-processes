@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.service;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute;
 
 import java.util.Objects;
 
@@ -10,14 +10,14 @@ import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Binary;
 import org.springframework.beans.factory.InitializingBean;
 
-import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.MimeTypeHelper;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.util.MimeTypeHelper;
 
-public class ValidateDataDic extends AbstractServiceDelegate implements InitializingBean
+public class ValidateDataSetExecute extends AbstractServiceDelegate implements InitializingBean
 {
 	private final MimeTypeHelper mimeTypeHelper;
 
-	public ValidateDataDic(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public ValidateDataSetExecute(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, MimeTypeHelper mimeTypeHelper)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
@@ -34,7 +34,7 @@ public class ValidateDataDic extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Binary binary = (Binary) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_BINARY);
+		Binary binary = (Binary) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_BINARY);
 
 		String mimeTypeBinary = binary.getContentType();
 		byte[] dataBinary = binary.getData();
@@ -42,3 +42,4 @@ public class ValidateDataDic extends AbstractServiceDelegate implements Initiali
 		mimeTypeHelper.validate(dataBinary, mimeTypeBinary);
 	}
 }
+

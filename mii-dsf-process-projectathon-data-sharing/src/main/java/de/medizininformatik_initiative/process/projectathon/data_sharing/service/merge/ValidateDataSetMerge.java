@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_transfer.service;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge;
 
 import static org.hl7.fhir.r4.model.Bundle.BundleType.TRANSACTION;
 
@@ -18,18 +18,17 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.InitializingBean;
 
-import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
-import de.medizininformatik_initiative.process.projectathon.data_transfer.util.MimeTypeHelper;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.util.MimeTypeHelper;
 
-public class ValidateDataCos extends AbstractServiceDelegate implements InitializingBean
+public class ValidateDataSetMerge extends AbstractServiceDelegate implements InitializingBean
 {
 	private final MimeTypeHelper mimeTypeHelper;
 
-	public ValidateDataCos(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public ValidateDataSetMerge(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, MimeTypeHelper mimeTypeHelper)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
-
 		this.mimeTypeHelper = mimeTypeHelper;
 	}
 
@@ -43,7 +42,7 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
+		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
 		Bundle.BundleType type = bundle.getType();
 		if (!TRANSACTION.equals(type))
@@ -69,7 +68,7 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 			throw new RuntimeException("Bundle contains " + countDr + " DocumentReferences (expected 1)");
 		}
 
-		String identifierRequester = getLeadingTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
+		String identifierRequester = getCurrentTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
 		String identifierAuthor = documentReferences.stream().filter(DocumentReference::hasAuthor)
 				.flatMap(dr -> dr.getAuthor().stream()).filter(Reference::hasIdentifier).map(Reference::getIdentifier)
 				.filter(Identifier::hasValue).map(Identifier::getValue).findFirst().orElse("no-author");
@@ -79,13 +78,22 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 					+ identifierRequester + " != " + identifierAuthor + ")");
 		}
 
-		long countMi = documentReferences.stream().filter(DocumentReference::hasMasterIdentifier)
-				.map(DocumentReference::getMasterIdentifier)
-				.filter(mi -> ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(mi.getSystem()))
-				.map(Identifier::getValue).filter(Objects::nonNull).count();
+		List<String> projectIdentifiersDocuementReference = documentReferences.stream()
+				.filter(DocumentReference::hasMasterIdentifier).map(DocumentReference::getMasterIdentifier)
+				.filter(mi -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(mi.getSystem()))
+				.map(Identifier::getValue).filter(Objects::nonNull).collect(Collectors.toList());
+		long countMi = projectIdentifiersDocuementReference.size();
 		if (countMi != 1)
 		{
 			throw new RuntimeException("DocumentReference contains " + countMi + " projectIdentifiers (expected 1)");
+		}
+
+		String projectIdentifierTask = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		if (!projectIdentifiersDocuementReference.get(0).equals(projectIdentifierTask))
+		{
+			throw new RuntimeException("DocumentReference and Task projectIdentifier do not match  ("
+					+ projectIdentifiersDocuementReference.get(0) + " != " + projectIdentifierTask + ")");
 		}
 
 		List<Binary> binaries = entries.stream().map(Bundle.BundleEntryComponent::getResource)

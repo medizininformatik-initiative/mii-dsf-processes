@@ -51,4 +51,9 @@
 		<display value="Data Set Reference" />
 		<definition value="Reference to a Binary data-set on a DSF FHIR server, can be encrypted" />
 	</concept>
+	<concept>
+		<code value="document-reference-reference" />
+		<display value="Document Reference reference" />
+		<definition value="Canonical reference of a DocumentReference on a KDS FHIR server" />
+	</concept>
 </CodeSystem>

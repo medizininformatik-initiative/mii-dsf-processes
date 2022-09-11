@@ -32,8 +32,8 @@ public class InsertData extends AbstractServiceDelegate
 			ReadAccessHelper readAccessHelper, FhirContext fhirContext, KdsClientFactory kdsClientFactory)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
-		this.fhirContext = fhirContext;
 
+		this.fhirContext = fhirContext;
 		this.kdsClientFactory = kdsClientFactory;
 	}
 

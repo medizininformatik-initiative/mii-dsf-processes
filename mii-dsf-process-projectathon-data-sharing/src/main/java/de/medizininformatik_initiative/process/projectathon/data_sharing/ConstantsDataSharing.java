@@ -60,6 +60,7 @@ public interface ConstantsDataSharing
 	String CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER = "project-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION = "contract-location";
 	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE = "data-set-reference";
+	String CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE = "document-reference-reference";
 
 	// CODESYSTEM CRYPTOGRAPHY
 

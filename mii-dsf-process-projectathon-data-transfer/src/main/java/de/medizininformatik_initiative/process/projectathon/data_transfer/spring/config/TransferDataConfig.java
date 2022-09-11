@@ -82,8 +82,7 @@ public class TransferDataConfig
 	@Bean
 	public ValidateDataDic validateDataDic()
 	{
-		return new ValidateDataDic(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider,
-				mimeTypeHelper());
+		return new ValidateDataDic(fhirClientProvider, taskHelper, readAccessHelper, mimeTypeHelper());
 	}
 
 	@Bean

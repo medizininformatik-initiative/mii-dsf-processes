@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
@@ -48,7 +47,7 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution execution) throws BpmnError, Exception
+	protected void doExecute(DelegateExecution execution)
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
