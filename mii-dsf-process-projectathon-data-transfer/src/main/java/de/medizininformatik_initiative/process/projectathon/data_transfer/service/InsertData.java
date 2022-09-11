@@ -14,6 +14,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,9 +80,12 @@ public class InsertData extends AbstractServiceDelegate
 
 	private void addOutputToLeadingTask(IdType id)
 	{
-		getLeadingTaskFromExecutionVariables().addOutput()
-				.setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
+		Task task = getLeadingTaskFromExecutionVariables();
+
+		task.addOutput().setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
 				.setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_DOCUMENT_REFERENCE_LOCATION);
+
+		updateLeadingTaskInExecutionVariables(task);
 	}
 }

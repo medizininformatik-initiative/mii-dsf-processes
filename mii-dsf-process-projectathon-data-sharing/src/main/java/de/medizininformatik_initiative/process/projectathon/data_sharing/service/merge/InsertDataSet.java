@@ -14,6 +14,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -80,9 +81,12 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 
 	private void addOutputToCurrentTask(IdType id)
 	{
-		getLeadingTaskFromExecutionVariables().addOutput()
-				.setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
+		Task task = getLeadingTaskFromExecutionVariables();
+
+		task.addOutput().setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
 				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE);
+
+		updateLeadingTaskInExecutionVariables(task);
 	}
 }
