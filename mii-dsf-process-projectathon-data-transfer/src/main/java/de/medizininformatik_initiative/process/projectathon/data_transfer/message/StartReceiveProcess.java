@@ -8,8 +8,10 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.AbstractTaskMessageSend;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.Task.ParameterComponent;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -29,11 +31,20 @@ public class StartReceiveProcess extends AbstractTaskMessageSend
 		String binaryId = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE);
 
-		ParameterComponent parameterComponent = new ParameterComponent();
-		parameterComponent.getType().addCoding().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
+		ParameterComponent binaryComponent = new ParameterComponent();
+		binaryComponent.getType().addCoding().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE);
-		parameterComponent.setValue(new Reference().setType(ResourceType.Binary.name()).setReference(binaryId));
+		binaryComponent.setValue(new Reference().setType(ResourceType.Binary.name()).setReference(binaryId));
 
-		return Stream.of(parameterComponent);
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+
+		Task.ParameterComponent projectIdentifierComponent = new Task.ParameterComponent();
+		projectIdentifierComponent.getType().addCoding().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
+				.setCode(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER);
+		projectIdentifierComponent.setValue(new Identifier()
+				.setSystem(ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER).setValue(projectIdentifier));
+
+		return Stream.of(binaryComponent, projectIdentifierComponent);
 	}
 }

@@ -50,18 +50,32 @@ public class InsertData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String sendingOrganization = getLeadingTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
 
-		Bundle stored = kdsClientFactory.getKdsClient().executeTransactionBundle(bundle);
+		try
+		{
+			Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
+			Bundle stored = kdsClientFactory.getKdsClient().executeTransactionBundle(bundle);
 
-		List<IdType> idsOfCreatedResources = stored.getEntry().stream().filter(Bundle.BundleEntryComponent::hasResponse)
-				.map(Bundle.BundleEntryComponent::getResponse).map(Bundle.BundleEntryResponseComponent::getLocation)
-				.map(IdType::new).map(this::setIdBase).collect(toList());
+			List<IdType> idsOfCreatedResources = stored.getEntry().stream()
+					.filter(Bundle.BundleEntryComponent::hasResponse).map(Bundle.BundleEntryComponent::getResponse)
+					.map(Bundle.BundleEntryResponseComponent::getLocation).map(IdType::new).map(this::setIdBase)
+					.collect(toList());
 
-		idsOfCreatedResources.stream().filter(i -> ResourceType.DocumentReference.name().equals(i.getResourceType()))
-				.forEach(this::addOutputToLeadingTask);
+			idsOfCreatedResources.stream()
+					.filter(i -> ResourceType.DocumentReference.name().equals(i.getResourceType()))
+					.forEach(this::addOutputToLeadingTask);
 
-		idsOfCreatedResources.forEach(this::toLogMessage);
+			idsOfCreatedResources.forEach(id -> toLogMessage(id, sendingOrganization, projectIdentifier));
+		}
+		catch (Exception exception)
+		{
+			logger.error(
+					"Could not insert data received from organization='{}' for project-identifier='{}', error-message='{}'",
+					sendingOrganization, projectIdentifier, exception.getMessage());
+		}
 	}
 
 	private IdType setIdBase(IdType idType)
@@ -72,10 +86,12 @@ public class InsertData extends AbstractServiceDelegate
 		return new IdType(fhirBaseUrl + deliminator + id);
 	}
 
-	private void toLogMessage(IdType idType)
+	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
 	{
-		logger.info("Stored {} with id='{}' on KDS FHIR server with baseUrl='{}'", idType.getResourceType(),
-				idType.getIdPart(), idType.getBaseUrl());
+		logger.info(
+				"Stored {} with id='{}' on KDS FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
+				projectIdentifier);
 	}
 
 	private void addOutputToLeadingTask(IdType id)

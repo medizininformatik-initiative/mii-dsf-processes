@@ -189,7 +189,7 @@ services:
       - dic1-fhir
     # - dic1-fhir-store not defining a dependency here, dic1-fhir-store* needs to be started manually
   dic1-fhir-store-hapi:
-    build: ./dic1/hapi
+    image: hapiproject/hapi:v6.1.0
     restart: on-failure
     ports:
       - 127.0.0.1:8080:8080
@@ -320,7 +320,7 @@ services:
       - dic2-fhir
     # - dic2-fhir-store not defining a dependency here, dic2-fhir-store* needs to be started manually
   dic2-fhir-store-hapi:
-    build: ./dic2/hapi
+    image: hapiproject/hapi:v6.1.0
     restart: on-failure
     ports:
       - 127.0.0.1:8081:8080
@@ -463,7 +463,7 @@ services:
       - cos-fhir
       # - cos-fhir-store not defining a dependency here, cos-fhir-store* needs to be started manually
   cos-fhir-store-hapi:
-    build: ./cos/hapi
+    image: hapiproject/hapi:v6.1.0
     restart: on-failure
     ports:
       - 127.0.0.1:8082:8080

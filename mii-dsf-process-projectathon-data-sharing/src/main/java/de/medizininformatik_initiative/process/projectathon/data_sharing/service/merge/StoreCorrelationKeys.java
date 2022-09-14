@@ -57,7 +57,7 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in task with id='" + task.getId() + "'"));
 	}
 
 	private List<Target> getTargets(Task task)

@@ -85,7 +85,7 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 				.map(Identifier::getValue).filter(Objects::nonNull).count();
 		if (countMi != 1)
 		{
-			throw new RuntimeException("DocumentReference contains " + countMi + " projectIdentifiers (expected 1)");
+			throw new RuntimeException("DocumentReference contains " + countMi + " project-identifiers (expected 1)");
 		}
 
 		List<Binary> binaries = entries.stream().map(Bundle.BundleEntryComponent::getResource)

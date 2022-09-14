@@ -55,8 +55,9 @@ public class StoreDataSet extends AbstractServiceDelegate
 		Binary binary = createBinary(bundleEncrypted, cosIdentifier);
 		String binaryId = storeBinary(binary);
 
-		logger.info("Stored Binary with id='{}' provided for project-identifier='{}' referenced in Task with id='{}'",
-				binaryId, projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
+		logger.info(
+				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				binaryId, cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
 				Variables.stringValue(binaryId));

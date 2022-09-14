@@ -84,10 +84,10 @@ public class ReadData extends AbstractServiceDelegate
 				.map(Identifier::getValue).collect(toList());
 
 		if (identifiers.size() < 1)
-			throw new IllegalArgumentException("No project identifier present in task with id='" + task.getId() + "'");
+			throw new IllegalArgumentException("No project-identifier present in task with id='" + task.getId() + "'");
 
 		if (identifiers.size() > 1)
-			logger.warn("Found {} project identifiers in task with id='{}', using only the first", identifiers.size(),
+			logger.warn("Found {} project-identifiers in task with id='{}', using only the first", identifiers.size(),
 					task.getId());
 
 		return identifiers.get(0);

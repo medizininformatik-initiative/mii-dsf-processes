@@ -53,15 +53,16 @@
       </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="SubProcess_0szmntn">
+      <bpmn:outgoing>Flow_0jhnvx6</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1tbnu9y">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0xbi6oe" sourceRef="storeCorrelationKeys" targetRef="SubProcess_0szmntn" />
-    <bpmn:sequenceFlow id="Flow_0usmzqr" sourceRef="SubProcess_0szmntn" targetRef="selectHrpTarget" />
+    <bpmn:sequenceFlow id="Flow_0usmzqr" sourceRef="SubProcess_0szmntn" targetRef="Gateway_1tzfud8" />
     <bpmn:sequenceFlow id="Flow_1wnb3d4" sourceRef="selectHrpTarget" targetRef="sendMergedDataSetEndEvent" />
     <bpmn:serviceTask id="selectHrpTarget" name="select hrp target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget">
-      <bpmn:incoming>Flow_0usmzqr</bpmn:incoming>
+      <bpmn:incoming>Flow_0h5giy2</bpmn:incoming>
       <bpmn:outgoing>Flow_1wnb3d4</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="sendMergedDataSetEndEvent" name="send merged data-set">
@@ -75,6 +76,13 @@
       <bpmn:incoming>Flow_1wnb3d4</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1vjx5ry" messageRef="Message_0lnamjn" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet" />
     </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_1tzfud8">
+      <bpmn:incoming>Flow_0usmzqr</bpmn:incoming>
+      <bpmn:incoming>Flow_0jhnvx6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h5giy2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0h5giy2" sourceRef="Gateway_1tzfud8" targetRef="selectHrpTarget" />
+    <bpmn:sequenceFlow id="Flow_0jhnvx6" sourceRef="timerBoundaryEvent" targetRef="Gateway_1tzfud8" />
     <bpmn:textAnnotation id="TextAnnotation_0zbeerd">
       <bpmn:text>After: UserTask for release merged data-set</bpmn:text>
     </bpmn:textAnnotation>
@@ -85,17 +93,13 @@
   <bpmn:message id="Message_0lnamjn" name="sendMergedDataSet" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_mergeDataSharing">
-      <bpmndi:BPMNShape id="TextAnnotation_0zbeerd_di" bpmnElement="TextAnnotation_0zbeerd">
-        <dc:Bounds x="1440" y="40" width="170" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1wnb3d4_di" bpmnElement="Flow_1wnb3d4">
-        <di:waypoint x="1760" y="167" />
-        <di:waypoint x="1852" y="167" />
+        <di:waypoint x="1900" y="167" />
+        <di:waypoint x="1982" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0usmzqr_di" bpmnElement="Flow_0usmzqr">
         <di:waypoint x="1400" y="167" />
-        <di:waypoint x="1660" y="167" />
+        <di:waypoint x="1475" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xbi6oe_di" bpmnElement="Flow_0xbi6oe">
         <di:waypoint x="390" y="167" />
@@ -104,6 +108,15 @@
       <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
         <di:waypoint x="215" y="167" />
         <di:waypoint x="290" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h5giy2_di" bpmnElement="Flow_0h5giy2">
+        <di:waypoint x="1525" y="167" />
+        <di:waypoint x="1800" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jhnvx6_di" bpmnElement="Flow_0jhnvx6">
+        <di:waypoint x="1418" y="240" />
+        <di:waypoint x="1500" y="240" />
+        <di:waypoint x="1500" y="192" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="mergeDataSharingStartEvent">
         <dc:Bounds x="179" y="149" width="36" height="36" />
@@ -116,14 +129,17 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_18ii2b8_di" bpmnElement="sendMergedDataSetEndEvent">
-        <dc:Bounds x="1852" y="149" width="36" height="36" />
+        <dc:Bounds x="1982" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1838" y="192" width="65" height="27" />
+          <dc:Bounds x="1968" y="192" width="65" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1at3s4d_di" bpmnElement="selectHrpTarget">
-        <dc:Bounds x="1660" y="127" width="100" height="80" />
+        <dc:Bounds x="1800" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tzfud8_di" bpmnElement="Gateway_1tzfud8" isMarkerVisible="true">
+        <dc:Bounds x="1475" y="142" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
         <dc:Bounds x="460" y="107" width="940" height="133" />
@@ -176,13 +192,17 @@
       <bpmndi:BPMNShape id="Activity_0qezpkk_di" bpmnElement="insertDataSet">
         <dc:Bounds x="1180" y="127" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0zbeerd_di" bpmnElement="TextAnnotation_0zbeerd">
+        <dc:Bounds x="1440" y="40" width="170" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
+        <dc:Bounds x="1382" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0ws4txr_di" bpmnElement="Association_0ws4txr">
         <di:waypoint x="1400" y="140" />
         <di:waypoint x="1452" y="81" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
-        <dc:Bounds x="1382" y="222" width="36" height="36" />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

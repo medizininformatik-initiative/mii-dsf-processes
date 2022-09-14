@@ -55,7 +55,7 @@ public class PrepareExecution extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in task with id='" + task.getId() + "'"));
 	}
 
 	private String getCosIdentifier(Task task)
@@ -65,7 +65,7 @@ public class PrepareExecution extends AbstractServiceDelegate
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER)
 				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue).findFirst()
 				.orElseThrow(
-						() -> new RuntimeException("No COS identifier found in Task with id='" + task.getId() + "'"));
+						() -> new RuntimeException("No COS-identifier found in Task with id='" + task.getId() + "'"));
 	}
 
 	private String getContractLocation(Task task)
@@ -74,6 +74,6 @@ public class PrepareExecution extends AbstractServiceDelegate
 				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
-						"No project identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in task with id='" + task.getId() + "'"));
 	}
 }

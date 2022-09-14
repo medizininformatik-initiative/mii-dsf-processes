@@ -15,6 +15,7 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
@@ -36,13 +37,33 @@ public class DownloadData extends AbstractServiceDelegate
 	protected void doExecute(DelegateExecution execution) throws Exception
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
+		String sendingOrganization = task.getRequester().getIdentifier().getValue();
+		String projectIdentifier = getProjectIdentifier(task);
 
 		IdType dataSetReference = getDataSetReference(task);
-		logger.info("Downloading Binary with id='{}'...", dataSetReference.getValue());
+
+		logger.info("Downloading Binary with id='{}' from organization='{}' for project-identifier='{}'",
+				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
 				Variables.byteArrayValue(bundleEncrypted));
+
+		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
+				Variables.stringValue(projectIdentifier));
+	}
+
+	private String getProjectIdentifier(Task task)
+	{
+		return task.getInput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER.equals(c.getSystem())
+								&& ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER
+										.equals(c.getCode())))
+				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
+				.filter(i -> ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getSystem()))
+				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
+						"No project-identifier present in task with id='" + task.getId() + "'"));
 	}
 
 	private IdType getDataSetReference(Task task)

@@ -70,6 +70,7 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 		binaryToTransmit.setId(UUID.randomUUID().toString());
 
 		DocumentReference documentReferenceToTransmit = new DocumentReference().setStatus(CURRENT).setDocStatus(FINAL);
+		documentReferenceToTransmit.setId(UUID.randomUUID().toString());
 		documentReferenceToTransmit.getMasterIdentifier()
 				.setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER).setValue(projectIdentifier);
 		documentReferenceToTransmit.addAuthor().setType(ResourceType.Organization.name()).getIdentifier()
@@ -85,7 +86,6 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 				.setMethod(Bundle.HTTPVerb.POST).setUrl(ResourceType.DocumentReference.name());
 		bundle.addEntry().setResource(binaryToTransmit).setFullUrl("urn:uuid:" + binaryToTransmit.getId()).getRequest()
 				.setMethod(Bundle.HTTPVerb.POST).setUrl(ResourceType.Binary.name());
-
 
 		return bundle;
 	}

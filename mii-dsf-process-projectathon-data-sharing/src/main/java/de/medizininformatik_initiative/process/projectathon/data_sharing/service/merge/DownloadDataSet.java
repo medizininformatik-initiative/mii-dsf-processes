@@ -35,10 +35,14 @@ public class DownloadDataSet extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution) throws Exception
 	{
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		Task task = getCurrentTaskFromExecutionVariables();
+		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 
 		IdType dataSetReference = getDataSetReference(task);
-		logger.info("Downloading Binary with id='{}'...", dataSetReference.getValue());
+		logger.info("Downloading Binary with id='{}' from organization='{}' for project-identifier='{}'",
+				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,

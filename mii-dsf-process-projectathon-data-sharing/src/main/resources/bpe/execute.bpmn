@@ -79,10 +79,18 @@
   <bpmn:message id="Message_07oua04" name="sendDataSet" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_executeDataSharing">
-      <bpmndi:BPMNShape id="TextAnnotation_0zbeerd_di" bpmnElement="TextAnnotation_0zbeerd">
-        <dc:Bounds x="440" y="60" width="170" height="40" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0fabv9h_di" bpmnElement="Flow_0fabv9h">
+        <di:waypoint x="1140" y="187" />
+        <di:waypoint x="1200" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f1mofe_di" bpmnElement="Flow_1f1mofe">
+        <di:waypoint x="810" y="187" />
+        <di:waypoint x="880" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l4r73o_di" bpmnElement="Flow_0l4r73o">
+        <di:waypoint x="410" y="187" />
+        <di:waypoint x="710" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ka75j2_di" bpmnElement="Flow_0ka75j2">
         <di:waypoint x="1470" y="187" />
         <di:waypoint x="1540" y="187" />
@@ -115,18 +123,24 @@
         <di:waypoint x="218" y="187" />
         <di:waypoint x="310" y="187" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0l4r73o_di" bpmnElement="Flow_0l4r73o">
-        <di:waypoint x="410" y="187" />
-        <di:waypoint x="710" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1f1mofe_di" bpmnElement="Flow_1f1mofe">
-        <di:waypoint x="810" y="187" />
-        <di:waypoint x="880" y="187" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fabv9h_di" bpmnElement="Flow_0fabv9h">
-        <di:waypoint x="1140" y="187" />
-        <di:waypoint x="1200" y="187" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
+        <dc:Bounds x="182" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="212" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ne2wp_di" bpmnElement="selectDataSetTarget">
+        <dc:Bounds x="710" y="147" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lgr1ug_di" bpmnElement="prepareExecution">
+        <dc:Bounds x="310" y="147" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jne1fc_di" bpmnElement="readDataSet">
+        <dc:Bounds x="880" y="147" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_031k34k_di" bpmnElement="createDataSetBundle">
         <dc:Bounds x="1200" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -154,25 +168,11 @@
       <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
         <dc:Bounds x="2052" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05ne2wp_di" bpmnElement="selectDataSetTarget">
-        <dc:Bounds x="710" y="147" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jne1fc_di" bpmnElement="readDataSet">
-        <dc:Bounds x="880" y="147" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0koe0ly_di" bpmnElement="validateDataSet">
         <dc:Bounds x="1040" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
-        <dc:Bounds x="182" y="169" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="156" y="212" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0lgr1ug_di" bpmnElement="prepareExecution">
-        <dc:Bounds x="310" y="147" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_0zbeerd_di" bpmnElement="TextAnnotation_0zbeerd">
+        <dc:Bounds x="440" y="60" width="169.99588138385502" height="39.993478857770455" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_07woqe9_di" bpmnElement="Association_07woqe9">

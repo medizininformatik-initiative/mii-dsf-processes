@@ -26,6 +26,8 @@ public class DeleteDataSet extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		String cosIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		IdType binaryId = new IdType(
@@ -34,9 +36,9 @@ public class DeleteDataSet extends AbstractServiceDelegate
 		deletePermanently(binaryId);
 
 		logger.info(
-				"Permanently deleted encrypted Binary with id='{}' provided for project-identifier='{}' "
+				"Permanently deleted encrypted Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' "
 						+ "referenced in Task with id='{}'",
-				binaryId.getValue(), projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
+				binaryId.getValue(), cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
 	}
 
 	private void deletePermanently(IdType binaryId)

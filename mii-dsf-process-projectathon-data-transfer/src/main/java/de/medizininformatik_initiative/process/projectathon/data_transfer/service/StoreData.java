@@ -70,8 +70,10 @@ public class StoreData extends AbstractServiceDelegate
 		Binary binary = createBinary(bundleEncrypted, coordinatingSiteIdentifier);
 		String binaryId = storeBinary(binary);
 
-		logger.info("Stored Binary with id='{}' provided for project-identifier='{}' referenced in Task with id='{}'",
-				binaryId, projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
+		logger.info(
+				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				binaryId, coordinatingSiteIdentifier, projectIdentifier,
+				getLeadingTaskFromExecutionVariables().getId());
 
 		Target target = createTarget(coordinatingSiteIdentifier);
 
