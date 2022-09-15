@@ -2,6 +2,8 @@ package de.medizininformatik_initiative.processes.kds.client;
 
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Resource;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
@@ -18,9 +20,11 @@ public interface KdsClient
 
 	void testConnection();
 
-	Bundle searchDocumentReferences(String system, String code);
+	Resource readByIdType(IdType idType);
 
-	Binary readBinary(String url);
+	Binary readBinary(IdType idType);
+
+	Bundle searchDocumentReferences(String system, String code);
 
 	Bundle executeTransactionBundle(Bundle toExecute);
 

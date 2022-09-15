@@ -1,15 +1,36 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.util;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-public class MimeTypeHelper
+import ca.uhn.fhir.context.FhirContext;
+
+public class MimeTypeHelper implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(MimeTypeHelper.class);
+
+	private final FhirContext fhirContext;
+
+	public MimeTypeHelper(FhirContext fhirContext)
+	{
+		this.fhirContext = fhirContext;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		Objects.requireNonNull(fhirContext, "fhirContext");
+	}
 
 	/**
 	 * Detects the mime-type of the provided data and validates if the detected mime-type equals the declared mime-type.
@@ -42,7 +63,7 @@ public class MimeTypeHelper
 		}
 		catch (Exception exception)
 		{
-			throw new RuntimeException("Could not detect mime-type of binary", exception);
+			throw new RuntimeException("Could not detect mime-type of resource", exception);
 		}
 
 		if (!declaredMimeType.equals(detectedMimeType))
@@ -54,5 +75,37 @@ public class MimeTypeHelper
 			throw new RuntimeException("Declared base mime-type of '" + declaredMimeType.toString()
 					+ "' does not match detected base mime-type of '" + detectedMimeType.toString() + "'");
 		}
+	}
+
+	/**
+	 * Determines the mime-type given the provided resource
+	 *
+	 * @param resource
+	 *            from which the mime-type should be determined, not <code>null</code>
+	 * @return if the resource is of type {@link Binary} it returns {@link Binary#getContentType()} else
+	 *         <code>application/fhir+xml</code>
+	 */
+	public String getMimeType(Resource resource)
+	{
+		if (resource instanceof Binary)
+			return ((Binary) resource).getContentType();
+		else
+			return "application/fhir+xml";
+	}
+
+	/**
+	 * Transforms the resource to a byte[]
+	 *
+	 * @param resource
+	 *            which should be transformed to byte[], not <code>null</code>
+	 * @return if the resource is of type {@link Binary} it returns {@link Binary#getData()} else the String-XML
+	 *         representation of the resource as byte[]
+	 */
+	public byte[] getData(Resource resource)
+	{
+		if (resource instanceof Binary)
+			return ((Binary) resource).getData();
+		else
+			return fhirContext.newXmlParser().encodeResourceToString(resource).getBytes(StandardCharsets.UTF_8);
 	}
 }

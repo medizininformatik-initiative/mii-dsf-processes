@@ -16,7 +16,7 @@ public interface ConstantsDataTransfer
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "data-set-encrypted";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "data-set-reference";
 	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "document-reference";
-	String BPMN_EXECUTION_VARIABLE_BINARY = "binary";
+	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "data-resource";
 
 	String NAMINGSYSTEM_MII_PROJECT_IDENTIFIER = "http://medizininformatik-initiative.de/sid/project-identifier";
 

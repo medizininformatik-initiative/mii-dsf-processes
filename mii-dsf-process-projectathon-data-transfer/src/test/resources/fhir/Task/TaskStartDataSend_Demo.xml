@@ -55,7 +55,7 @@
       </type>
       <valueIdentifier>
             <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
-            <value value="Test_PROJECT" />
+            <value value="Test_PROJECT_CSV" />
       </valueIdentifier>
    </input>
 </Task>

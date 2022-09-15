@@ -78,7 +78,7 @@ public interface ConstantsDataSharing
 	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contract-location";
 
 	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "document-reference";
-	String BPMN_EXECUTION_VARIABLE_BINARY = "binary";
+	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "data-resource";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET = "data-set";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "data-set-encrypted";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "data-set-reference";

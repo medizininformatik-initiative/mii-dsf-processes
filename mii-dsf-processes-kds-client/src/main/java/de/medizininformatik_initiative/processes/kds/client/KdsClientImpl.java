@@ -6,11 +6,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
+import ca.uhn.fhir.rest.gclient.IReadTyped;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 import de.medizininformatik_initiative.processes.kds.client.logging.HapiClientLogger;
 
@@ -171,6 +174,35 @@ public class KdsClientImpl implements KdsClient
 	}
 
 	@Override
+	public Resource readByIdType(IdType idType)
+	{
+		IReadTyped<IBaseResource> readTyped = getGenericFhirClient().read().resource(idType.getResourceType());
+		Resource toReturn = readByIdType(readTyped, idType);
+
+		dataLogger.logResource("Read Resource from url=" + idType.getValue(), toReturn);
+
+		return toReturn;
+	}
+
+	private Resource readByIdType(IReadTyped<IBaseResource> readTyped, IdType idType)
+	{
+		if (idType.hasVersionIdPart())
+			return (Resource) readTyped.withIdAndVersion(idType.getIdPart(), idType.getVersionIdPart()).execute();
+		else
+			return (Resource) readTyped.withId(idType.getIdPart()).execute();
+	}
+
+	@Override
+	public Binary readBinary(IdType idType)
+	{
+		Binary toReturn = getGenericFhirClient().read().resource(Binary.class).withId(idType.getIdPart()).execute();
+
+		dataLogger.logResource("Read Binary from url=" + idType.getValue(), toReturn);
+
+		return toReturn;
+	}
+
+	@Override
 	public Bundle searchDocumentReferences(String system, String code)
 	{
 		Bundle toReturn = getGenericFhirClient().search().forResource(DocumentReference.class)
@@ -179,17 +211,6 @@ public class KdsClientImpl implements KdsClient
 
 		dataLogger.logResource("DocumentReference Search-Response Bundle based on system|code=" + system + "|" + code,
 				toReturn);
-
-		return toReturn;
-	}
-
-	@Override
-	public Binary readBinary(String url)
-	{
-		Binary toReturn = getGenericFhirClient().read().resource(Binary.class).withId(new IdType(url).getIdPart())
-				.execute();
-
-		dataLogger.logResource("Read Binary from url=" + url, toReturn);
 
 		return toReturn;
 	}

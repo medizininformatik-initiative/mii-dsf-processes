@@ -55,7 +55,7 @@ public class DataSendExampleStarter
 
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER)
-						.setValue("Test_PROJECT"))
+						.setValue("Test_PROJECT_CSV"))
 				.getType().addCoding().setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER);
 

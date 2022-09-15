@@ -5,6 +5,7 @@ import static org.hl7.fhir.r4.model.Bundle.BundleType.TRANSACTIONRESPONSE;
 import static org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.FINAL;
 import static org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.CURRENT;
 
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class KdsClientStub implements KdsClient
 	private final String localIdentifierValue;
 	private final String kdsServerBase;
 
-	KdsClientStub(FhirContext fhirContext, String localIdentifierValue)
+	public KdsClientStub(FhirContext fhirContext, String localIdentifierValue)
 	{
 		this.fhirContext = fhirContext;
 		this.localIdentifierValue = localIdentifierValue;
@@ -66,6 +68,32 @@ public class KdsClientStub implements KdsClient
 	}
 
 	@Override
+	public Resource readByIdType(IdType idType)
+	{
+		try
+		{
+			Class<?> clazz = Class.forName("org.hl7.fhir.r4.model." + idType.getResourceType());
+			Constructor<?> constructor = clazz.getConstructor();
+			return (Resource) constructor.newInstance();
+		}
+		catch (Exception exception)
+		{
+			throw new RuntimeException(
+					"Could not create instance of FHIR resource based on idType='" + idType.getValue() + "'",
+					exception);
+		}
+	}
+
+	@Override
+	public Binary readBinary(IdType idType)
+	{
+		Binary binary = new Binary().setContentType("text/csv").setData(getData());
+		binary.setId(idType.getIdPart());
+
+		return binary;
+	}
+
+	@Override
 	public Bundle searchDocumentReferences(String system, String code)
 	{
 		DocumentReference documentReference = new DocumentReference().setStatus(CURRENT).setDocStatus(FINAL);
@@ -81,15 +109,6 @@ public class KdsClientStub implements KdsClient
 		bundle.addEntry().setResource(documentReference);
 
 		return bundle;
-	}
-
-	@Override
-	public Binary readBinary(String url)
-	{
-		Binary binary = new Binary().setContentType("text/csv").setData(getData());
-		binary.setId(new IdType(url).getIdPart());
-
-		return binary;
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public class TransferDataConfig
 	@Bean
 	public MimeTypeHelper mimeTypeHelper()
 	{
-		return new MimeTypeHelper();
+		return new MimeTypeHelper(fhirContext);
 	}
 
 	// projectathonDataSend

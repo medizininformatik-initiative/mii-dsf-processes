@@ -132,6 +132,12 @@ public class DataSharingConfig
 	}
 
 	@Bean
+	public MimeTypeHelper mimeTypeHelper()
+	{
+		return new MimeTypeHelper(fhirContext);
+	}
+
+	@Bean
 	public ValidateDataSetExecute validateDataSetExecute()
 	{
 		return new ValidateDataSetExecute(clientProvider, taskHelper, readAccessHelper, mimeTypeHelper());
@@ -194,12 +200,6 @@ public class DataSharingConfig
 	{
 		return new DecryptDataSet(clientProvider, taskHelper, readAccessHelper, organizationProvider, keyProvider(),
 				kdsFhirClientConfig.dataLogger());
-	}
-
-	@Bean
-	public MimeTypeHelper mimeTypeHelper()
-	{
-		return new MimeTypeHelper();
 	}
 
 	@Bean

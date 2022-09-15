@@ -13,11 +13,10 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
 import org.hl7.fhir.r4.model.Attachment;
-import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +53,12 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 
 		Task task = getLeadingTaskFromExecutionVariables();
 		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		Binary binary = readBinary(documentReference, task.getId());
+		Resource resource = readAttachment(documentReference, task.getId());
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE,
 				FhirResourceValues.create(documentReference));
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_BINARY, FhirResourceValues.create(binary));
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE,
+				FhirResourceValues.create(resource));
 	}
 
 	private DocumentReference readDocumentReference(String projectIdentifier, String taskId)
@@ -81,7 +81,15 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		return documentReferences.get(0);
 	}
 
-	private Binary readBinary(DocumentReference documentReference, String taskId)
+	private Resource readAttachment(DocumentReference documentReference, String taskId)
+	{
+		String url = getAttachmentUrl(documentReference, taskId);
+		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(url, documentReference.getId(), taskId);
+
+		return readAttachment(urlIdType);
+	}
+
+	private String getAttachmentUrl(DocumentReference documentReference, String taskId)
 	{
 		List<String> urls = Stream.of(documentReference).filter(DocumentReference::hasContent)
 				.flatMap(dr -> dr.getContent().stream())
@@ -98,30 +106,36 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 					"Found {} attachment URLs in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
 					urls.size(), documentReference.getId(), taskId, urls.get(0));
 
-		if (!validBinaryUrl(urls.get(0)))
+		return urls.get(0);
+	}
+
+	private IdType checkValidKdsFhirStoreUrlAndGetIdType(String url, String documentReferenceId, String taskId)
+	{
+		try
 		{
-			throw new IllegalArgumentException(
-					"Attachment URL " + urls.get(0) + " in DocumentReference with id='" + documentReference.getId()
-							+ "' belonging to task with id='" + taskId + "' not a valid Binary reference");
+			IdType idType = new IdType(url);
+			String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
+
+			// expecting no Base URL or, Base URL equal to KDS client Base URL
+			boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
+			boolean isResourceReference = idType.hasResourceType() && idType.hasIdPart();
+
+			if (hasValidBaseUrl && isResourceReference)
+				return idType;
+			else
+				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id='"
+						+ documentReferenceId + "' belonging to task with id='" + taskId
+						+ "' is not a valid KDS FHIR store reference");
 		}
-
-		return readBinary(urls.get(0));
+		catch (Exception exception)
+		{
+			logger.error("Could not check if attachment url is a valid KDS FHIR store url: {}", exception.getMessage());
+			throw exception;
+		}
 	}
 
-	private boolean validBinaryUrl(String url)
+	private Resource readAttachment(IdType idType)
 	{
-		IdType idType = new IdType(url);
-		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
-
-		// expecting no Base URL or, Base URL equal to KDS client Base URL
-		boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
-		boolean isBinaryReference = ResourceType.Binary.name().equals(idType.getResourceType());
-
-		return hasValidBaseUrl && isBinaryReference;
-	}
-
-	private Binary readBinary(String url)
-	{
-		return kdsClientFactory.getKdsClient().readBinary(url);
+		return kdsClientFactory.getKdsClient().readByIdType(idType);
 	}
 }

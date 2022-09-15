@@ -7,7 +7,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
-import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
@@ -34,12 +34,13 @@ public class ValidateDataSetExecute extends AbstractServiceDelegate implements I
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Binary binary = (Binary) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_BINARY);
+		Resource resource = (Resource) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
 
-		String mimeTypeBinary = binary.getContentType();
-		byte[] dataBinary = binary.getData();
+		String mimeType = mimeTypeHelper.getMimeType(resource);
+		byte[] data = mimeTypeHelper.getData(resource);
 
-		mimeTypeHelper.validate(dataBinary, mimeTypeBinary);
+		mimeTypeHelper.validate(data, mimeType);
 	}
 }
 

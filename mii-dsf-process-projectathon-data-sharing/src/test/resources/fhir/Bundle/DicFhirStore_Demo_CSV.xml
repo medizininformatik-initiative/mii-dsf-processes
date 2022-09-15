@@ -6,7 +6,7 @@
 			<DocumentReference xmlns="http://hl7.org/fhir">
 				<masterIdentifier>
 					<system value="http://medizininformatik-initiative.de/sid/project-identifier"/>
-					<value value="Test_PROJECT"/>
+					<value value="Test_PROJECT_CSV"/>
 				</masterIdentifier>
 				<status value="current"/>
 				<docStatus value="final"/>
@@ -14,7 +14,7 @@
 					<type value="Organization"/>
 					<identifier>
 						<system value="http://highmed.org/sid/organization-identifier"/>
-						<value value="Test_DIC"/>
+						<value value="Test_DIC1"/>
 					</identifier>
 				</author>
 				<date value="2022-08-01T10:00:00+01:00"/>
@@ -27,12 +27,12 @@
 			</DocumentReference>
 		</resource>
 		<request>
-			<method value="PUT" />
-			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|Test_PROJECT" />
+			<method value="PUT"/>
+			<url value="DocumentReference?identifier=http://medizininformatik-initiative.de/sid/project-identifier|Test_PROJECT_CSV"/>
 		</request>
 	</entry>
 	<entry>
-		<fullUrl value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi" />
+		<fullUrl value="urn:uuid:2b7267f6-fd7c-481a-b5ec-52f55dfc49bi"/>
 		<resource>
 			<Binary xmlns="http://hl7.org/fhir">
 				<contentType value="text/csv"/>
@@ -40,8 +40,8 @@
 			</Binary>
 		</resource>
 		<request>
-			<method value="POST" />
-			<url value="Binary" />
+			<method value="POST"/>
+			<url value="Binary"/>
 		</request>
 	</entry>
 </Bundle>

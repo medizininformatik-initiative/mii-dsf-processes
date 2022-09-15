@@ -1,12 +1,16 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute;
 
+import static java.util.stream.Collectors.toList;
+
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.hl7.fhir.r4.model.Bundle.BundleType.TRANSACTION;
 import static org.hl7.fhir.r4.model.DocumentReference.ReferredDocumentStatus.FINAL;
 import static org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus.CURRENT;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -15,10 +19,13 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
-import org.hl7.fhir.r4.model.Binary;
+import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
@@ -26,6 +33,8 @@ import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class CreateDataSetBundle extends AbstractServiceDelegate implements InitializingBean
 {
+	private static final Logger logger = LoggerFactory.getLogger(CreateDataSetBundle.class);
+
 	private final OrganizationProvider organizationProvider;
 	private final DataLogger dataLogger;
 
@@ -55,19 +64,19 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 
 		DocumentReference documentReference = (DocumentReference) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
-		Binary binary = (Binary) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_BINARY);
-		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, binary);
+		Resource resource = (Resource) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
+		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, resource);
 
 		dataLogger.logResource("Created data-set Bundle", bundle);
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET, FhirResourceValues.create(bundle));
 	}
 
-	private Bundle createTransactionBundle(String projectIdentifier, DocumentReference documentReference, Binary binary)
+	private Bundle createTransactionBundle(String projectIdentifier, DocumentReference documentReference,
+			Resource resource)
 	{
-		Binary binaryToTransmit = new Binary().setContentType(binary.getContentType());
-		binaryToTransmit.setContent(binary.getContent());
-		binaryToTransmit.setId(UUID.randomUUID().toString());
+		Resource attachmentToTransmit = resource.setId(UUID.randomUUID().toString());
 
 		DocumentReference documentReferenceToTransmit = new DocumentReference().setStatus(CURRENT).setDocStatus(FINAL);
 		documentReferenceToTransmit.setId(UUID.randomUUID().toString());
@@ -77,16 +86,40 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
 				.setValue(organizationProvider.getLocalIdentifierValue());
 		documentReferenceToTransmit.setDate(documentReference.getDate());
-		documentReferenceToTransmit.addContent().getAttachment().setContentType(binary.getContentType())
-				.setUrl("urn:uuid:" + binaryToTransmit.getId());
+
+		String contentType = getFirstAttachmentContentType(documentReference);
+		documentReferenceToTransmit.addContent().getAttachment().setContentType(contentType)
+				.setUrl("urn:uuid:" + resource.getId());
 
 		Bundle bundle = new Bundle().setType(TRANSACTION);
 		bundle.addEntry().setResource(documentReferenceToTransmit)
 				.setFullUrl("urn:uuid:" + documentReferenceToTransmit.getId()).getRequest()
 				.setMethod(Bundle.HTTPVerb.POST).setUrl(ResourceType.DocumentReference.name());
-		bundle.addEntry().setResource(binaryToTransmit).setFullUrl("urn:uuid:" + binaryToTransmit.getId()).getRequest()
-				.setMethod(Bundle.HTTPVerb.POST).setUrl(ResourceType.Binary.name());
+		bundle.addEntry().setResource(attachmentToTransmit).setFullUrl("urn:uuid:" + attachmentToTransmit.getId())
+				.getRequest().setMethod(Bundle.HTTPVerb.POST).setUrl(attachmentToTransmit.getResourceType().name());
 
 		return bundle;
+	}
+
+	private String getFirstAttachmentContentType(DocumentReference documentReference)
+	{
+		List<Attachment> attachments = Stream.of(documentReference).filter(DocumentReference::hasContent)
+				.flatMap(dr -> dr.getContent().stream())
+				.filter(DocumentReference.DocumentReferenceContentComponent::hasAttachment)
+				.map(DocumentReference.DocumentReferenceContentComponent::getAttachment).filter(Attachment::hasUrl)
+				.collect(toList());
+
+		if (attachments.size() < 1)
+			throw new IllegalArgumentException(
+					"Could not find any attachment with url in DocumentReference with id='" + documentReference.getId()
+							+ "' belonging to task with id='" + getLeadingTaskFromExecutionVariables().getId() + "'");
+
+		if (attachments.size() > 1)
+			logger.warn(
+					"Found {} attachments in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					attachments.size(), documentReference.getId(), getLeadingTaskFromExecutionVariables().getId(),
+					attachments.get(0));
+
+		return attachments.get(0).getContentType();
 	}
 }

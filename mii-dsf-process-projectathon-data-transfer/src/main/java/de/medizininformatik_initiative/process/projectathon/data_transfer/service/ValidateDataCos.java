@@ -11,11 +11,11 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
-import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
@@ -88,17 +88,18 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 			throw new RuntimeException("DocumentReference contains " + countMi + " project-identifiers (expected 1)");
 		}
 
-		List<Binary> binaries = entries.stream().map(Bundle.BundleEntryComponent::getResource)
-				.filter(r -> r instanceof Binary).map(r -> (Binary) r).collect(Collectors.toList());
+		List<Resource> resources = entries.stream().map(Bundle.BundleEntryComponent::getResource)
+				.filter(r -> r != documentReferences.get(0)).collect(Collectors.toList());
 
-		long countB = binaries.size();
-		if (countB != 1)
+		long countR = resources.size();
+		if (countR != 1)
 		{
-			throw new RuntimeException("Bundle contains " + countB + " Binaries (expected 1)");
+			throw new RuntimeException("Bundle contains " + countR + " Resources (expected 1)");
 		}
 
-		byte[] dataB = binaries.get(0).getData();
-		String mimeTypeB = binaries.get(0).getContentType();
-		mimeTypeHelper.validate(dataB, mimeTypeB);
+		Resource resource = resources.get(0);
+		String mimeTypeR = mimeTypeHelper.getMimeType(resource);
+		byte[] dataR = mimeTypeHelper.getData(resource);
+		mimeTypeHelper.validate(dataR, mimeTypeR);
 	}
 }

@@ -195,6 +195,7 @@ services:
       - 127.0.0.1:8080:8080
     environment:
       TZ: Europe/Berlin
+      HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
     networks:
       dic1-bpe-backend:
         aliases:
@@ -326,6 +327,7 @@ services:
       - 127.0.0.1:8081:8080
     environment:
       TZ: Europe/Berlin
+      HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
     networks:
       dic2-bpe-backend:
         aliases:
@@ -469,6 +471,7 @@ services:
       - 127.0.0.1:8082:8080
     environment:
       TZ: Europe/Berlin
+      HAPI_FHIR_ALLOWED_BUNDLE_TYPES: COLLECTION,DOCUMENT,MESSAGE,TRANSACTION,TRANSACTIONRESPONSE,BATCH,BATCHRESPONSE,HISTORY,SEARCHSET
     networks:
       cos-bpe-backend:
         aliases:
