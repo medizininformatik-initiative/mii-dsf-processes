@@ -10,7 +10,7 @@
       <type value="Organization" />
       <identifier>
          <system value="http://highmed.org/sid/organization-identifier" />
-         <value value="Test_DIC" />
+         <value value="Test_DIC1" />
       </identifier>
    </requester>
    <restriction>
@@ -18,7 +18,7 @@
          <type value="Organization" />
          <identifier>
             <system value="http://highmed.org/sid/organization-identifier" />
-            <value value="Test_DIC" />
+            <value value="Test_DIC1" />
          </identifier>
       </recipient>
    </restriction>
@@ -55,7 +55,7 @@
       </type>
       <valueIdentifier>
             <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
-            <value value="Test_PROJECT_CSV" />
+            <value value="Test_PROJECT_Bundle" />
       </valueIdentifier>
    </input>
 </Task>
