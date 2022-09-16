@@ -1,0 +1,61 @@
+<StructureDefinition xmlns="http://hl7.org/fhir">
+	<meta>
+		<tag>
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
+			<code value="ALL" />
+		</tag>
+	</meta>
+	<url value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-medic-identifier" />
+	<!-- version managed by bpe -->
+	<version value="#{version}" />
+	<name value="MedicIdentifier" />
+	<!-- status managed by bpe -->
+	<status value="unknown" />
+	<experimental value="false" />
+	<!-- date managed by bpe -->
+	<date value="#{date}" />
+	<fhirVersion value="4.0.1" />
+	<mapping>
+		<identity value="rim" />
+		<uri value="http://hl7.org/v3" />
+		<name value="RIM Mapping" />
+	</mapping>
+	<kind value="complex-type" />
+	<abstract value="false" />
+	<context>
+		<type value="element" />
+		<expression value="BackboneElement" />
+	</context>
+	<type value="Extension" />
+	<baseDefinition value="http://hl7.org/fhir/StructureDefinition/Extension" />
+	<derivation value="constraint" />
+	<differential>
+		<element id="Extension">
+			<path value="Extension" />
+			<min value="1" />
+			<max value="1" />
+		</element>
+		<element id="Extension.url">
+			<path value="Extension.url" />
+			<fixedUri value="http://medizininformatik-initiative.de/fhir/Extension/medic-identifier" />
+		</element>
+		<element id="Extension.value[x]">
+			<path value="Extension.value[x]" />
+			<min value="1" />
+			<max value="1" />
+			<type>
+				<code value="Reference" />
+				<targetProfile value="http://highmed.org/fhir/StructureDefinition/organization" />
+			</type>
+		</element>
+		<element id="Extension.value[x].reference">
+			<path value="Extension.value[x].reference" />
+			<max value="0" />
+		</element>
+		<element id="Extension.value[x].identifier">
+			<path value="Extension.value[x].identifier" />
+			<min value="1" />
+			<max value="1" />
+		</element>
+	</differential>
+</StructureDefinition>

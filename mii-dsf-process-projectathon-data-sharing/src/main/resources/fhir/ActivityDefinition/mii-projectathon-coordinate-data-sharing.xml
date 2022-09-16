@@ -59,6 +59,57 @@
 	<extension
 			url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
 		<extension url="message-name">
+			<valueString value="sendReceivedDataSet" />
+		</extension>
+		<extension url="task-profile">
+			<valueCanonical
+					value="http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-received-data-set|#{version}" />
+		</extension>
+		<extension url="requester">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="COS" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="REMOTE_ROLE" />
+			</valueCoding>
+		</extension>
+		<extension url="recipient">
+			<valueCoding>
+				<extension url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization-consortium-role">
+					<extension url="consortium">
+						<valueIdentifier>
+							<system value="http://highmed.org/sid/organization-identifier" />
+							<value value="medizininformatik-initiative.de" />
+						</valueIdentifier>
+					</extension>
+					<extension url="role">
+						<valueCoding>
+							<system value="http://highmed.org/fhir/CodeSystem/organization-role" />
+							<code value="HRP" />
+						</valueCoding>
+					</extension>
+				</extension>
+				<system value="http://highmed.org/fhir/CodeSystem/process-authorization" />
+				<code value="LOCAL_ROLE" />
+			</valueCoding>
+		</extension>
+	</extension>
+
+	<extension
+			url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
+		<extension url="message-name">
 			<valueString value="sendMergedDataSet" />
 		</extension>
 		<extension url="task-profile">

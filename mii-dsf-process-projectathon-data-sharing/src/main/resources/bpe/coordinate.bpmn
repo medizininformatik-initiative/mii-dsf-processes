@@ -13,13 +13,13 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0xadsy1" sourceRef="selectCosTarget" targetRef="sendMergeDataSharing" />
     <bpmn:endEvent id="coordinateDataSharingEndEvent">
-      <bpmn:incoming>Flow_00ok4yz</bpmn:incoming>
+      <bpmn:incoming>Flow_1gu8xzh</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="selectCosTarget" name="select cos target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget">
       <bpmn:incoming>Flow_0et3g5v</bpmn:incoming>
       <bpmn:outgoing>Flow_0xadsy1</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0lny8fc" sourceRef="sendExecuteDataSharing" targetRef="receiveMergedDataSet" />
+    <bpmn:sequenceFlow id="Flow_0lny8fc" sourceRef="sendExecuteDataSharing" targetRef="Gateway_0txto30" />
     <bpmn:sendTask id="sendExecuteDataSharing" name="send execute data sharing" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendExecuteDataSharing">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -44,9 +44,9 @@
       <bpmn:incoming>Flow_0xadsy1</bpmn:incoming>
       <bpmn:outgoing>Flow_12n8hz7</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_00ok4yz" sourceRef="receiveMergedDataSet" targetRef="coordinateDataSharingEndEvent" />
+    <bpmn:sequenceFlow id="Flow_00ok4yz" sourceRef="receiveMergedDataSet" targetRef="logMissingDataSets" />
     <bpmn:intermediateCatchEvent id="receiveMergedDataSet" name="receive merged data-set">
-      <bpmn:incoming>Flow_0lny8fc</bpmn:incoming>
+      <bpmn:incoming>Flow_06c1pfq</bpmn:incoming>
       <bpmn:outgoing>Flow_00ok4yz</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1k93pld" messageRef="Message_3lh87td" />
     </bpmn:intermediateCatchEvent>
@@ -55,71 +55,133 @@
       <bpmn:incoming>Flow_031nt59</bpmn:incoming>
       <bpmn:outgoing>Flow_0ilv3j9</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_06c1pfq" sourceRef="Gateway_0txto30" targetRef="receiveMergedDataSet" />
+    <bpmn:eventBasedGateway id="Gateway_0txto30">
+      <bpmn:incoming>Flow_0lny8fc</bpmn:incoming>
+      <bpmn:incoming>Flow_1hw65h4</bpmn:incoming>
+      <bpmn:outgoing>Flow_06c1pfq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ydqeyc</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="receiveReceivedDataSet" name="receive received data-set">
+      <bpmn:incoming>Flow_0ydqeyc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0133tn1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_19771fo" messageRef="Message_3e5t313" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0ydqeyc" sourceRef="Gateway_0txto30" targetRef="receiveReceivedDataSet" />
+    <bpmn:sequenceFlow id="Flow_0133tn1" sourceRef="receiveReceivedDataSet" targetRef="logReceivedDataSet" />
+    <bpmn:sequenceFlow id="Flow_1hw65h4" sourceRef="logReceivedDataSet" targetRef="Gateway_0txto30" />
+    <bpmn:serviceTask id="logReceivedDataSet" name="log received data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet">
+      <bpmn:incoming>Flow_0133tn1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hw65h4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1gu8xzh" sourceRef="logMissingDataSets" targetRef="coordinateDataSharingEndEvent" />
+    <bpmn:serviceTask id="logMissingDataSets" name="log missing data-sets" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate">
+      <bpmn:incoming>Flow_00ok4yz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gu8xzh</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_2tdo6h2" name="coordinateDataSharing" />
   <bpmn:message id="Message_3lh87td" name="sendMergedDataSet" />
+  <bpmn:message id="Message_3e5t313" name="sendReceivedDataSet" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_coordinateDataSharing">
       <bpmndi:BPMNEdge id="Flow_0ilv3j9_di" bpmnElement="Flow_0ilv3j9">
-        <di:waypoint x="370" y="117" />
-        <di:waypoint x="430" y="117" />
+        <di:waypoint x="370" y="197" />
+        <di:waypoint x="430" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00ok4yz_di" bpmnElement="Flow_00ok4yz">
-        <di:waypoint x="1138" y="117" />
-        <di:waypoint x="1192" y="117" />
+        <di:waypoint x="1158" y="100" />
+        <di:waypoint x="1230" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12n8hz7_di" bpmnElement="Flow_12n8hz7">
-        <di:waypoint x="870" y="117" />
-        <di:waypoint x="940" y="117" />
+        <di:waypoint x="870" y="197" />
+        <di:waypoint x="940" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lny8fc_di" bpmnElement="Flow_0lny8fc">
-        <di:waypoint x="1040" y="117" />
-        <di:waypoint x="1102" y="117" />
+        <di:waypoint x="1040" y="197" />
+        <di:waypoint x="1115" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xadsy1_di" bpmnElement="Flow_0xadsy1">
-        <di:waypoint x="700" y="117" />
-        <di:waypoint x="770" y="117" />
+        <di:waypoint x="700" y="197" />
+        <di:waypoint x="770" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0et3g5v_di" bpmnElement="Flow_0et3g5v">
-        <di:waypoint x="530" y="117" />
-        <di:waypoint x="600" y="117" />
+        <di:waypoint x="530" y="197" />
+        <di:waypoint x="600" y="197" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
-        <di:waypoint x="208" y="117" />
-        <di:waypoint x="270" y="117" />
+        <di:waypoint x="208" y="197" />
+        <di:waypoint x="270" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06c1pfq_di" bpmnElement="Flow_06c1pfq">
+        <di:waypoint x="1140" y="172" />
+        <di:waypoint x="1140" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ydqeyc_di" bpmnElement="Flow_0ydqeyc">
+        <di:waypoint x="1140" y="222" />
+        <di:waypoint x="1140" y="272" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0133tn1_di" bpmnElement="Flow_0133tn1">
+        <di:waypoint x="1158" y="290" />
+        <di:waypoint x="1230" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hw65h4_di" bpmnElement="Flow_1hw65h4">
+        <di:waypoint x="1280" y="250" />
+        <di:waypoint x="1280" y="197" />
+        <di:waypoint x="1165" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gu8xzh_di" bpmnElement="Flow_1gu8xzh">
+        <di:waypoint x="1330" y="100" />
+        <di:waypoint x="1412" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="coordinateDataSharingStartEvent">
-        <dc:Bounds x="172" y="99" width="36" height="36" />
+        <dc:Bounds x="172" y="179" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="152" y="142" width="76" height="40" />
+          <dc:Bounds x="152" y="222" width="76" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1cenwv5_di" bpmnElement="selectDicTarget">
-        <dc:Bounds x="430" y="77" width="100" height="80" />
+        <dc:Bounds x="430" y="157" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1v96c39_di" bpmnElement="coordinateDataSharingEndEvent">
-        <dc:Bounds x="1192" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00qrlc0_di" bpmnElement="selectCosTarget">
-        <dc:Bounds x="600" y="77" width="100" height="80" />
+        <dc:Bounds x="600" y="157" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0b54jtx_di" bpmnElement="sendExecuteDataSharing">
-        <dc:Bounds x="940" y="77" width="100" height="80" />
+        <dc:Bounds x="940" y="157" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12272pm_di" bpmnElement="sendMergeDataSharing">
-        <dc:Bounds x="770" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1o2ar1q_di" bpmnElement="receiveMergedDataSet">
-        <dc:Bounds x="1102" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1082" y="142" width="76" height="27" />
-        </bpmndi:BPMNLabel>
+        <dc:Bounds x="770" y="157" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0lgr1ug_di" bpmnElement="prepareCoordination">
-        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <dc:Bounds x="270" y="157" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0dw3pf7_di" bpmnElement="Gateway_0txto30">
+        <dc:Bounds x="1115" y="172" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o2ar1q_di" bpmnElement="receiveMergedDataSet">
+        <dc:Bounds x="1122" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1102" y="44.5" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15w7czx_di" bpmnElement="receiveReceivedDataSet">
+        <dc:Bounds x="1122" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1100" y="315" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_194uyqv_di" bpmnElement="logReceivedDataSet">
+        <dc:Bounds x="1230" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1v96c39_di" bpmnElement="coordinateDataSharingEndEvent">
+        <dc:Bounds x="1412" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11bajvv_di" bpmnElement="logMissingDataSets">
+        <dc:Bounds x="1230" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

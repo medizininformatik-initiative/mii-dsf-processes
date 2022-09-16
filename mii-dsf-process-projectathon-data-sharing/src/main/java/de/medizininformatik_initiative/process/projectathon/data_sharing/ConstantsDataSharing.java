@@ -41,13 +41,20 @@ public interface ConstantsDataSharing
 
 	String SEND_DATA_SET_TASK_PROFILE = "http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-data-set";
 	String SEND_DATA_SET_TASK_PROFILE_WITH_LATEST_VERSION = SEND_DATA_SET_TASK_PROFILE + "|" + VERSION;
-	String SEND_DATA_SET_PROCESS_URI = "http://medizininformatik-initiative.de/bpe/Process/sendDataSet";
+	String SEND_DATA_SET_PROCESS_URI = "http://medizininformatik-initiative.de/bpe/Process/mergeDataSharing";
 	String SEND_DATA_SET_PROCESS_URI_WITH_LATEST_VERSION = SEND_DATA_SET_PROCESS_URI + "/" + VERSION;
 	String SEND_DATA_SET_MESSAGE_NAME = "sendDataSet";
 
+	String SEND_RECEIVED_DATA_SET_TASK_PROFILE = "http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-received-data-set";
+	String SEND_RECEIVED_DATA_SET_TASK_PROFILE_WITH_LATEST_VERSION = SEND_RECEIVED_DATA_SET_TASK_PROFILE + "|"
+			+ VERSION;
+	String SEND_RECEIVED_DATA_SET_PROCESS_URI = "http://medizininformatik-initiative.de/bpe/Process/coordinateDataSharing";
+	String SEND_RECEIVED_DATA_SET_PROCESS_URI_WITH_LATEST_VERSION = SEND_RECEIVED_DATA_SET_PROCESS_URI + "/" + VERSION;
+	String SEND_RECEIVED_DATA_SET_MESSAGE_NAME = "sendReceivedDataSet";
+
 	String SEND_MERGED_DATA_SET_TASK_PROFILE = "http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-merged-data-set";
 	String SEND_MERGED_DATA_SET_TASK_PROFILE_WITH_LATEST_VERSION = SEND_MERGED_DATA_SET_TASK_PROFILE + "|" + VERSION;
-	String SEND_MERGED_DATA_SET_PROCESS_URI = "http://medizininformatik-initiative.de/bpe/Process/sendMergedDataSet";
+	String SEND_MERGED_DATA_SET_PROCESS_URI = "http://medizininformatik-initiative.de/bpe/Process/coordinateDataSharing";
 	String SEND_MERGED_DATA_SET_PROCESS_URI_WITH_LATEST_VERSION = SEND_MERGED_DATA_SET_PROCESS_URI + "/" + VERSION;
 	String SEND_MERGED_DATA_SET_MESSAGE_NAME = "sendMergedDataSet";
 
@@ -70,6 +77,10 @@ public interface ConstantsDataSharing
 	// NAMINGSYSTEM PROJECT IDENTIFIER
 
 	String NAMINGSYSTEM_PROJECT_IDENTIFIER = "http://medizininformatik-initiative.de/sid/project-identifier";
+
+	// EXTENSIONS
+
+	String EXTENSION_URL_MEDIC_IDENTIFIER = "http://medizininformatik-initiative.de/fhir/Extension/medic-identifier";
 
 	// BPMN VARIABLES
 

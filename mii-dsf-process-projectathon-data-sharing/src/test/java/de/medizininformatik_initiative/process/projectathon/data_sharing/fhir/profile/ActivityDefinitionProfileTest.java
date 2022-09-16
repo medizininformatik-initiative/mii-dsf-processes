@@ -29,6 +29,7 @@ public class ActivityDefinitionProfileTest
 	public static final ValidationSupportRule validationRule = new ValidationSupportRule(
 			DataSharingProcessPluginDefinition.VERSION, DataSharingProcessPluginDefinition.RELEASE_DATE,
 			Arrays.asList("highmed-activity-definition-0.5.0.xml", "highmed-extension-process-authorization-0.5.0.xml",
+					"mii-projectathon-extension-medic-identifier.xml",
 					"highmed-extension-process-authorization-consortium-role-0.5.0.xml",
 					"highmed-extension-process-authorization-organization-0.5.0.xml",
 					"highmed-coding-process-authorization-local-all-0.5.0.xml",

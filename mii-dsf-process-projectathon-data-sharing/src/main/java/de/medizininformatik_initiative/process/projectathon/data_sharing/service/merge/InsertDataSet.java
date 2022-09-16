@@ -4,12 +4,17 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.highmed.dsf.fhir.variables.Target;
+import org.highmed.dsf.fhir.variables.Targets;
+import org.highmed.dsf.fhir.variables.TargetsValues;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
@@ -53,7 +58,8 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String sendingOrganization = getCurrentTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
+		String organizationIdentifier = getCurrentTaskFromExecutionVariables().getRequester().getIdentifier()
+				.getValue();
 
 		try
 		{
@@ -69,14 +75,20 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 					.filter(i -> ResourceType.DocumentReference.name().equals(i.getResourceType()))
 					.forEach(this::addOutputToCurrentTask);
 
-			idsOfCreatedResources.forEach(id -> toLogMessage(id, sendingOrganization, projectIdentifier));
+			idsOfCreatedResources.forEach(id -> toLogMessage(id, organizationIdentifier, projectIdentifier));
+
+			Targets targets = (Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS);
+			removeOrganizationFromTargets(targets, organizationIdentifier);
 		}
 		catch (Exception exception)
 		{
 			logger.error(
 					"Could not insert data-set received from organization='{}' for project-identifier='{}', error-message='{}'",
-					sendingOrganization, projectIdentifier, exception.getMessage());
+					organizationIdentifier, projectIdentifier, exception.getMessage());
+
+			// TODO stop current subprocess execution
 		}
+
 	}
 
 	private IdType setIdBase(IdType idType)
@@ -85,14 +97,6 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
 		String deliminator = fhirBaseUrl.endsWith("/") ? "" : "/";
 		return new IdType(fhirBaseUrl + deliminator + id);
-	}
-
-	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
-	{
-		logger.info(
-				"Stored {} with id='{}' on KDS FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
-				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
-				projectIdentifier);
 	}
 
 	private void addOutputToCurrentTask(IdType id)
@@ -104,5 +108,22 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE);
 
 		updateLeadingTaskInExecutionVariables(task);
+	}
+
+	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
+	{
+		logger.info(
+				"Stored {} with id='{}' on KDS FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
+				projectIdentifier);
+	}
+
+	private void removeOrganizationFromTargets(Targets targets, String organizationIdentifier)
+	{
+		List<Target> targetsWithoutReceivedIdentifier = targets.getEntries().stream()
+				.filter(t -> !organizationIdentifier.equals(t.getOrganizationIdentifierValue()))
+				.collect(Collectors.toList());
+		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
+				TargetsValues.create(new Targets(targetsWithoutReceivedIdentifier)));
 	}
 }

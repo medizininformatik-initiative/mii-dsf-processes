@@ -99,6 +99,26 @@
       <sliceName value="medic-correlation-key" />
       <min value="1" />
     </element>
+    <element id="Task.input:medic-correlation-key.extension">
+      <path value="Task.input.extension" />
+      <slicing>
+        <discriminator>
+          <type value="value" />
+          <path value="url" />
+        </discriminator>
+        <rules value="open" />
+      </slicing>
+    </element>
+    <element id="Task.input:medic-correlation-key.extension:medic-identifier">
+      <path value="Task.input.extension" />
+      <sliceName value="medic-identifier" />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="Extension" />
+        <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-medic-identifier" />
+      </type>
+    </element>
     <element id="Task.input:medic-correlation-key.type">
       <path value="Task.input.type" />
       <binding>

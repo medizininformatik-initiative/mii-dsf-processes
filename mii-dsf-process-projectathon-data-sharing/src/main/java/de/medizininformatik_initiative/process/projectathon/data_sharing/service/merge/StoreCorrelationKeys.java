@@ -1,38 +1,52 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
+import org.highmed.dsf.fhir.organization.EndpointProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.Targets;
 import org.highmed.dsf.fhir.variables.TargetsValues;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
-public class StoreCorrelationKeys extends AbstractServiceDelegate
+public class StoreCorrelationKeys extends AbstractServiceDelegate implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(StoreCorrelationKeys.class);
 
+	private final EndpointProvider endpointProvider;
+
 	public StoreCorrelationKeys(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
+		this.endpointProvider = endpointProvider;
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution execution) throws BpmnError, Exception
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+		Objects.requireNonNull(endpointProvider, "endpointProvider");
+	}
+
+	@Override
+	protected void doExecute(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 
@@ -63,9 +77,26 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate
 	private List<Target> getTargets(Task task)
 	{
 		return getTaskHelper()
-				.getInputParameterStringValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
-						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY)
-				.map(correlationKey -> Target.createBiDirectionalTarget("", "", "", correlationKey))
-				.collect(Collectors.toList());
+				.getInputParameterWithExtension(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY,
+						ConstantsDataSharing.EXTENSION_URL_MEDIC_IDENTIFIER)
+				.map(this::transformMedicCorrelationKeyInputToTarget).collect(Collectors.toList());
+	}
+
+	private Target transformMedicCorrelationKeyInputToTarget(Task.ParameterComponent input)
+	{
+		String organizationIdentifier = ((Reference) input
+				.getExtensionByUrl(ConstantsDataSharing.EXTENSION_URL_MEDIC_IDENTIFIER).getValue()).getIdentifier()
+						.getValue();
+		String correlationKey = ((StringType) input.getValue()).asStringValue();
+
+		return endpointProvider.getFirstConsortiumEndpoint(
+				ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
+				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE,
+				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_MEDIC, organizationIdentifier)
+				.map(e -> Target.createBiDirectionalTarget(organizationIdentifier, e.getIdentifierFirstRep().getValue(),
+						e.getAddress(), correlationKey))
+				.orElseThrow(() -> new RuntimeException(
+						"No endpoint of found for organization='" + organizationIdentifier + "'"));
 	}
 }

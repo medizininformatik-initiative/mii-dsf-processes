@@ -35,9 +35,11 @@ public class TaskProfileTest
 	@ClassRule
 	public static final ValidationSupportRule validationRule = new ValidationSupportRule(
 			DataSharingProcessPluginDefinition.VERSION, DataSharingProcessPluginDefinition.RELEASE_DATE,
-			Arrays.asList("highmed-task-base-0.5.0.xml", "mii-projectathon-task-coordinate-data-sharing.xml",
+			Arrays.asList("highmed-task-base-0.5.0.xml", "mii-projectathon-extension-medic-identifier.xml",
+					"mii-projectathon-task-coordinate-data-sharing.xml",
 					"mii-projectathon-task-execute-data-sharing.xml", "mii-projectathon-task-merge-data-sharing.xml",
-					"mii-projectathon-task-send-data-set.xml", "mii-projectathon-task-send-merged-data-set.xml"),
+					"mii-projectathon-task-send-received-data-set.xml", "mii-projectathon-task-send-data-set.xml",
+					"mii-projectathon-task-send-merged-data-set.xml"),
 			Arrays.asList("highmed-read-access-tag-0.5.0.xml", "highmed-bpmn-message-0.5.0.xml",
 					"mii-data-sharing.xml"),
 			Arrays.asList("highmed-read-access-tag-0.5.0.xml", "highmed-bpmn-message-0.5.0.xml",
@@ -208,12 +210,21 @@ public class TaskProfileTest
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
 
-		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
-				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+		Task.ParameterComponent dic1 = task.addInput().setValue(new StringType(UUID.randomUUID().toString()));
+		dic1.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY);
-		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
-				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+		dic1.addExtension().setUrl(ConstantsDataSharing.EXTENSION_URL_MEDIC_IDENTIFIER)
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1"))
+						.setType(ResourceType.Organization.name()));
+
+		Task.ParameterComponent dic2 = task.addInput().setValue(new StringType(UUID.randomUUID().toString()));
+		dic2.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY);
+		dic2.addExtension().setUrl(ConstantsDataSharing.EXTENSION_URL_MEDIC_IDENTIFIER)
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC2"))
+						.setType(ResourceType.Organization.name()));
 
 		return task;
 	}
@@ -258,6 +269,48 @@ public class TaskProfileTest
 						.setType(ResourceType.Binary.name()))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE);
+
+		return task;
+	}
+
+	@Test
+	public void testValidTaskSendReceivedDataSet()
+	{
+		Task task = createValidTaskSendReceivedDataSet();
+		logTask(task);
+
+		ValidationResult result = resourceValidator.validate(task);
+		ValidationSupportRule.logValidationMessages(logger, result);
+
+		assertEquals(0, result.getMessages().stream().filter(m -> ResultSeverityEnum.ERROR.equals(m.getSeverity())
+				|| ResultSeverityEnum.FATAL.equals(m.getSeverity())).count());
+	}
+
+	private Task createValidTaskSendReceivedDataSet()
+	{
+		Task task = new Task();
+		task.getMeta().addProfile(ConstantsDataSharing.SEND_RECEIVED_DATA_SET_TASK_PROFILE);
+		task.setInstantiatesUri(ConstantsDataSharing.COORDINATE_DATA_SHARING_PROCESS_URI_WITH_LATEST_VERSION);
+		task.setStatus(TaskStatus.REQUESTED);
+		task.setIntent(TaskIntent.ORDER);
+		task.setAuthoredOn(new Date());
+		task.getRequester().setType(ResourceType.Organization.name()).getIdentifier()
+				.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS");
+		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
+				.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_HRP");
+		task.addInput().setValue(new StringType(ConstantsDataSharing.SEND_RECEIVED_DATA_SET_MESSAGE_NAME)).getType()
+				.addCoding().setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
+				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
+		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
+				.setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
+				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
+
+		task.addInput()
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1"))
+						.setType(ResourceType.Organization.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER);
 
 		return task;
 	}

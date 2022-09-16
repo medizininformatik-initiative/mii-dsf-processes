@@ -19,6 +19,9 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.message
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendExecuteDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergeDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendReceivedDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareCoordination;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectDicTargets;
@@ -33,6 +36,7 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.service
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DecryptDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DownloadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.InsertDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.LogMissingDataSetsMerge;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.ValidateDataSetMerge;
@@ -110,6 +114,18 @@ public class DataSharingConfig
 				fhirContext);
 	}
 
+	@Bean
+	public LogReceivedDataSet logReceivedDataSet()
+	{
+		return new LogReceivedDataSet(clientProvider, taskHelper, readAccessHelper);
+	}
+
+	@Bean
+	public LogMissingDataSetsCoordinate logMissingDataSetsCoordinate()
+	{
+		return new LogMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper);
+	}
+
 	// EXECUTE DATA SHARING PROCESS
 
 	@Bean
@@ -179,7 +195,7 @@ public class DataSharingConfig
 	@Bean
 	public StoreCorrelationKeys storeCorrelationKeys()
 	{
-		return new StoreCorrelationKeys(clientProvider, taskHelper, readAccessHelper);
+		return new StoreCorrelationKeys(clientProvider, taskHelper, readAccessHelper, endpointProvider);
 	}
 
 	@Bean
@@ -213,6 +229,18 @@ public class DataSharingConfig
 	{
 		return new InsertDataSet(clientProvider, taskHelper, readAccessHelper, fhirContext,
 				kdsFhirClientConfig.kdsClientFactory());
+	}
+
+	@Bean
+	public SendReceivedDataSet sendReceivedDataSet()
+	{
+		return new SendReceivedDataSet(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext);
+	}
+
+	@Bean
+	public LogMissingDataSetsMerge logMissingDataSetsMerge()
+	{
+		return new LogMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean

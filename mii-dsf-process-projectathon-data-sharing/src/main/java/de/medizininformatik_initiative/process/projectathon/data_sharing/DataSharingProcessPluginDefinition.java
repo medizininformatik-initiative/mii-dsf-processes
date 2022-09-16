@@ -73,6 +73,8 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 
 		var nP = NamingSystemResource.file("fhir/NamingSystem/mii-project-identifier.xml");
 
+		var sEmedId = StructureDefinitionResource
+				.file("fhir/StructureDefinition/mii-projectathon-extension-medic-identifier.xml");
 		var sTcooDaSh = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-coordinate-data-sharing.xml");
 		var sTexeDaSh = StructureDefinitionResource
@@ -83,17 +85,19 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 				.file("fhir/StructureDefinition/mii-projectathon-task-send-data-set.xml");
 		var sTsenMerDaSh = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-task-send-merged-data-set.xml");
+		var sTsenRecDaSh = StructureDefinitionResource
+				.file("fhir/StructureDefinition/mii-projectathon-task-send-received-data-set.xml");
 
 		var vC = ValueSetResource.file("fhir/ValueSet/mii-cryptography.xml");
 		var vDaSh = ValueSetResource.file("fhir/ValueSet/mii-data-sharing.xml");
 
 		Map<String, List<AbstractResource>> resourcesByProcessKeyAndVersion = Map.of(//
 				ConstantsDataSharing.PROCESS_NAME_FULL_COORDINATE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aCooDaSh, cDaSh, nP, sTcooDaSh, sTsenMerDaSh, vDaSh), //
+				Arrays.asList(aCooDaSh, cDaSh, nP, sTcooDaSh, sTsenMerDaSh, sTsenRecDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "/" + VERSION, //
 				Arrays.asList(aExeDaSh, cDaSh, nP, sTexeDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aMerDaSh, cC, cDaSh, nP, sTmerDaSh, sTsenDaSh, vC, vDaSh));
+				Arrays.asList(aMerDaSh, cC, cDaSh, nP, sEmedId, sTmerDaSh, sTsenDaSh, vC, vDaSh));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,
