@@ -95,16 +95,37 @@
       <bpmn:outgoing>Flow_003vvug</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ylde6i" sourceRef="storeCorrelationKeys" targetRef="SubProcess_0szmntn" />
-    <bpmn:sequenceFlow id="Flow_003vvug" sourceRef="logMissingDataSets" targetRef="Activity_0ejt1f1" />
+    <bpmn:sequenceFlow id="Flow_003vvug" sourceRef="logMissingDataSets" targetRef="releaseDataSet" />
     <bpmn:serviceTask id="Activity_0ejt1f1" name="select hrp target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget">
-      <bpmn:incoming>Flow_003vvug</bpmn:incoming>
+      <bpmn:incoming>Flow_0xk2vc2</bpmn:incoming>
       <bpmn:outgoing>Flow_1fqjwj9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1fqjwj9" sourceRef="Activity_0ejt1f1" targetRef="sendMergedDataSetEndEvent" />
-    <bpmn:textAnnotation id="TextAnnotation_0zbeerd">
-      <bpmn:text>After: UserTask for release merged data-set</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_0ws4txr" sourceRef="logMissingDataSets" targetRef="TextAnnotation_0zbeerd" />
+    <bpmn:userTask id="releaseDataSet" name="release merged data-set" camunda:formKey="http://medizininformatik-initiative.de/fhir/Questionnaire/release-merged-data-set|#{version}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseMergedDataSetListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_003vvug</bpmn:incoming>
+      <bpmn:incoming>Flow_15wjuts</bpmn:incoming>
+      <bpmn:outgoing>Flow_08vs89v</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1md8qjp">
+      <bpmn:incoming>Flow_12g1inp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xk2vc2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15wjuts</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="checkQuestionnaireInput" name="check questionnaire input" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CheckQuestionnaireMergedDataSetReleaseInput">
+      <bpmn:incoming>Flow_08vs89v</bpmn:incoming>
+      <bpmn:outgoing>Flow_12g1inp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_12g1inp" sourceRef="checkQuestionnaireInput" targetRef="Gateway_1md8qjp" />
+    <bpmn:sequenceFlow id="Flow_0xk2vc2" sourceRef="Gateway_1md8qjp" targetRef="Activity_0ejt1f1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${dataSetReleased}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15wjuts" sourceRef="Gateway_1md8qjp" targetRef="releaseDataSet">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!dataSetReleased}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_08vs89v" sourceRef="releaseDataSet" targetRef="checkQuestionnaireInput" />
   </bpmn:process>
   <bpmn:message id="Message_0o1qqa7" name="mergeDataSharing" />
   <bpmn:message id="Message_10o3b8y" name="sendDataSet" />
@@ -112,13 +133,31 @@
   <bpmn:message id="Message_13g61sd" name="sendReceivedDataSet" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_mergeDataSharing">
-      <bpmndi:BPMNShape id="TextAnnotation_0zbeerd_di" bpmnElement="TextAnnotation_0zbeerd">
-        <dc:Bounds x="2040" y="40" width="170" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_08vs89v_di" bpmnElement="Flow_08vs89v">
+        <di:waypoint x="2130" y="167" />
+        <di:waypoint x="2200" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15wjuts_di" bpmnElement="Flow_15wjuts">
+        <di:waypoint x="2390" y="192" />
+        <di:waypoint x="2390" y="270" />
+        <di:waypoint x="2080" y="270" />
+        <di:waypoint x="2080" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xk2vc2_di" bpmnElement="Flow_0xk2vc2">
+        <di:waypoint x="2415" y="167" />
+        <di:waypoint x="2480" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12g1inp_di" bpmnElement="Flow_12g1inp">
+        <di:waypoint x="2300" y="167" />
+        <di:waypoint x="2365" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fqjwj9_di" bpmnElement="Flow_1fqjwj9">
+        <di:waypoint x="2580" y="167" />
+        <di:waypoint x="2652" y="167" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_003vvug_di" bpmnElement="Flow_003vvug">
         <di:waypoint x="1950" y="167" />
-        <di:waypoint x="2210" y="167" />
+        <di:waypoint x="2030" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ylde6i_di" bpmnElement="Flow_0ylde6i">
         <di:waypoint x="410" y="167" />
@@ -141,10 +180,6 @@
         <di:waypoint x="218" y="167" />
         <di:waypoint x="310" y="167" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1fqjwj9_di" bpmnElement="Flow_1fqjwj9">
-        <di:waypoint x="2310" y="167" />
-        <di:waypoint x="2372" y="167" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="mergeDataSharingStartEvent">
         <dc:Bounds x="182" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -155,26 +190,17 @@
         <dc:Bounds x="310" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_18ii2b8_di" bpmnElement="sendMergedDataSetEndEvent">
-        <dc:Bounds x="2372" y="149" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2358" y="192" width="65" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1q6hi9d" bpmnElement="Activity_0ejt1f1">
-        <dc:Bounds x="2210" y="127" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1tzfud8_di" bpmnElement="Gateway_1tzfud8" isMarkerVisible="true">
-        <dc:Bounds x="1735" y="142" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1guwjw0_di" bpmnElement="logMissingDataSets">
-        <dc:Bounds x="1850" y="127" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
         <dc:Bounds x="500" y="107" width="1160" height="133" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11jdgiv_di" bpmnElement="Flow_11jdgiv">
+        <di:waypoint x="1530" y="167" />
+        <di:waypoint x="1592" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02stcrg_di" bpmnElement="Flow_02stcrg">
+        <di:waypoint x="1370" y="167" />
+        <di:waypoint x="1430" y="167" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1dytu7f_di" bpmnElement="Flow_1dytu7f">
         <di:waypoint x="740" y="167" />
         <di:waypoint x="800" y="167" />
@@ -195,17 +221,6 @@
         <di:waypoint x="588" y="167" />
         <di:waypoint x="640" y="167" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02stcrg_di" bpmnElement="Flow_02stcrg">
-        <di:waypoint x="1370" y="167" />
-        <di:waypoint x="1430" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11jdgiv_di" bpmnElement="Flow_11jdgiv">
-        <di:waypoint x="1530" y="167" />
-        <di:waypoint x="1592" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_06okui6_di" bpmnElement="receiveDataSetEndEvent">
-        <dc:Bounds x="1592" y="149" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_18et3pb_di" bpmnElement="receiveDataSetStartEvent">
         <dc:Bounds x="552" y="149" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -227,14 +242,41 @@
       <bpmndi:BPMNShape id="Activity_0qezpkk_di" bpmnElement="insertDataSet">
         <dc:Bounds x="1270" y="127" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06okui6_di" bpmnElement="receiveDataSetEndEvent">
+        <dc:Bounds x="1592" y="149" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1cib5h5" bpmnElement="selectHrpTarget">
         <dc:Bounds x="1430" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0ws4txr_di" bpmnElement="Association_0ws4txr">
-        <di:waypoint x="1944" y="128" />
-        <di:waypoint x="2040" y="77" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_18ii2b8_di" bpmnElement="sendMergedDataSetEndEvent">
+        <dc:Bounds x="2652" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2638" y="192" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tzfud8_di" bpmnElement="Gateway_1tzfud8" isMarkerVisible="true">
+        <dc:Bounds x="1735" y="142" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1guwjw0_di" bpmnElement="logMissingDataSets">
+        <dc:Bounds x="1850" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1q6hi9d" bpmnElement="Activity_0ejt1f1">
+        <dc:Bounds x="2480" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05s8gly_di" bpmnElement="releaseDataSet">
+        <dc:Bounds x="2030" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1md8qjp_di" bpmnElement="Gateway_1md8qjp" isMarkerVisible="true">
+        <dc:Bounds x="2365" y="142" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bmf1yx_di" bpmnElement="checkQuestionnaireInput">
+        <dc:Bounds x="2200" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
         <dc:Bounds x="1642" y="222" width="36" height="36" />
       </bpmndi:BPMNShape>

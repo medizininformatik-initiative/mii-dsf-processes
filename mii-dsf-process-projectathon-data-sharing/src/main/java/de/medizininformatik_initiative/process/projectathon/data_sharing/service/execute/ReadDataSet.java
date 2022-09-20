@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class ReadDataSet extends AbstractServiceDelegate implements InitializingBean
@@ -48,12 +49,20 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables();
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String cosIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 
-		Task task = getLeadingTaskFromExecutionVariables();
-		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		Resource resource = readAttachment(documentReference, task.getId());
+		KdsClient kdsClient = kdsClientFactory.getKdsClient();
+
+		logger.info(
+				"Reading data-set on FHIR server with baseUrl='{}' for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
+
+		DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
+		Resource resource = readAttachment(kdsClient, documentReference, task.getId());
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE,
 				FhirResourceValues.create(documentReference));
@@ -61,9 +70,9 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 				FhirResourceValues.create(resource));
 	}
 
-	private DocumentReference readDocumentReference(String projectIdentifier, String taskId)
+	private DocumentReference readDocumentReference(KdsClient kdsClient, String projectIdentifier, String taskId)
 	{
-		List<DocumentReference> documentReferences = kdsClientFactory.getKdsClient()
+		List<DocumentReference> documentReferences = kdsClient
 				.searchDocumentReferences(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER, projectIdentifier)
 				.getEntry().stream().map(Bundle.BundleEntryComponent::getResource)
 				.filter(r -> r instanceof DocumentReference).map(r -> ((DocumentReference) r)).collect(toList());
@@ -81,12 +90,12 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		return documentReferences.get(0);
 	}
 
-	private Resource readAttachment(DocumentReference documentReference, String taskId)
+	private Resource readAttachment(KdsClient kdsClient, DocumentReference documentReference, String taskId)
 	{
 		String url = getAttachmentUrl(documentReference, taskId);
-		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(url, documentReference.getId(), taskId);
+		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(kdsClient, url, documentReference.getId(), taskId);
 
-		return readAttachment(urlIdType);
+		return readAttachment(kdsClient, urlIdType);
 	}
 
 	private String getAttachmentUrl(DocumentReference documentReference, String taskId)
@@ -109,12 +118,13 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		return urls.get(0);
 	}
 
-	private IdType checkValidKdsFhirStoreUrlAndGetIdType(String url, String documentReferenceId, String taskId)
+	private IdType checkValidKdsFhirStoreUrlAndGetIdType(KdsClient kdsClient, String url, String documentReferenceId,
+			String taskId)
 	{
 		try
 		{
 			IdType idType = new IdType(url);
-			String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
+			String fhirBaseUrl = kdsClient.getFhirBaseUrl();
 
 			// expecting no Base URL or, Base URL equal to KDS client Base URL
 			boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
@@ -134,8 +144,8 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		}
 	}
 
-	private Resource readAttachment(IdType idType)
+	private Resource readAttachment(KdsClient kdsClient, IdType idType)
 	{
-		return kdsClientFactory.getKdsClient().readByIdType(idType);
+		return kdsClient.readByIdType(idType);
 	}
 }

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class ReadData extends AbstractServiceDelegate
@@ -57,15 +58,21 @@ public class ReadData extends AbstractServiceDelegate
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 		String projectIdentifier = getProjectIdentifier(task);
-		String coordinatingSiteIdentifier = getCoordinatingSiteIdentifier(task);
+		String cosIdentifier = getCoordinatingSiteIdentifier(task);
 
-		DocumentReference documentReference = readDocumentReference(projectIdentifier, task.getId());
-		Resource resource = readAttachment(documentReference, task.getId());
+		KdsClient kdsClient = kdsClientFactory.getKdsClient();
+
+		logger.info(
+				"Reading data-set on FHIR server with baseUrl='{}' for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
+
+		DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
+		Resource resource = readAttachment(kdsClient, documentReference, task.getId());
 
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
 				Variables.stringValue(projectIdentifier));
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER,
-				Variables.stringValue(coordinatingSiteIdentifier));
+				Variables.stringValue(cosIdentifier));
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE,
 				FhirResourceValues.create(documentReference));
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE,
@@ -97,15 +104,15 @@ public class ReadData extends AbstractServiceDelegate
 	{
 		return getTaskHelper()
 				.getFirstInputParameterReferenceValue(task, ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER,
-						ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_COORDINATING_SITE_IDENTIFIER)
+						ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_COS_IDENTIFIER)
 				.orElseThrow(() -> new IllegalArgumentException(
 						"No coordinating site identifier present in task, this should have been caught by resource validation"))
 				.getIdentifier().getValue();
 	}
 
-	private DocumentReference readDocumentReference(String projectIdentifier, String taskId)
+	private DocumentReference readDocumentReference(KdsClient kdsClient, String projectIdentifier, String taskId)
 	{
-		List<DocumentReference> documentReferences = kdsClientFactory.getKdsClient()
+		List<DocumentReference> documentReferences = kdsClient
 				.searchDocumentReferences(ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER, projectIdentifier)
 				.getEntry().stream().map(Bundle.BundleEntryComponent::getResource)
 				.filter(r -> r instanceof DocumentReference).map(r -> ((DocumentReference) r)).collect(toList());
@@ -123,12 +130,12 @@ public class ReadData extends AbstractServiceDelegate
 		return documentReferences.get(0);
 	}
 
-	private Resource readAttachment(DocumentReference documentReference, String taskId)
+	private Resource readAttachment(KdsClient kdsClient, DocumentReference documentReference, String taskId)
 	{
 		String url = getAttachmentUrl(documentReference, taskId);
-		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(url, documentReference.getId(), taskId);
+		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(kdsClient, url, documentReference.getId(), taskId);
 
-		return readAttachment(urlIdType);
+		return readAttachment(kdsClient, urlIdType);
 	}
 
 	private String getAttachmentUrl(DocumentReference documentReference, String taskId)
@@ -151,12 +158,13 @@ public class ReadData extends AbstractServiceDelegate
 		return urls.get(0);
 	}
 
-	private IdType checkValidKdsFhirStoreUrlAndGetIdType(String url, String documentReferenceId, String taskId)
+	private IdType checkValidKdsFhirStoreUrlAndGetIdType(KdsClient kdsClient, String url, String documentReferenceId,
+			String taskId)
 	{
 		try
 		{
 			IdType idType = new IdType(url);
-			String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
+			String fhirBaseUrl = kdsClient.getFhirBaseUrl();
 
 			// expecting no Base URL or, Base URL equal to KDS client Base URL
 			boolean hasValidBaseUrl = !idType.hasBaseUrl() || fhirBaseUrl.equals(idType.getBaseUrl());
@@ -176,8 +184,8 @@ public class ReadData extends AbstractServiceDelegate
 		}
 	}
 
-	private Resource readAttachment(IdType idType)
+	private Resource readAttachment(KdsClient kdsClient, IdType idType)
 	{
-		return kdsClientFactory.getKdsClient().readByIdType(idType);
+		return kdsClient.readByIdType(idType);
 	}
 }

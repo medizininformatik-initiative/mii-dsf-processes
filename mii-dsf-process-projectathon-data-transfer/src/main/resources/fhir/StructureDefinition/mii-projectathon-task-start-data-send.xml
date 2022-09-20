@@ -43,16 +43,16 @@
       <sliceName value="correlation-key" />
       <max value="0" />
     </element>
-    <element id="Task.input:coordinating-site-identifier">
+    <element id="Task.input:cos-identifier">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
         <valueString value="Parameter" />
       </extension>
       <path value="Task.input" />
-      <sliceName value="coordinating-site-identifier" />
+      <sliceName value="cos-identifier" />
       <min value="1" />
       <max value="1" />
     </element>
-    <element id="Task.input:coordinating-site-identifier.type">
+    <element id="Task.input:cos-identifier.type">
       <path value="Task.input.type" />
       <binding>
         <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
@@ -62,33 +62,33 @@
         <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-transfer" />
       </binding>
     </element>
-    <element id="Task.input:coordinating-site-identifier.type.coding">
+    <element id="Task.input:cos-identifier.type.coding">
       <path value="Task.input.type.coding" />
       <min value="1" />
       <max value="1" />
     </element>
-    <element id="Task.input:coordinating-site-identifier.type.coding.system">
+    <element id="Task.input:cos-identifier.type.coding.system">
       <path value="Task.input.type.coding.system" />
       <min value="1" />
       <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
     </element>
-    <element id="Task.input:coordinating-site-identifier.type.coding.code">
+    <element id="Task.input:cos-identifier.type.coding.code">
       <path value="Task.input.type.coding.code" />
       <min value="1" />
-      <fixedCode value="coordinating-site-identifier" />
+      <fixedCode value="cos-identifier" />
     </element>
-    <element id="Task.input:coordinating-site-identifier.value[x]">
+    <element id="Task.input:cos-identifier.value[x]">
       <path value="Task.input.value[x]" />
       <type>
         <code value="Reference" />
         <targetProfile value="http://highmed.org/fhir/StructureDefinition/organization" />
       </type>
     </element>
-    <element id="Task.input:coordinating-site-identifier.value[x].reference">
+    <element id="Task.input:cos-identifier.value[x].reference">
       <path value="Task.input.value[x].reference" />
       <max value="0" />
     </element>
-    <element id="Task.input:coordinating-site-identifier.value[x].identifier">
+    <element id="Task.input:cos-identifier.value[x].identifier">
       <path value="Task.input.value[x].identifier" />
       <min value="1" />
     </element>

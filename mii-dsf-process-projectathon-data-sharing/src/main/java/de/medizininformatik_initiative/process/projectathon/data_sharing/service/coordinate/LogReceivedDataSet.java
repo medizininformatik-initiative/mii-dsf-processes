@@ -38,10 +38,12 @@ public class LogReceivedDataSet extends AbstractServiceDelegate
 
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String cosIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String organizationIdentifier = getOrganizationIdentifier(currentTask);
 
-		logger.info("COS received data-set from organization='{}' in project='{}' for task-id='{}'",
-				organizationIdentifier, projectIdentifier, leadingTask.getId());
+		logger.info("COS-identifier='{}' received data-set from organization='{}' in project='{}' for task-id='{}'",
+				cosIdentifier, organizationIdentifier, projectIdentifier, leadingTask.getId());
 
 		List<Target> targets = ((Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS))
 				.getEntries();

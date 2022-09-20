@@ -82,15 +82,22 @@ public interface ConstantsDataSharing
 
 	String EXTENSION_URL_MEDIC_IDENTIFIER = "http://medizininformatik-initiative.de/fhir/Extension/medic-identifier";
 
+	// QUESTIONNIARE RELEASE DATA-SET
+
+	String QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE = "release";
+	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER = "{project-identifier-placeholder}";
+	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_KDS_STORE_BASE_URL = "{kds-store-base-url-placeholder}";
+
+
 	// BPMN VARIABLES
 
-	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
-	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cos-identifier";
-	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contract-location";
-
-	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "document-reference";
-	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "data-resource";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET = "data-set";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "data-set-encrypted";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "data-set-reference";
+	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "projectIdentifier";
+	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cosIdentifier";
+	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contractLocation";
+	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "documentReference";
+	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "dataResource";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET = "dataSet";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "dataSetEncrypted";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "dataSetReference";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED = "dataSetReleased";
 }

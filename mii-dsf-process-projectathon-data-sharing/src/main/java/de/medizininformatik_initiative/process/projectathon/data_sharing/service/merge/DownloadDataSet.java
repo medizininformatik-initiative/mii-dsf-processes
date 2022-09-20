@@ -41,7 +41,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 
 		IdType dataSetReference = getDataSetReference(task);
-		logger.info("Downloading Binary with id='{}' from organization='{}' for project-identifier='{}'",
+		logger.info("Downloading data-set with id='{}' from organization='{}' for project-identifier='{}'",
 				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);

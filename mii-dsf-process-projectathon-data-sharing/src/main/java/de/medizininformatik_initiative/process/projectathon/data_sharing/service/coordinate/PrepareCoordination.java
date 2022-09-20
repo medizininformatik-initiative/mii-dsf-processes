@@ -74,6 +74,6 @@ public class PrepareCoordination extends AbstractServiceDelegate
 				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id='" + task.getId() + "'"));
+						"No contract-location present in task with id='" + task.getId() + "'"));
 	}
 }

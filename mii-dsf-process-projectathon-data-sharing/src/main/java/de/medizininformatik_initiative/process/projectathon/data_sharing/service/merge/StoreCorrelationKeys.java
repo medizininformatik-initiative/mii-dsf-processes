@@ -19,6 +19,7 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
+import org.hl7.fhir.r4.model.UrlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -54,13 +55,18 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
 				Variables.stringValue(projectIdentifier));
 
+		String contractLocation = getContractLocation(task);
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION,
+				Variables.stringValue(contractLocation));
+
 		List<Target> targets = getTargets(task);
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targets)));
 
 		logger.info(
-				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, medic-count: {}]",
-				projectIdentifier, targets.size());
+				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, contract-location: {}, medics: {}]",
+				projectIdentifier, contractLocation,
+				targets.stream().map(Target::getOrganizationIdentifierValue).collect(Collectors.joining(",")));
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -72,6 +78,15 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
 						"No project-identifier present in task with id='" + task.getId() + "'"));
+	}
+
+	private String getContractLocation(Task task)
+	{
+		return getTaskHelper()
+				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
+				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
+						"No contract-location present in task with id='" + task.getId() + "'"));
 	}
 
 	private List<Target> getTargets(Task task)

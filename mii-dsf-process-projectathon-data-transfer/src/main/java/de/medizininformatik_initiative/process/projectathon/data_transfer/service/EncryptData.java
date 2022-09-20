@@ -92,7 +92,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 
 		Bundle publicKeyBundle = (Bundle) searchBundle.getEntryFirstRep().getResource();
 
-		logger.info("Downloaded PublicKey Bundle with id='{}' from organization with identifier='{}'",
+		logger.debug("Downloaded PublicKey Bundle with id='{}' from organization with identifier='{}'",
 				publicKeyBundle.getId(), coordinatingSiteIdentifier);
 
 		DocumentReference documentReference = getDocumentReference(publicKeyBundle);

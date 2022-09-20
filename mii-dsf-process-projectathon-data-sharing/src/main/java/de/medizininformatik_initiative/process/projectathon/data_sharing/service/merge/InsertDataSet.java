@@ -26,6 +26,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class InsertDataSet extends AbstractServiceDelegate implements InitializingBean
@@ -63,8 +64,14 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 
 		try
 		{
+			KdsClient kdsClient = kdsClientFactory.getKdsClient();
+
+			logger.info(
+					"Inserting data-set on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+					kdsClient.getFhirBaseUrl(), organizationIdentifier, projectIdentifier);
+
 			Bundle bundle = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
-			Bundle stored = kdsClientFactory.getKdsClient().executeTransactionBundle(bundle);
+			Bundle stored = kdsClient.executeTransactionBundle(bundle);
 
 			List<IdType> idsOfCreatedResources = stored.getEntry().stream()
 					.filter(Bundle.BundleEntryComponent::hasResponse).map(Bundle.BundleEntryComponent::getResponse)
@@ -113,7 +120,7 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
 	{
 		logger.info(
-				"Stored {} with id='{}' on KDS FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				"Stored {} with id='{}' on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
 				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
 				projectIdentifier);
 	}
@@ -123,7 +130,7 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 		List<Target> targetsWithoutReceivedIdentifier = targets.getEntries().stream()
 				.filter(t -> !organizationIdentifier.equals(t.getOrganizationIdentifierValue()))
 				.collect(Collectors.toList());
-		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
+		getExecution().setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targetsWithoutReceivedIdentifier)));
 	}
 }

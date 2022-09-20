@@ -4,6 +4,7 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
+import org.highmed.dsf.fhir.questionnaire.QuestionnaireResponseHelper;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.tools.generator.ProcessDocumentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,14 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.message
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergeDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendReceivedDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseDataSetListener;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseMergedDataSetListener;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareCoordination;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectDicTargets;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.CheckQuestionnaireDataSetReleaseInput;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.CreateDataSetBundle;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.DeleteDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.EncryptDataSet;
@@ -33,6 +37,7 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.service
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.StoreDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.ValidateDataSetExecute;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CheckQuestionnaireMergedDataSetReleaseInput;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DecryptDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DownloadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.InsertDataSet;
@@ -52,6 +57,9 @@ public class DataSharingConfig
 
 	@Autowired
 	private TaskHelper taskHelper;
+
+	@Autowired
+	private QuestionnaireResponseHelper questionnaireResponseHelper;
 
 	@Autowired
 	private ReadAccessHelper readAccessHelper;
@@ -132,6 +140,19 @@ public class DataSharingConfig
 	public PrepareExecution prepareExecution()
 	{
 		return new PrepareExecution(clientProvider, taskHelper, readAccessHelper);
+	}
+
+	@Bean
+	public ReleaseDataSetListener releaseDataSetListener()
+	{
+		return new ReleaseDataSetListener(clientProvider, organizationProvider, questionnaireResponseHelper, taskHelper,
+				readAccessHelper, kdsFhirClientConfig.kdsClientFactory());
+	}
+
+	@Bean
+	public CheckQuestionnaireDataSetReleaseInput checkQuestionnaireDataSetReleaseInput()
+	{
+		return new CheckQuestionnaireDataSetReleaseInput(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean
@@ -241,6 +262,19 @@ public class DataSharingConfig
 	public LogMissingDataSetsMerge logMissingDataSetsMerge()
 	{
 		return new LogMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper);
+	}
+
+	@Bean
+	public ReleaseMergedDataSetListener releaseMergedDataSetListener()
+	{
+		return new ReleaseMergedDataSetListener(clientProvider, organizationProvider, questionnaireResponseHelper,
+				taskHelper, readAccessHelper);
+	}
+
+	@Bean
+	public CheckQuestionnaireMergedDataSetReleaseInput checkQuestionnaireMergedDataSetReleaseInput()
+	{
+		return new CheckQuestionnaireMergedDataSetReleaseInput(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean

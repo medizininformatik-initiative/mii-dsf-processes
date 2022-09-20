@@ -15,6 +15,7 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Task;
+import org.hl7.fhir.r4.model.UrlType;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
@@ -35,9 +36,13 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		Stream<Task.ParameterComponent> projectIdentifierInput = getProjectIdentifierInput(projectIdentifier);
+		Task.ParameterComponent projectIdentifierInput = getProjectIdentifierInput(projectIdentifier);
 
-		return Stream.concat(correlationKeyInputs, projectIdentifierInput);
+		String contractLocation = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION);
+		Task.ParameterComponent contractLocationInput = getContractLocationInput(contractLocation);
+
+		return Stream.concat(correlationKeyInputs, Stream.of(projectIdentifierInput, contractLocationInput));
 	}
 
 	private Stream<Task.ParameterComponent> getCorrelationKeyInputs(Targets targets)
@@ -60,7 +65,7 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 		return input;
 	}
 
-	private Stream<Task.ParameterComponent> getProjectIdentifierInput(String projectIdentifier)
+	private Task.ParameterComponent getProjectIdentifierInput(String projectIdentifier)
 	{
 		Task.ParameterComponent projectIdentifierInput = new Task.ParameterComponent();
 		projectIdentifierInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
@@ -68,7 +73,16 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 		projectIdentifierInput.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
 				.setValue(projectIdentifier));
 
-		return Stream.of(projectIdentifierInput);
+		return projectIdentifierInput;
 	}
 
+	private Task.ParameterComponent getContractLocationInput(String contractLocation)
+	{
+		Task.ParameterComponent contractLocationInput = new Task.ParameterComponent();
+		contractLocationInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
+		contractLocationInput.setValue(new UrlType(contractLocation));
+
+		return contractLocationInput;
+	}
 }

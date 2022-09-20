@@ -10,18 +10,18 @@ public interface ConstantsDataTransfer
 	String PROCESS_NAME_FULL_DATA_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_SEND;
 	String PROCESS_NAME_FULL_DATA_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_RECEIVE;
 
-	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "project-identifier";
-	String BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER = "coordinating-site-identifier";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET = "data-set";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "data-set-encrypted";
-	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "data-set-reference";
-	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "document-reference";
-	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "data-resource";
+	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "projectIdentifier";
+	String BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER = "cos-identifier";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET = "dataSet";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "dataSetEncrypted";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "dataSetReference";
+	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "documentReference";
+	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "dataResource";
 
 	String NAMINGSYSTEM_MII_PROJECT_IDENTIFIER = "http://medizininformatik-initiative.de/sid/project-identifier";
 
 	String CODESYSTEM_MII_DATA_TRANSFER = "http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer";
-	String CODESYSTEM_MII_DATA_TRANSFER_VALUE_COORDINATING_SITE_IDENTIFIER = "coordinating-site-identifier";
+	String CODESYSTEM_MII_DATA_TRANSFER_VALUE_COS_IDENTIFIER = "cos-identifier";
 	String CODESYSTEM_MII_DATA_TRANSFER_VALUE_PROJECT_IDENTIFIER = "project-identifier";
 	String CODESYSTEM_MII_DATA_TRANSFER_VALUE_DATA_SET_REFERENCE = "data-set-reference";
 	String CODESYSTEM_MII_DATA_TRANSFER_VALUE_DOCUMENT_REFERENCE_LOCATION = "document-reference-location";

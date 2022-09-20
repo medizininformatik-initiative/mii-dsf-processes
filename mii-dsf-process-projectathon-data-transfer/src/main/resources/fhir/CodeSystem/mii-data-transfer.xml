@@ -22,9 +22,9 @@
 	<versionNeeded value="false" />
 	<content value="complete" />
 	<concept>
-		<code value="coordinating-site-identifier" />
-		<display value="Coordinating Site Identifier" />
-		<definition value="Organization identifier of a coordinating site" />
+		<code value="cos-identifier" />
+		<display value="COS Identifier" />
+		<definition value="Organization identifier of a COS" />
 	</concept>
 	<concept>
 		<code value="project-identifier" />

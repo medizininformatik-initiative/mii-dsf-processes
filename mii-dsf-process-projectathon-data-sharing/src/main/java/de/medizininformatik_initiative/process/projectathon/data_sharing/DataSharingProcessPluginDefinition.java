@@ -11,6 +11,7 @@ import org.highmed.dsf.fhir.resources.AbstractResource;
 import org.highmed.dsf.fhir.resources.ActivityDefinitionResource;
 import org.highmed.dsf.fhir.resources.CodeSystemResource;
 import org.highmed.dsf.fhir.resources.NamingSystemResource;
+import org.highmed.dsf.fhir.resources.QuestionnaireResource;
 import org.highmed.dsf.fhir.resources.ResourceProvider;
 import org.highmed.dsf.fhir.resources.StructureDefinitionResource;
 import org.highmed.dsf.fhir.resources.ValueSetResource;
@@ -73,6 +74,9 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 
 		var nP = NamingSystemResource.file("fhir/NamingSystem/mii-project-identifier.xml");
 
+		var qReDa = QuestionnaireResource.file("fhir/Questionnaire/mii-questionnaire-release-data-set.xml");
+		var qReMeDa = QuestionnaireResource.file("fhir/Questionnaire/mii-questionnaire-release-merged-data-set.xml");
+
 		var sEmedId = StructureDefinitionResource
 				.file("fhir/StructureDefinition/mii-projectathon-extension-medic-identifier.xml");
 		var sTcooDaSh = StructureDefinitionResource
@@ -95,9 +99,9 @@ public class DataSharingProcessPluginDefinition implements ProcessPluginDefiniti
 				ConstantsDataSharing.PROCESS_NAME_FULL_COORDINATE_DATA_SHARING + "/" + VERSION, //
 				Arrays.asList(aCooDaSh, cDaSh, nP, sTcooDaSh, sTsenMerDaSh, sTsenRecDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aExeDaSh, cDaSh, nP, sTexeDaSh, vDaSh), //
+				Arrays.asList(aExeDaSh, cDaSh, nP, qReDa, sTexeDaSh, vDaSh), //
 				ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "/" + VERSION, //
-				Arrays.asList(aMerDaSh, cC, cDaSh, nP, sEmedId, sTmerDaSh, sTsenDaSh, vC, vDaSh));
+				Arrays.asList(aMerDaSh, cC, cDaSh, nP, qReMeDa, sEmedId, sTmerDaSh, sTsenDaSh, vC, vDaSh));
 
 		return ResourceProvider.read(VERSION, RELEASE_DATE,
 				() -> fhirContext.newXmlParser().setStripVersionsFromReferences(false), classLoader, propertyResolver,

@@ -83,7 +83,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 
 		Bundle publicKeyBundle = (Bundle) searchBundle.getEntryFirstRep().getResource();
 
-		logger.info("Downloaded PublicKey Bundle with id='{}' from organization with identifier='{}'",
+		logger.debug("Downloaded PublicKey Bundle with id='{}' from organization with identifier='{}'",
 				publicKeyBundle.getId(), cosIdentifier);
 
 		DocumentReference documentReference = getDocumentReference(publicKeyBundle);

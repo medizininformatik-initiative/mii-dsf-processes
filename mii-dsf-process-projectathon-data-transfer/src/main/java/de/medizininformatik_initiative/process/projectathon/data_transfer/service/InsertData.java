@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
+import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
 public class InsertData extends AbstractServiceDelegate
@@ -56,8 +57,14 @@ public class InsertData extends AbstractServiceDelegate
 
 		try
 		{
+			KdsClient kdsClient = kdsClientFactory.getKdsClient();
+
+			logger.info(
+					"Inserting data-set on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+					kdsClient.getFhirBaseUrl(), sendingOrganization, projectIdentifier);
+
 			Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
-			Bundle stored = kdsClientFactory.getKdsClient().executeTransactionBundle(bundle);
+			Bundle stored = kdsClient.executeTransactionBundle(bundle);
 
 			List<IdType> idsOfCreatedResources = stored.getEntry().stream()
 					.filter(Bundle.BundleEntryComponent::hasResponse).map(Bundle.BundleEntryComponent::getResponse)
@@ -89,7 +96,7 @@ public class InsertData extends AbstractServiceDelegate
 	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
 	{
 		logger.info(
-				"Stored {} with id='{}' on KDS FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				"Stored {} with id='{}' on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
 				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
 				projectIdentifier);
 	}
