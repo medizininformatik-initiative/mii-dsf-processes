@@ -69,7 +69,7 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Bundle searchBundle = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE);
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);

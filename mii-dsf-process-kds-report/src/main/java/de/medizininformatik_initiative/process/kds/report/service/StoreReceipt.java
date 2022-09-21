@@ -43,7 +43,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Task leadingTask = getLeadingTaskFromExecutionVariables();
 		Task currentTask = getCurrentTaskFromExecutionVariables();

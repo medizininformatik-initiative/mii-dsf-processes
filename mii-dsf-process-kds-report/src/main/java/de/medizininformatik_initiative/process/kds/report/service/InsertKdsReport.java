@@ -46,7 +46,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 		Identifier reportIdentifier = getReportIdentifier(task);

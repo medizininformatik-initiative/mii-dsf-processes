@@ -53,7 +53,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 

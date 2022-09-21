@@ -61,7 +61,7 @@ public class PropertiesConfig
 	private int fhirStoreConnectionRequestTimeout;
 
 	@ProcessDocumentation(description = "Maximum period of inactivity in milliseconds between two consecutive data packets of the KDS client and the KDS FHIR server", recommendation = "Change default value only if timeout exceptions occur")
-	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.socket:30000}")
+	@Value("${de.medizininformatik.initiative.kds.fhir.server.timeout.socket:60000}")
 	private int fhirStoreSocketTimeout;
 
 	@ProcessDocumentation(description = "The KDS client will log additional debug output", recommendation = "Change default value only if exceptions occur")

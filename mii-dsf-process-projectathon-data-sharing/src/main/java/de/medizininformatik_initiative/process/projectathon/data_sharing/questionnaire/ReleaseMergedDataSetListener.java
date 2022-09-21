@@ -8,6 +8,7 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.questionnaire.QuestionnaireResponseHelper;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
+import org.hl7.fhir.r4.model.StringType;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
@@ -36,6 +37,16 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener
 	{
 		String finalText = replaceText(item.getText(), projectIdentifier);
 		item.setText(finalText);
+
+		item.getAnswer().stream().filter(a -> a.getValue() instanceof StringType)
+				.forEach(a -> replaceAnswerStringTypePlaceholder(a, projectIdentifier));
+	}
+
+	private void replaceAnswerStringTypePlaceholder(
+			QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent answer, String projectIdentifier)
+	{
+		if (answer.getValue() instanceof StringType)
+			answer.setValue(new StringType(projectIdentifier));
 	}
 
 	private String replaceText(String toReplace, String projectIdentifier)

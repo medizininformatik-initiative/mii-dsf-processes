@@ -86,6 +86,7 @@ public interface ConstantsDataSharing
 
 	String QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE = "release";
 	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER = "{project-identifier-placeholder}";
+	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_COS_IDENTIFIER = "{cos-identifier-placeholder}";
 	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_KDS_STORE_BASE_URL = "{kds-store-base-url-placeholder}";
 
 

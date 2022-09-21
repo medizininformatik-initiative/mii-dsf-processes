@@ -47,7 +47,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables();
 

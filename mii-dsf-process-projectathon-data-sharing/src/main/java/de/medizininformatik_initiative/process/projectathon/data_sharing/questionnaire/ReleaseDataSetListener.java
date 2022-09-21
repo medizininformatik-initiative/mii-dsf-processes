@@ -40,18 +40,20 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 	{
 		String projectIdentifier = (String) getExecution()
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String cosIdentifier = (String) getExecution()
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String kdsStoreBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
 
 		questionnaireResponse.getItem().stream()
 				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId()))
 				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasText)
-				.forEach(i -> adaptReleaseItem(i, projectIdentifier, kdsStoreBaseUrl));
+				.forEach(i -> adaptReleaseItem(i, projectIdentifier, cosIdentifier, kdsStoreBaseUrl));
 	}
 
 	private void adaptReleaseItem(QuestionnaireResponse.QuestionnaireResponseItemComponent item,
-			String projectIdentifier, String kdsStoreBaseUrl)
+			String projectIdentifier, String cosIdentifier, String kdsStoreBaseUrl)
 	{
-		String finalText = replaceText(item.getText(), projectIdentifier, kdsStoreBaseUrl);
+		String finalText = replaceText(item.getText(), projectIdentifier, cosIdentifier, kdsStoreBaseUrl);
 		item.setText(finalText);
 
 		item.getAnswer().stream().filter(a -> a.getValue() instanceof StringType)
@@ -65,11 +67,13 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 			answer.setValue(new StringType(projectIdentifier));
 	}
 
-	private String replaceText(String toReplace, String projectIdentifier, String kdsStoreBaseUrl)
+	private String replaceText(String toReplace, String projectIdentifier, String cosIdentifier, String kdsStoreBaseUrl)
 	{
 		return toReplace
 				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER,
 						"<b>" + projectIdentifier + "</b>")
+				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_COS_IDENTIFIER,
+						"<b>" + cosIdentifier + "</b>")
 				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_KDS_STORE_BASE_URL,
 						"<b>" + kdsStoreBaseUrl + "</b>");
 	}

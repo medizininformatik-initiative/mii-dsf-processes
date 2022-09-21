@@ -26,6 +26,6 @@
 	<item>
 		<linkId value="release"/>
 		<type value="string"/>
-		<text value="Please type in the project identifier ({project-identifier-placeholder}) to confirm the release of the data-set for the data management site. Beforehand, please make sure that a DocumentReference with the project identifier as masterIdentifier and a FHIR resource as attachment of the DocumentReference are readable on the KDS FHIR store with base-url {kds-store-base-url-placeholder}."/>
+		<text value="To confirm the release of the data-set for the project {project-identifier-placeholder} and the data management site {cos-identifier-placeholder}, please type in the project identifier. Beforehand, please make sure that a DocumentReference with the project identifier as masterIdentifier and a FHIR resource as attachment of the DocumentReference are readable on the KDS FHIR store with base-url {kds-store-base-url-placeholder}."/>
 	</item>
 </Questionnaire>

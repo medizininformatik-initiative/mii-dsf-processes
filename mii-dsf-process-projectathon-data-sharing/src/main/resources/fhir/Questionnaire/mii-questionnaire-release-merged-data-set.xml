@@ -26,6 +26,6 @@
 	<item>
 		<linkId value="release"/>
 		<type value="string"/>
-		<text value="Please type in the project identifier ({project-identifier-placeholder}) to confirm the release of the merged data-set for the health research platform."/>
+		<text value="To confirm the release of the merged data-set for the project {project-identifier-placeholder} and the german health research platform, please type in the project identifier."/>
 	</item>
 </Questionnaire>

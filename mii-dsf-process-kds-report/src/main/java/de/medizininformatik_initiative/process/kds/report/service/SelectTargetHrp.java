@@ -51,7 +51,7 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
 		Organization organization = getHrpOrganization();
 		String organizationIdentifier = extractHrpIdentifier(organization);

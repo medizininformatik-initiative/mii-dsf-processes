@@ -54,7 +54,7 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 	{
 		logger.info("Stopping active instances of process with id '{}'",
 				ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_AUTOSTART);
-		stopActiveInstancesOfProcess();
+		stopActiveInstancesOfProcess(execution);
 
 		logger.debug("Setting variable '{}' to false",
 				ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_STOP_TIMER);
@@ -73,7 +73,7 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 						endpointProvider.getLocalEndpointAddress())));
 	}
 
-	private void stopActiveInstancesOfProcess()
+	private void stopActiveInstancesOfProcess(DelegateExecution execution)
 	{
 		RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
 
