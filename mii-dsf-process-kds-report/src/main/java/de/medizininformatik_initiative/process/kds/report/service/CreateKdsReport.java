@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -25,6 +26,8 @@ import org.highmed.dsf.fhir.variables.Target;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,15 +209,42 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 				.filter(Bundle.BundleEntryComponent::hasRequest).map(Bundle.BundleEntryComponent::getRequest)
 				.anyMatch(r -> CAPABILITY_STATEMENT_PATH.equals(r.getUrl()));
 
-		if (searchContainsMetadata && FHIR_STORE_TYPE_BLAZE.equals(fhirStoreType))
+		if (searchContainsMetadata && FHIR_STORE_TYPE_BLAZE.equalsIgnoreCase(fhirStoreType))
 		{
-			CapabilityStatement metadata = kdsClientFactory.getKdsClient().getGenericFhirClient().capabilities()
-					.ofType(CapabilityStatement.class).execute();
-
-			Bundle.BundleEntryComponent metadataResponse = new Bundle.BundleEntryComponent().setResource(metadata);
-			Bundle.BundleEntryComponent reportEntry = report.addEntry()
-					.setResponse(new Bundle.BundleEntryResponseComponent().setStatus("200"));
-			toEntryComponentCapabilityStatementResource(metadataResponse, reportEntry);
+			removeErroneousBlazeCapabilityStatement(report);
+			addFixedBlazeCapabilityStatement(report);
 		}
+	}
+
+	private void removeErroneousBlazeCapabilityStatement(Bundle report)
+	{
+		List<Bundle.BundleEntryComponent> entriesWithoutCapabilityStatement = report.getEntry().stream()
+				.filter(this::isCapabilityStatementResponseWithoutError).collect(Collectors.toList());
+		report.setEntry(entriesWithoutCapabilityStatement);
+	}
+
+	private boolean isCapabilityStatementResponseWithoutError(Bundle.BundleEntryComponent entry)
+	{
+		Resource resource = entry.getResponse().getOutcome();
+
+		if (resource instanceof OperationOutcome)
+		{
+			OperationOutcome outcome = (OperationOutcome) resource;
+			return outcome.getIssue().stream().noneMatch(i -> Optional.ofNullable(i.getDiagnostics())
+					.orElse("no-diagnostics").contains(CAPABILITY_STATEMENT_PATH));
+		}
+
+		return true;
+	}
+
+	private void addFixedBlazeCapabilityStatement(Bundle report)
+	{
+		CapabilityStatement metadata = kdsClientFactory.getKdsClient().getGenericFhirClient().capabilities()
+				.ofType(CapabilityStatement.class).execute();
+
+		Bundle.BundleEntryComponent metadataResponse = new Bundle.BundleEntryComponent().setResource(metadata);
+		Bundle.BundleEntryComponent reportEntry = report.addEntry()
+				.setResponse(new Bundle.BundleEntryResponseComponent().setStatus("200"));
+		toEntryComponentCapabilityStatementResource(metadataResponse, reportEntry);
 	}
 }

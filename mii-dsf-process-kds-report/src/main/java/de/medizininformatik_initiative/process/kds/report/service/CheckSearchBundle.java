@@ -29,7 +29,9 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 	private static final String CAPABILITY_STATEMENT_PATH = "metadata";
 	private static final String SUMMARY_SEARCH_PARAM = "_summary";
 	private static final String SUMMARY_SEARCH_PARAM_VALUE_COUNT = "count";
-	private static final List<String> VALID_SEARCH_PARAMS = List.of("_profile", "type", SUMMARY_SEARCH_PARAM);
+	private static final List<String> VALID_SEARCH_PARAMS = List.of("_profile", "type", "date", "recorded-date",
+			"onset-date", "effective", "effective-time", "authored", "collected", "issued", "period", "location-period",
+			"occurrence", SUMMARY_SEARCH_PARAM);
 
 	public CheckSearchBundle(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper)

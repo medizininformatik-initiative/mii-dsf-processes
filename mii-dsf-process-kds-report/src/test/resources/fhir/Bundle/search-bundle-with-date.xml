@@ -166,19 +166,19 @@
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Consent?_summary=count"/>
+			<url value="Consent?date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="MedicationStatement?_summary=count"/>
+			<url value="MedicationStatement?effective=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="MedicationAdministration?_summary=count"/>
+			<url value="MedicationAdministration?effective-time=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
@@ -202,43 +202,43 @@
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Observation?_summary=count"/>
+			<url value="Observation?date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="DiagnosticReport?_summary=count"/>
+			<url value="DiagnosticReport?date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Encounter?_summary=count"/>
+			<url value="Encounter?date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Condition?_summary=count"/>
+			<url value="Condition?recorded-date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Procedure?_summary=count"/>
+			<url value="Procedure?date=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="ServiceRequest?_summary=count"/>
+			<url value="ServiceRequest?authored=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="Specimen?_summary=count"/>
+			<url value="Specimen?collected=gt2000&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
@@ -247,4 +247,4 @@
 			<url value="metadata"/>
 		</request>
 	</entry>
-</Bundle> 
+</Bundle>

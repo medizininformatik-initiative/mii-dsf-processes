@@ -69,10 +69,15 @@ public class CheckSearchBundleServiceTest
 	private CheckSearchBundle service;
 
 	@Test
-	public void testValid()
+	public void testValidWithoutDate()
 	{
 		testValid("/fhir/Bundle/search-bundle.xml");
+	}
 
+	@Test
+	public void testValidWithDate()
+	{
+		testValid("/fhir/Bundle/search-bundle-with-date.xml");
 	}
 
 	@Test
