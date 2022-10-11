@@ -1,59 +1,70 @@
 <CodeSystem xmlns="http://hl7.org/fhir">
 	<meta>
 		<tag>
-			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
-			<code value="ALL" />
+			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag"/>
+			<code value="ALL"/>
 		</tag>
 	</meta>
-	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+	<url value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing"/>
 	<!-- version managed by bpe -->
-	<version value="#{version}" />
-	<name value="DataSharing" />
-	<title value="Data Sharing" />
+	<version value="#{version}"/>
+	<name value="DataSharing"/>
+	<title value="Data Sharing"/>
 	<!-- status managed by bpe -->
-	<status value="unknown" />
-	<experimental value="false" />
+	<status value="unknown"/>
+	<experimental value="false"/>
 	<!-- date managed by bpe -->
-	<date value="#{date}" />
-	<publisher value="Medizininformatik-Initiative" />
-	<description value="CodeSystem with standard values for the MII data sharing processes" />
-	<caseSensitive value="true" />
-	<hierarchyMeaning value="grouped-by" />
-	<versionNeeded value="false" />
-	<content value="complete" />
+	<date value="#{date}"/>
+	<publisher value="Medizininformatik-Initiative"/>
+	<description value="CodeSystem with standard values for the MII data sharing processes"/>
+	<caseSensitive value="true"/>
+	<hierarchyMeaning value="grouped-by"/>
+	<versionNeeded value="false"/>
+	<content value="complete"/>
 	<concept>
-		<code value="medic-identifier" />
-		<display value="MeDIC Identifier" />
-		<definition value="Identifier of a MeDIC participating in an approved data sharing project" />
+		<code value="medic-identifier"/>
+		<display value="MeDIC Identifier"/>
+		<definition value="Identifier of a MeDIC participating in an approved data sharing project"/>
 	</concept>
 	<concept>
-		<code value="medic-correlation-key" />
-		<display value="MeDIC Correlation Key" />
-		<definition value="Key to correlate messages from participating MeDICs in an approved data sharing project" />
+		<code value="researcher-identifier"/>
+		<display value="Researcher Identifier"/>
+		<definition value="Identifier of a researcher accessing data of an approved data sharing project"/>
 	</concept>
 	<concept>
-		<code value="cos-identifier" />
-		<display value="COS Identifier" />
-		<definition value="Identifier of a COS participating in an approved data sharing project" />
+		<code value="medic-correlation-key"/>
+		<display value="MeDIC Correlation Key"/>
+		<definition value="Key to correlate messages from participating MeDICs in an approved data sharing project"/>
 	</concept>
 	<concept>
-		<code value="project-identifier" />
-		<display value="Project Identifier" />
-		<definition value="Project identifier an approved data sharing project" />
+		<code value="cos-identifier"/>
+		<display value="COS Identifier"/>
+		<definition value="Identifier of a COS participating in an approved data sharing project"/>
 	</concept>
 	<concept>
-		<code value="contract-location" />
-		<display value="Contract Location" />
-		<definition value="Location where the contract of an approved data sharing project can be found" />
+		<code value="project-identifier"/>
+		<display value="Project Identifier"/>
+		<definition value="Project identifier an approved data sharing project"/>
 	</concept>
 	<concept>
-		<code value="data-set-reference" />
-		<display value="Data Set Reference" />
-		<definition value="Reference to a Binary data-set on a DSF FHIR server, can be encrypted" />
+		<code value="contract-location"/>
+		<display value="Contract Location"/>
+		<definition value="Location where the contract of an approved data sharing project can be found"/>
 	</concept>
 	<concept>
-		<code value="document-reference-reference" />
-		<display value="Document Reference reference" />
-		<definition value="Canonical reference of a DocumentReference on a KDS FHIR server" />
+		<code value="data-set-location"/>
+		<display value="Data Set Location"/>
+		<definition
+				value="Location where the final merged data-set of an approved data sharing project can be accessed by a researcher"/>
+	</concept>
+	<concept>
+		<code value="data-set-reference"/>
+		<display value="Data Set Reference"/>
+		<definition value="Reference to a Binary data-set on a DSF FHIR server, can be encrypted"/>
+	</concept>
+	<concept>
+		<code value="document-reference-reference"/>
+		<display value="Document Reference reference"/>
+		<definition value="Canonical reference of a DocumentReference on a KDS FHIR server"/>
 	</concept>
 </CodeSystem>

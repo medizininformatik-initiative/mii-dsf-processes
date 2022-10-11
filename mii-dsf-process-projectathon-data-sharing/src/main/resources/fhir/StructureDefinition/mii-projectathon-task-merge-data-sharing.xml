@@ -125,6 +125,48 @@
         <code value="url" />
       </type>
     </element>
+    <element id="Task.input:researcher-identifier">
+      <path value="Task.input" />
+      <sliceName value="researcher-identifier" />
+      <min value="1" />
+    </element>
+    <element id="Task.input:researcher-identifier.type">
+      <path value="Task.input.type" />
+      <binding>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.input:researcher-identifier.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:researcher-identifier.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:research-identifier.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="researcher-identifier" />
+    </element>
+    <element id="Task.input:researcher-identifier.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="Identifier" />
+      </type>
+    </element>
+    <element id="Task.input:researcher-identifier.value[x].system">
+      <path value="Task.input.value[x].system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/sid/researcher-identifier" />
+    </element>
+    <element id="Task.input:researcher-identifier.value[x].value">
+      <path value="Task.input.value[x].value" />
+      <min value="1" />
+    </element>
     <element id="Task.input:medic-correlation-key">
       <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
         <valueString value="Parameter" />
@@ -229,6 +271,40 @@
     <element id="Task.output:document-reference-reference.value[x].identifier">
       <path value="Task.output.value[x].identifier"/>
       <max value="0"/>
+    </element>
+    <element id="Task.output:data-set-location">
+      <path value="Task.output" />
+      <sliceName value="data-set-location" />
+      <min value="0" />
+      <max value="1" />
+    </element>
+    <element id="Task.output:data-set-location.type">
+      <path value="Task.output.type" />
+      <binding>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+      </binding>
+    </element>
+    <element id="Task.output:data-set-location.type.coding">
+      <path value="Task.output.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.output:data-set-location.type.coding.system">
+      <path value="Task.output.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.output:data-set-location.type.coding.code">
+      <path value="Task.output.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="data-set-location" />
+    </element>
+    <element id="Task.output:data-set-location.value[x]">
+      <path value="Task.output.value[x]" />
+      <type>
+        <code value="url" />
+      </type>
     </element>
   </differential>
 </StructureDefinition>

@@ -1,6 +1,8 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.message;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -12,22 +14,71 @@ import org.highmed.dsf.fhir.task.AbstractTaskMessageSend;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.Targets;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.UrlType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.Researchers;
+import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 
-public class SendMergeDataSharing extends AbstractTaskMessageSend
+public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend implements InitializingBean
 {
-	public SendMergeDataSharing(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, FhirContext fhirContext)
+	private static final Logger logger = LoggerFactory.getLogger(SendInitializeNewProjectDataSharing.class);
+
+	private final FhirContext fhirContext;
+	private final KdsClientFactory kdsClientFactory;
+
+	public SendInitializeNewProjectDataSharing(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, FhirContext fhirContext,
+			KdsClientFactory kdsClientFactory)
 	{
 		super(clientProvider, taskHelper, readAccessHelper, organizationProvider, fhirContext);
+
+		this.fhirContext = fhirContext;
+		this.kdsClientFactory = kdsClientFactory;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+
+		Objects.requireNonNull(fhirContext, "fhirContext");
+		Objects.requireNonNull(kdsClientFactory, "kdsClientFactory");
+	}
+
+	@Override
+	protected void sendTask(Target target, String instantiatesUri, String messageName, String businessKey,
+			String profile, Stream<Task.ParameterComponent> additionalInputParameters)
+	{
+		try
+		{
+			Task task = createTask(profile, instantiatesUri, messageName, businessKey);
+			additionalInputParameters.forEach(task::addInput);
+			MethodOutcome outcome = kdsClientFactory.getKdsClient().createResource(task);
+
+			if (!outcome.getCreated())
+			{
+				String message = fhirContext.newJsonParser().encodeResourceToString(outcome.getOperationOutcome());
+				throw new RuntimeException(message);
+			}
+			else
+				logger.debug("Initiated new DMS project instance with task-id: '{}'", outcome.getId());
+		}
+		catch (Exception exception)
+		{
+			logger.warn("Could not initiate new DMS project instance: {}", exception.getMessage());
+		}
 	}
 
 	@Override
@@ -49,9 +100,9 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 				researcherIdentifiers);
 
 		Targets targets = (Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS);
-		Stream<Task.ParameterComponent> correlationKeyInputs = getCorrelationKeyInputs(targets);
+		Stream<Task.ParameterComponent> medicIdentifierInputs = getMedicIdentifierInputs(targets);
 
-		return Stream.of(otherInputs, researcherIdentifierInputs, correlationKeyInputs).reduce(Stream::concat)
+		return Stream.of(medicIdentifierInputs, otherInputs, researcherIdentifierInputs).reduce(Stream::concat)
 				.orElseThrow(() -> new RuntimeException("Could not concat streams"));
 	}
 
@@ -92,23 +143,43 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 		return researcherIdentifierInput;
 	}
 
-	private Stream<Task.ParameterComponent> getCorrelationKeyInputs(Targets targets)
+	private Stream<Task.ParameterComponent> getMedicIdentifierInputs(Targets targets)
 	{
-		return targets.getEntries().stream().map(this::transformToTargetInput);
+		return targets.getEntries().stream().map(this::transformToInput);
 	}
 
-	private Task.ParameterComponent transformToTargetInput(Target target)
+	private Task.ParameterComponent transformToInput(Target target)
 	{
-		Task.ParameterComponent input = getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
-				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY, target.getCorrelationKey());
+		return getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER,
+				target.getOrganizationIdentifierValue());
+	}
 
-		input.addExtension().setUrl(ConstantsDataSharing.EXTENSION_URL_MEDIC_IDENTIFIER)
-				.setValue(new Reference()
-						.setIdentifier(
-								new Identifier().setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
-										.setValue(target.getOrganizationIdentifierValue()))
-						.setType(ResourceType.Organization.name()));
+	private Task createTask(String profile, String instantiatesUri, String messageName, String businessKey)
+	{
+		Task task = new Task();
+		task.setMeta((new Meta()).addProfile(profile));
+		task.setStatus(Task.TaskStatus.REQUESTED);
+		task.setIntent(Task.TaskIntent.ORDER);
+		task.setAuthoredOn(new Date());
 
-		return input;
+		task.setRequester(this.getRequester());
+		task.getRestriction().addRecipient(this.getRequester());
+
+		task.setInstantiatesUri(instantiatesUri);
+
+		Task.ParameterComponent messageNameInput = new Task.ParameterComponent(
+				new CodeableConcept(new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
+						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME, null)),
+				new StringType(messageName));
+		task.getInput().add(messageNameInput);
+
+		Task.ParameterComponent businessKeyInput = new Task.ParameterComponent(
+				new CodeableConcept(new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
+						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY, null)),
+				new StringType(businessKey));
+		task.getInput().add(businessKeyInput);
+
+		return task;
 	}
 }

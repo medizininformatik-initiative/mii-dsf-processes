@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.IRestfulClientFactory;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
@@ -239,5 +240,17 @@ public class KdsClientImpl implements KdsClient
 		dataLogger.logResource("Batch Bundle Response", toReturn);
 
 		return toReturn;
+	}
+
+	@Override
+	public MethodOutcome createResource(Resource toCreate)
+	{
+		dataLogger.logResource("Creating " + toCreate.getResourceType().name(), toCreate);
+
+		MethodOutcome outcome = getGenericFhirClient().create().resource(toCreate).execute();
+
+		dataLogger.logMethodOutcome("Create Task MethodOutcome", outcome);
+
+		return outcome;
 	}
 }

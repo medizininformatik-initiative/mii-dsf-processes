@@ -35,6 +35,51 @@
       <type>
          <coding>
             <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+            <code value="project-identifier" />
+         </coding>
+      </type>
+      <valueIdentifier>
+         <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
+         <value value="Test_PROJECT_Bundle" />
+      </valueIdentifier>
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+            <code value="contract-location" />
+         </coding>
+      </type>
+      <valueUrl value="http://forschen-fuer-gesundheit.de/contract/test_project" />
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+            <code value="researcher-identifier" />
+         </coding>
+      </type>
+      <valueIdentifier>
+         <system value="http://medizininformatik-initiative.de/sid/researcher-identifier" />
+         <value value="Test_Researcher1" />
+      </valueIdentifier>
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+            <code value="researcher-identifier" />
+         </coding>
+      </type>
+      <valueIdentifier>
+         <system value="http://medizininformatik-initiative.de/sid/researcher-identifier" />
+         <value value="Test_Researcher2" />
+      </valueIdentifier>
+   </input>
+   <input>
+      <type>
+         <coding>
+            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
             <code value="medic-identifier" />
          </coding>
       </type>
@@ -75,26 +120,5 @@
             <value value="Test_COS" />
          </identifier>
       </valueReference>
-   </input>
-   <input>
-      <type>
-         <coding>
-            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
-            <code value="project-identifier" />
-         </coding>
-      </type>
-      <valueIdentifier>
-         <system value="http://medizininformatik-initiative.de/sid/project-identifier" />
-         <value value="Test_PROJECT_Bundle" />
-      </valueIdentifier>
-   </input>
-   <input>
-      <type>
-         <coding>
-            <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
-            <code value="contract-location" />
-         </coding>
-      </type>
-      <valueUrl value="http://forschen-fuer-gesundheit.de/contract/test_project" />
    </input>
 </Task>

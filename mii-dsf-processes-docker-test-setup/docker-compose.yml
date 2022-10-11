@@ -2,7 +2,7 @@ version: '3.8'
 services:
   proxy:
     image: nginx:1.21
-    restart: on-failure
+    restart: "no"
     ports:
       - 127.0.0.1:443:443
     secrets:
@@ -39,7 +39,7 @@ services:
 
   db:
     image: postgres:13
-    restart: on-failure
+    restart: "no"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U liquibase_user -d postgres" ]
       interval: 10s
@@ -72,8 +72,8 @@ services:
 
 
   dic1-fhir:
-    image: highmed/fhir
-    restart: on-failure
+    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
       interval: 10s
@@ -124,8 +124,8 @@ services:
       - db
       - proxy
   dic1-bpe:
-    image: highmed/bpe
-    restart: on-failure
+    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
       interval: 10s
@@ -190,7 +190,7 @@ services:
     # - dic1-fhir-store not defining a dependency here, dic1-fhir-store* needs to be started manually
   dic1-fhir-store-hapi:
     image: hapiproject/hapi:v6.1.0
-    restart: on-failure
+    restart: "no"
     ports:
       - 127.0.0.1:8080:8080
     environment:
@@ -203,8 +203,8 @@ services:
 
 
   dic2-fhir:
-    image: highmed/fhir
-    restart: on-failure
+    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
       interval: 10s
@@ -255,8 +255,8 @@ services:
       - db
       - proxy
   dic2-bpe:
-    image: highmed/bpe
-    restart: on-failure
+    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
       interval: 10s
@@ -322,7 +322,7 @@ services:
     # - dic2-fhir-store not defining a dependency here, dic2-fhir-store* needs to be started manually
   dic2-fhir-store-hapi:
     image: hapiproject/hapi:v6.1.0
-    restart: on-failure
+    restart: "no"
     ports:
       - 127.0.0.1:8081:8080
     environment:
@@ -334,7 +334,7 @@ services:
           - dic2-fhir-store
   dic2-fhir-store-blaze:
     image: ghcr.io/num-codex/blaze
-    restart: on-failure
+    restart: "no"
     ports:
       - 127.0.0.1:8081:8080
     environment:
@@ -345,8 +345,8 @@ services:
           - dic2-fhir-store
 
   cos-fhir:
-    image: highmed/fhir
-    restart: on-failure
+    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
       interval: 10s
@@ -397,8 +397,8 @@ services:
       - db
       - proxy
   cos-bpe:
-    image: highmed/bpe
-    restart: on-failure
+    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
       interval: 10s
@@ -466,7 +466,7 @@ services:
       # - cos-fhir-store not defining a dependency here, cos-fhir-store* needs to be started manually
   cos-fhir-store-hapi:
     image: hapiproject/hapi:v6.1.0
-    restart: on-failure
+    restart: "no"
     ports:
       - 127.0.0.1:8082:8080
     environment:
@@ -479,8 +479,8 @@ services:
 
 
   hrp-fhir:
-    image: highmed/fhir
-    restart: on-failure
+    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
       interval: 10s
@@ -532,8 +532,8 @@ services:
       - db
       - proxy
   hrp-bpe:
-    image: highmed/bpe
-    restart: on-failure
+    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
       interval: 10s

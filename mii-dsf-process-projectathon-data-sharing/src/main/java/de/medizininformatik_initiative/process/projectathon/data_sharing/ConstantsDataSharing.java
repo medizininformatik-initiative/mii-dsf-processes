@@ -61,11 +61,13 @@ public interface ConstantsDataSharing
 	// CODESYSTEM DATA SHARING
 
 	String CODESYSTEM_DATA_SHARING = "http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing";
+	String CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER = "researcher-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER = "medic-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_MEDIC_CORRELATION_KEY = "medic-correlation-key";
 	String CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER = "cos-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER = "project-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION = "contract-location";
+	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION = "data-set-location";
 	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE = "data-set-reference";
 	String CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE = "document-reference-reference";
 
@@ -74,17 +76,19 @@ public interface ConstantsDataSharing
 	String CODESYSTEM_CRYPTOGRAPHY = "http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography";
 	String CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY = "public-key";
 
-	// NAMINGSYSTEM PROJECT IDENTIFIER
+	// NAMINGSYSTEMS
 
+	String NAMINGSYSTEM_RESEARCHER_IDENTIFIER = "http://medizininformatik-initiative.de/sid/researcher-identifier";
 	String NAMINGSYSTEM_PROJECT_IDENTIFIER = "http://medizininformatik-initiative.de/sid/project-identifier";
 
 	// EXTENSIONS
 
 	String EXTENSION_URL_MEDIC_IDENTIFIER = "http://medizininformatik-initiative.de/fhir/Extension/medic-identifier";
 
-	// QUESTIONNIARE RELEASE DATA-SET
+	// QUESTIONNAIRE RELEASE DATA-SET
 
 	String QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE = "release";
+	String QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL = "data-set-url";
 	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER = "{project-identifier-placeholder}";
 	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_COS_IDENTIFIER = "{cos-identifier-placeholder}";
 	String QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_KDS_STORE_BASE_URL = "{kds-store-base-url-placeholder}";
@@ -93,12 +97,14 @@ public interface ConstantsDataSharing
 	// BPMN VARIABLES
 
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "projectIdentifier";
-	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cosIdentifier";
 	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contractLocation";
+	String BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS = "researcherIdentifiers";
+	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cosIdentifier";
 	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "documentReference";
 	String BPMN_EXECUTION_VARIABLE_DATA_RESOURCE = "dataResource";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET = "dataSet";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED = "dataSetEncrypted";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "dataSetReference";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED = "dataSetReleased";
+	String BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION = "dataSetLocation";
 }

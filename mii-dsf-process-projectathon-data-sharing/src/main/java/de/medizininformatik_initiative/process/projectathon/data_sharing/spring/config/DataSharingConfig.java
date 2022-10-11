@@ -18,11 +18,13 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.crypto.
 import de.medizininformatik_initiative.process.projectathon.data_sharing.crypto.KeyProviderImpl;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendExecuteDataSharing;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendInitializeNewProjectDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergeDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendMergedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseDataSetListener;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseMergedDataSetListener;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.ExtractMergedDataSetLocation;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareCoordination;
@@ -134,6 +136,12 @@ public class DataSharingConfig
 		return new LogMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper);
 	}
 
+	@Bean
+	public ExtractMergedDataSetLocation extractMergedDataSetLocation()
+	{
+		return new ExtractMergedDataSetLocation(clientProvider, taskHelper, readAccessHelper);
+	}
+
 	// EXECUTE DATA SHARING PROCESS
 
 	@Bean
@@ -217,6 +225,13 @@ public class DataSharingConfig
 	public StoreCorrelationKeys storeCorrelationKeys()
 	{
 		return new StoreCorrelationKeys(clientProvider, taskHelper, readAccessHelper, endpointProvider);
+	}
+
+	@Bean
+	public SendInitializeNewProjectDataSharing sendInitializeNewProjectDataSharing()
+	{
+		return new SendInitializeNewProjectDataSharing(clientProvider, taskHelper, readAccessHelper,
+				organizationProvider, fhirContext, kdsFhirClientConfig.kdsClientFactory());
 	}
 
 	@Bean

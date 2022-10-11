@@ -6,6 +6,7 @@ import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Resource;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 public interface KdsClient
@@ -29,4 +30,6 @@ public interface KdsClient
 	Bundle executeTransactionBundle(Bundle toExecute);
 
 	Bundle executeBatchBundle(Bundle toExecute);
+
+	MethodOutcome createResource(Resource toCreate);
 }

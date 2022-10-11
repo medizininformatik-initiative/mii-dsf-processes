@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.Researchers;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.ResearchersValues;
 
 public class StoreCorrelationKeys extends AbstractServiceDelegate implements InitializingBean
 {
@@ -59,13 +61,17 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION,
 				Variables.stringValue(contractLocation));
 
+		List<String> researcherIdentifiers = getResearcherIdentifiers(task);
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS,
+				ResearchersValues.create(new Researchers(researcherIdentifiers)));
+
 		List<Target> targets = getTargets(task);
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targets)));
 
 		logger.info(
-				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, contract-location: {}, medics: {}]",
-				projectIdentifier, contractLocation,
+				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, contract-location: {}, researchers: {}, medics: {}]",
+				projectIdentifier, contractLocation, String.join(",", researcherIdentifiers),
 				targets.stream().map(Target::getOrganizationIdentifierValue).collect(Collectors.joining(",")));
 	}
 
@@ -87,6 +93,18 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
 						"No contract-location present in task with id='" + task.getId() + "'"));
+	}
+
+	private List<String> getResearcherIdentifiers(Task task)
+	{
+		return task.getInput().stream()
+				.filter(i -> i.getType().getCoding().stream()
+						.anyMatch(c -> ConstantsDataSharing.CODESYSTEM_DATA_SHARING.equals(c.getSystem())
+								&& ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER
+										.equals(c.getCode())))
+				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
+				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER.equals(i.getSystem()))
+				.map(Identifier::getValue).collect(Collectors.toList());
 	}
 
 	private List<Target> getTargets(Task task)

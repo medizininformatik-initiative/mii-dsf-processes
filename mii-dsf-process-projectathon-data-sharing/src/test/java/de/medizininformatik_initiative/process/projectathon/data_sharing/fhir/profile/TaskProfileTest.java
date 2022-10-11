@@ -79,10 +79,30 @@ public class TaskProfileTest
 				.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_HRP");
 		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
 				.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_HRP");
-
 		task.addInput().setValue(new StringType(ConstantsDataSharing.COORDINATE_DATA_SHARING_MESSAGE_NAME)).getType()
 				.addCoding().setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
 				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
+
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
+						.setValue("Test_PROJECT"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
+
+		task.addInput().setValue(new UrlType("http://forschen-fuer-gesundheit.de/contract/test_project")).getType()
+				.addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
+
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
+						.setValue("Test_Researcher1"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER);
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
+						.setValue("Test_Researcher2"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER);
 
 		task.addInput()
 				.setValue(new Reference().setIdentifier(new Identifier()
@@ -103,16 +123,6 @@ public class TaskProfileTest
 						.setType(ResourceType.Organization.name()))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER);
-
-		task.addInput()
-				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
-						.setValue("Test_PROJECT"))
-				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
-				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER);
-
-		task.addInput().setValue(new UrlType("http://forschen-fuer-gesundheit.de/contract/test_project")).getType()
-				.addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
-				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
 
 		return task;
 	}
@@ -153,13 +163,6 @@ public class TaskProfileTest
 				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_CORRELATION_KEY);
 
 		task.addInput()
-				.setValue(new Reference().setIdentifier(new Identifier()
-						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
-						.setType(ResourceType.Organization.name()))
-				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
-				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER);
-
-		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER)
 						.setValue("Test_PROJECT"))
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
@@ -168,6 +171,13 @@ public class TaskProfileTest
 		task.addInput().setValue(new UrlType("http://forschen-fuer-gesundheit.de/contract/test_project")).getType()
 				.addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
+
+		task.addInput()
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_COS"))
+						.setType(ResourceType.Organization.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER);
 
 		return task;
 	}
@@ -213,6 +223,17 @@ public class TaskProfileTest
 		task.addInput().setValue(new UrlType("http://forschen-fuer-gesundheit.de/contract/test_project")).getType()
 				.addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
+
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
+						.setValue("Test_Researcher1"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER);
+		task.addInput()
+				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
+						.setValue("Test_Researcher2"))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER);
 
 		Task.ParameterComponent dic1 = task.addInput().setValue(new StringType(UUID.randomUUID().toString()));
 		dic1.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
@@ -350,6 +371,9 @@ public class TaskProfileTest
 		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
 				.setSystem(ConstantsBase.CODESYSTEM_HIGHMED_BPMN)
 				.setCode(ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
+		task.addInput().setValue(new UrlType("http://test.foo")).getType().addCoding()
+				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
 
 		return task;
 	}

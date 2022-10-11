@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
 public class KdsClientStub implements KdsClient
@@ -124,6 +125,23 @@ public class KdsClientStub implements KdsClient
 				.setEtag("1").setLastModified(new Date());
 
 		return bundle;
+	}
+
+	@Override
+	public Bundle executeBatchBundle(Bundle toExecute)
+	{
+		Bundle bundle = new Bundle();
+		bundle.setType(Bundle.BundleType.BATCHRESPONSE);
+
+		// TODO: return complete batch-response Bundle that works
+		return bundle;
+	}
+
+	@Override
+	public MethodOutcome createResource(Resource toCreate)
+	{
+		// TODO: return MethodOutcome that works
+		return new MethodOutcome();
 	}
 
 	private IdType getIdType(ResourceType resourceType)
@@ -385,14 +403,5 @@ public class KdsClientStub implements KdsClient
 				+ "iYmxhbmtldCIsImF2ZXJhZ2UiLCJvZmZpY2UiLCJjcmVhdHVyZSIsImZhaXJseSIsImJlbmQiLCJ3YXJtIiwiY2ly"
 				+ "Y3VzIiwiYWlyIiwiZGlubmVyIiwicmFkaW8iLCJwb3B1bGF0aW9uIiwiY291cnNlIiwic2xpcHBlZCIsIm1ldGFsI"
 				+ "iwic3RpbGwiLCJwb2xpY2VtYW4iLCJzdGVlcCI=").getBytes(StandardCharsets.UTF_8);
-	}
-
-	@Override
-	public Bundle executeBatchBundle(Bundle toExecute)
-	{
-		Bundle bundle = new Bundle();
-		bundle.setType(Bundle.BundleType.BATCHRESPONSE);
-
-		return bundle;
 	}
 }
