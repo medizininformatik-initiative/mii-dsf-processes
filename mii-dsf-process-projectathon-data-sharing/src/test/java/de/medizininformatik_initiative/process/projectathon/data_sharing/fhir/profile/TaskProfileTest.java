@@ -124,6 +124,17 @@ public class TaskProfileTest
 				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER);
 
+		task.addOutput().setValue(new UrlType("http://example.foo")).getType().addCoding()
+				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
+
+		task.addOutput()
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1"))
+						.setType(ResourceType.Organization.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_MISSING);
+
 		return task;
 	}
 
@@ -250,6 +261,23 @@ public class TaskProfileTest
 				.setValue(new Reference().setIdentifier(new Identifier()
 						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC2"))
 						.setType(ResourceType.Organization.name()));
+
+		task.addOutput()
+				.setValue(new Reference("http://example.foo/fhir/DocumentReference/1")
+						.setType(ResourceType.DocumentReference.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE);
+
+		task.addOutput().setValue(new UrlType("http://example.foo")).getType().addCoding()
+				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
+
+		task.addOutput()
+				.setValue(new Reference().setIdentifier(new Identifier()
+						.setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("Test_DIC1"))
+						.setType(ResourceType.Organization.name()))
+				.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_MISSING);
 
 		return task;
 	}

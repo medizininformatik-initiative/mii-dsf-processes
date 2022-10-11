@@ -24,7 +24,7 @@
 	<concept>
 		<code value="medic-identifier"/>
 		<display value="MeDIC Identifier"/>
-		<definition value="Identifier of a MeDIC participating in an approved data sharing project"/>
+		<definition value="Reference with identifier of a MeDIC participating in an approved data sharing project"/>
 	</concept>
 	<concept>
 		<code value="researcher-identifier"/>
@@ -39,32 +39,37 @@
 	<concept>
 		<code value="cos-identifier"/>
 		<display value="COS Identifier"/>
-		<definition value="Identifier of a COS participating in an approved data sharing project"/>
+		<definition value="Reference with identifier of a COS participating in an approved data sharing project"/>
 	</concept>
 	<concept>
 		<code value="project-identifier"/>
 		<display value="Project Identifier"/>
-		<definition value="Project identifier an approved data sharing project"/>
+		<definition value="Identifier of an approved data sharing project"/>
 	</concept>
 	<concept>
 		<code value="contract-location"/>
 		<display value="Contract Location"/>
-		<definition value="Location where the contract of an approved data sharing project can be found"/>
+		<definition value="Location as URL where the contract of an approved data sharing project can be found"/>
 	</concept>
 	<concept>
 		<code value="data-set-location"/>
 		<display value="Data Set Location"/>
 		<definition
-				value="Location where the final merged data-set of an approved data sharing project can be accessed by a researcher"/>
+				value="Location as URL where the final merged data-set of an approved data sharing project can be accessed by a researcher"/>
 	</concept>
 	<concept>
 		<code value="data-set-reference"/>
 		<display value="Data Set Reference"/>
-		<definition value="Reference to a Binary data-set on a DSF FHIR server, can be encrypted"/>
+		<definition value="Absolute reference to a Binary data-set on a DSF FHIR server, can be encrypted"/>
+	</concept>
+	<concept>
+		<code value="data-set-missing"/>
+		<display value="Data Set Missing"/>
+		<definition value="Reference with identifier of a MeDIC participating in an approved data sharing project"/>
 	</concept>
 	<concept>
 		<code value="document-reference-reference"/>
 		<display value="Document Reference reference"/>
-		<definition value="Canonical reference of a DocumentReference on a KDS FHIR server"/>
+		<definition value="Absolute reference of a DocumentReference on a KDS FHIR server"/>
 	</concept>
 </CodeSystem>
