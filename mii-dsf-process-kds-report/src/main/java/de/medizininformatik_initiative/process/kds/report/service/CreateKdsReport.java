@@ -219,13 +219,13 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 	private void removeErroneousBlazeCapabilityStatement(Bundle report)
 	{
 		List<Bundle.BundleEntryComponent> entriesWithoutCapabilityStatement = report.getEntry().stream()
-				.filter(this::isCapabilityStatementResponseWithoutError).collect(Collectors.toList());
+				.filter(this::isNotCapabilityStatementResponseWithError).collect(Collectors.toList());
 		report.setEntry(entriesWithoutCapabilityStatement);
 	}
 
-	private boolean isCapabilityStatementResponseWithoutError(Bundle.BundleEntryComponent entry)
+	private boolean isNotCapabilityStatementResponseWithError(Bundle.BundleEntryComponent entry)
 	{
-		Resource resource = entry.getResponse().getOutcome();
+		Resource resource = entry.getResponse() != null ? entry.getResponse().getOutcome() : null;
 
 		if (resource instanceof OperationOutcome)
 		{
