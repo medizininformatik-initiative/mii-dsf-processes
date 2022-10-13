@@ -72,7 +72,7 @@ services:
 
 
   dic1-fhir:
-    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    image: ghcr.io/highmed/fhir:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -124,7 +124,7 @@ services:
       - db
       - proxy
   dic1-bpe:
-    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    image: ghcr.io/highmed/bpe:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -153,9 +153,6 @@ services:
       - type: bind
         source: ./dic1/bpe/log
         target: /opt/bpe/log
-      - type: bind
-        source: ./dic1/bpe/last_event
-        target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010
@@ -203,7 +200,7 @@ services:
 
 
   dic2-fhir:
-    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    image: ghcr.io/highmed/fhir:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -255,7 +252,7 @@ services:
       - db
       - proxy
   dic2-bpe:
-    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    image: ghcr.io/highmed/bpe:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -284,9 +281,6 @@ services:
       - type: bind
         source: ./dic2/bpe/log
         target: /opt/bpe/log
-      - type: bind
-        source: ./dic2/bpe/last_event
-        target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5011
@@ -345,7 +339,7 @@ services:
           - dic2-fhir-store
 
   cos-fhir:
-    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    image: ghcr.io/highmed/fhir:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -397,7 +391,7 @@ services:
       - db
       - proxy
   cos-bpe:
-    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    image: ghcr.io/highmed/bpe:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -428,9 +422,6 @@ services:
       - type: bind
         source: ./cos/bpe/log
         target: /opt/bpe/log
-      - type: bind
-        source: ./cos/bpe/last_event
-        target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5012
@@ -479,7 +470,7 @@ services:
 
 
   hrp-fhir:
-    image: ghcr.io/highmed/fhir:0.8.0-RC1
+    image: ghcr.io/highmed/fhir:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -532,7 +523,7 @@ services:
       - db
       - proxy
   hrp-bpe:
-    image: ghcr.io/highmed/bpe:0.8.0-RC1
+    image: ghcr.io/highmed/bpe:0.8.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -561,9 +552,6 @@ services:
       - type: bind
         source: ./hrp/bpe/log
         target: /opt/bpe/log
-      - type: bind
-        source: ./hrp/bpe/last_event
-        target: /opt/bpe/last_event
     environment:
       TZ: Europe/Berlin
       EXTRA_JVM_ARGS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5013

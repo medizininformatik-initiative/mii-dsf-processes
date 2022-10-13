@@ -82,14 +82,14 @@
       <max value="1" />
       <type>
         <code value="Extension" />
-        <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-kds-report-status-error" />
+        <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-mii-kds-report-status-error|#{version}" />
       </type>
     </element>
     <element id="Task.input:kds-report-status.type">
       <path value="Task.input.type"/>
       <binding>
         <strength value="required"/>
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report"/>
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report|#{version}"/>
       </binding>
     </element>
     <element id="Task.input:kds-report-status.type.coding">
@@ -123,7 +123,7 @@
       <min value="1"/>
       <binding>
         <strength value="required"/>
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report-status-send"/>
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report-status-send|#{version}"/>
       </binding>
     </element>
   </differential>

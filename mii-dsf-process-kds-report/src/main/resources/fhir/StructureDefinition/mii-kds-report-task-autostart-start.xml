@@ -76,7 +76,7 @@
           <valueString value="TaskInputParameterType" />
         </extension>
         <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report|#{version}" />
       </binding>
     </element>
     <element id="Task.input:timer-interval.type.coding">

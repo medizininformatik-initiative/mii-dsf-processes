@@ -106,7 +106,6 @@
 			</valueCoding>
 		</extension>
 	</extension>
-
 	<extension
 			url="http://highmed.org/fhir/StructureDefinition/extension-process-authorization">
 		<extension url="message-name">

@@ -58,7 +58,7 @@
       <path value="Task.input.type" />
       <binding>
         <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing|#{version}" />
       </binding>
     </element>
     <element id="Task.input:project-identifier.type.coding">
@@ -101,7 +101,7 @@
       <path value="Task.input.type" />
       <binding>
         <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing|#{version}" />
       </binding>
     </element>
     <element id="Task.input:contract-location.type.coding">
@@ -141,7 +141,7 @@
           <valueString value="TaskInputParameterType" />
         </extension>
         <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing|#{version}" />
       </binding>
     </element>
     <element id="Task.input:cos-identifier.type.coding">

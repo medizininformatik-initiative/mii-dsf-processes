@@ -76,7 +76,7 @@
           <valueString value="TaskInputParameterType" />
         </extension>
         <strength value="required" />
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report|#{version}" />
       </binding>
     </element>
     <element id="Task.input:search-bundle-response-reference.type.coding">
@@ -137,7 +137,7 @@
       <path value="Task.output.type"/>
       <binding>
         <strength value="required"/>
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report"/>
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report|#{version}"/>
       </binding>
     </element>
     <element id="Task.output:kds-report-status.type.coding">
@@ -171,7 +171,7 @@
       <min value="1"/>
       <binding>
         <strength value="required"/>
-        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report-status-receive"/>
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/kds-report-status-receive|#{version}"/>
       </binding>
     </element>
   </differential>

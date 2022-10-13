@@ -21,6 +21,7 @@
 	<compose>
 		<include>
 			<system value="http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography"/>
+			<version value="#{version}" />
 		</include>
 	</compose>
 </ValueSet> 
