@@ -160,7 +160,7 @@
 	<entry>
 		<request>
 			<method value="GET"/>
-			<url value="/Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&amp;_summary=count"/>
+			<url value="Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&amp;_summary=count"/>
 		</request>
 	</entry>
 	<entry>
