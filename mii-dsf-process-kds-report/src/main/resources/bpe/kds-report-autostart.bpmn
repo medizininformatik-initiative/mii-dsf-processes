@@ -6,7 +6,7 @@
       <bpmn:incoming>Flow_0taij7y</bpmn:incoming>
       <bpmn:outgoing>Flow_12fz0w9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:startEvent id="KdsReportAutostartStartEvent" name="start kds report autostart">
+    <bpmn:startEvent id="kdsReportAutostartStartMessageStartEvent" name="start kds report autostart">
       <bpmn:outgoing>Flow_09o8bb5</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1ot9xdv" messageRef="Message_13deqwn" />
     </bpmn:startEvent>
@@ -17,7 +17,7 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${kdsReportTimerInterval}</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_09o8bb5" sourceRef="KdsReportAutostartStartEvent" targetRef="signalSendStopKdsReportAutostart1" />
+    <bpmn:sequenceFlow id="Flow_09o8bb5" sourceRef="kdsReportAutostartStartMessageStartEvent" targetRef="signalSendStopKdsReportAutostart1" />
     <bpmn:sequenceFlow id="Flow_1ltiore" sourceRef="kdsReportTimerInterval" targetRef="Gateway_1xqxerc" />
     <bpmn:serviceTask id="startTimer" name="start timer" camunda:class="de.medizininformatik_initiative.process.kds.report.service.StartTimer">
       <bpmn:incoming>Flow_1deqzy2</bpmn:incoming>
@@ -58,11 +58,11 @@
       <bpmn:incoming>Flow_1lwuxwz</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1lwuxwz" sourceRef="signalCatchStopKdsReportAutostart" targetRef="KdsReportAutostartStopEvent" />
-    <bpmn:startEvent id="KdsReportAutostartStopMessageStartEvent" name="stop kds report autostart">
+    <bpmn:startEvent id="kdsReportAutostartStopMessageStartEvent" name="stop kds report autostart">
       <bpmn:outgoing>Flow_05xmyck</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_01uicno" messageRef="Message_1ws42uv" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_05xmyck" sourceRef="KdsReportAutostartStopMessageStartEvent" targetRef="signalSendStopKdsReportAutostart2" />
+    <bpmn:sequenceFlow id="Flow_05xmyck" sourceRef="kdsReportAutostartStopMessageStartEvent" targetRef="signalSendStopKdsReportAutostart2" />
     <bpmn:endEvent id="signalSendStopKdsReportAutostart2" name="signal send stop kds report autostart">
       <bpmn:incoming>Flow_05xmyck</bpmn:incoming>
       <bpmn:signalEventDefinition id="SignalEventDefinition_00a8zon" signalRef="Signal_0kck7nd" />
@@ -121,7 +121,7 @@
       <bpmndi:BPMNShape id="Gateway_1xqxerc_di" bpmnElement="Gateway_1xqxerc" isMarkerVisible="true">
         <dc:Bounds x="535" y="92" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0g2pqnk_di" bpmnElement="KdsReportAutostartStartEvent">
+      <bpmndi:BPMNShape id="Event_0g2pqnk_di" bpmnElement="kdsReportAutostartStartMessageStartEvent">
         <dc:Bounds x="172" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="153" y="142" width="74" height="27" />
@@ -163,7 +163,7 @@
           <dc:Bounds x="524" y="355" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1x1i42n_di" bpmnElement="KdsReportAutostartStopMessageStartEvent">
+      <bpmndi:BPMNShape id="Event_1x1i42n_di" bpmnElement="kdsReportAutostartStopMessageStartEvent">
         <dc:Bounds x="172" y="313" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="153" y="356" width="73" height="27" />
