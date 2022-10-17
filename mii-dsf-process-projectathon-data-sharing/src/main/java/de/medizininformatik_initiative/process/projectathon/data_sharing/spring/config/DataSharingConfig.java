@@ -208,7 +208,8 @@ public class DataSharingConfig
 	@Bean
 	public StoreDataSet storeDataSet()
 	{
-		return new StoreDataSet(clientProvider, taskHelper, readAccessHelper, kdsFhirClientConfig.dataLogger());
+		return new StoreDataSet(clientProvider, taskHelper, organizationProvider, readAccessHelper,
+				kdsFhirClientConfig.dataLogger());
 	}
 
 	@Bean

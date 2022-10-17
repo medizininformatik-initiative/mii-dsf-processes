@@ -33,7 +33,7 @@
       <bpmn:incoming>Flow_1yhho1t</bpmn:incoming>
       <bpmn:outgoing>Flow_1pzxejf</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0f9vpum">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateThrowEvent id="startDataReceiveProcess" name="start data receive process">

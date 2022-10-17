@@ -85,7 +85,6 @@ public class DownloadDataSet extends AbstractServiceDelegate
 
 	private InputStream readBinaryResource(FhirWebserviceClient client, String id, String version)
 	{
-
 		if (version != null && !version.isEmpty())
 			return client.readBinary(id, version, MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM));
 		else

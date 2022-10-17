@@ -68,7 +68,7 @@
     <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="SubProcess_0szmntn">
       <bpmn:outgoing>Flow_0jhnvx6</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1tbnu9y">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0usmzqr" sourceRef="SubProcess_0szmntn" targetRef="Gateway_1tzfud8" />
@@ -128,13 +128,13 @@
     <bpmn:sequenceFlow id="Flow_08vs89v" sourceRef="releaseDataSet" targetRef="checkQuestionnaireInput" />
     <bpmn:sequenceFlow id="Flow_1vfcz6v" sourceRef="initializeNewDmsProject" targetRef="SubProcess_0szmntn" />
     <bpmn:intermediateThrowEvent id="initializeNewDmsProject" name="initialize new DMS project">
-       <bpmn:extensionElements>
+      <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/initializeNewProjectDataSharing/#{version}</camunda:inputParameter>
           <camunda:inputParameter name="messageName">initializeNewProjectDataSharing</camunda:inputParameter>
           <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-initialize-new-project-data-sharing|#{version}</camunda:inputParameter>
         </camunda:inputOutput>
-      </bpmn:extensionElements>  
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ylde6i</bpmn:incoming>
       <bpmn:outgoing>Flow_1vfcz6v</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_17tmwhi" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendInitializeNewProjectDataSharing" />

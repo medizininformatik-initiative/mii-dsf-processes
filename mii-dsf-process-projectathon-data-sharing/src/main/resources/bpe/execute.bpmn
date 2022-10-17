@@ -50,7 +50,7 @@
       <bpmn:incoming>Flow_04axjb3</bpmn:incoming>
       <bpmn:outgoing>Flow_13pbtdi</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1gef5n0">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_13pbtdi" sourceRef="waitForRetrievalByTarget" targetRef="deleteDataSet" />

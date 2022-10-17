@@ -4,9 +4,10 @@ import static org.highmed.dsf.bpe.ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER;
-import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Objects;
 
 import javax.ws.rs.core.MediaType;
@@ -17,14 +18,13 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
+import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +36,17 @@ public class StoreData extends AbstractServiceDelegate
 {
 	private static final Logger logger = LoggerFactory.getLogger(StoreData.class);
 
+	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 	private final DataLogger dataLogger;
 
 	public StoreData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider, DataLogger dataLogger)
+			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
+			EndpointProvider endpointProvider, DataLogger dataLogger)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
+		this.organizationProvider = organizationProvider;
 		this.endpointProvider = endpointProvider;
 		this.dataLogger = dataLogger;
 	}
@@ -53,6 +56,7 @@ public class StoreData extends AbstractServiceDelegate
 	{
 		super.afterPropertiesSet();
 
+		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
 		Objects.requireNonNull(dataLogger, "dataLogger");
 	}
@@ -67,8 +71,7 @@ public class StoreData extends AbstractServiceDelegate
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		Binary binary = createBinary(bundleEncrypted, coordinatingSiteIdentifier);
-		String binaryId = storeBinary(binary);
+		String binaryId = storeBinary(bundleEncrypted, coordinatingSiteIdentifier);
 
 		logger.info(
 				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
@@ -82,29 +85,30 @@ public class StoreData extends AbstractServiceDelegate
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
-	private Binary createBinary(byte[] content, String coordinatingSiteIdentifier)
+	private String storeBinary(byte[] content, String coordinatingSiteIdentifier)
 	{
-		Reference securityContext = new Reference();
-		securityContext.setType(ResourceType.Organization.name()).getIdentifier()
-				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue(coordinatingSiteIdentifier);
-		Binary binary = new Binary().setContentType(MediaType.APPLICATION_OCTET_STREAM)
-				.setSecurityContext(securityContext).setData(content);
+		MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM);
+		String securityContext = getSecurityContext(coordinatingSiteIdentifier);
 
-		dataLogger.logResource("Encrypted Binary", binary);
-
-		return binary;
+		try (InputStream in = new ByteArrayInputStream(content))
+		{
+			IdType created = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+					.createBinary(in, mediaType, securityContext);
+			return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Binary.name(),
+					created.getIdPart(), created.getVersionIdPart()).getValue();
+		}
+		catch (Exception exception)
+		{
+			logger.warn("Could not create binary - {}", exception.getMessage());
+			throw new RuntimeException(exception);
+		}
 	}
 
-	private String storeBinary(Binary binary)
+	private String getSecurityContext(String coordinatingSiteIdentifier)
 	{
-		IdType created = createBinaryResource(binary);
-		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Binary.name(),
-				created.getIdPart(), created.getVersionIdPart()).getValue();
-	}
-
-	private IdType createBinaryResource(Binary binary)
-	{
-		return getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn().create(binary);
+		return organizationProvider.getOrganization(coordinatingSiteIdentifier).orElseThrow(
+				() -> new RuntimeException("Could not find organization with id '" + coordinatingSiteIdentifier + "'"))
+				.getIdElement().toVersionless().getValue();
 	}
 
 	private Target createTarget(String coordinatingSiteIdentifier)

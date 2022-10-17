@@ -102,7 +102,7 @@ public class TransferDataConfig
 	@Bean
 	public StoreData storeData()
 	{
-		return new StoreData(fhirClientProvider, taskHelper, readAccessHelper, endpointProvider,
+		return new StoreData(fhirClientProvider, taskHelper, readAccessHelper, organizationProvider, endpointProvider,
 				kdsFhirClientConfig.dataLogger());
 	}
 
