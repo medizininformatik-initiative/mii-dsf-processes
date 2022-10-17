@@ -4,11 +4,13 @@ import java.util.Objects;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.highmed.dsf.bpe.listener.DefaultUserTaskListener;
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.questionnaire.QuestionnaireResponseHelper;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,20 +21,26 @@ import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 public class ReleaseDataSetListener extends DefaultUserTaskListener implements InitializingBean
 {
 	private final KdsClientFactory kdsClientFactory;
+	private final MailService mailService;
 
 	public ReleaseDataSetListener(FhirWebserviceClientProvider clientProvider,
 			OrganizationProvider organizationProvider, QuestionnaireResponseHelper questionnaireResponseHelper,
-			TaskHelper taskHelper, ReadAccessHelper readAccessHelper, KdsClientFactory kdsClientFactory)
+			TaskHelper taskHelper, ReadAccessHelper readAccessHelper, KdsClientFactory kdsClientFactory,
+			MailService mailService)
 	{
 		super(clientProvider, organizationProvider, questionnaireResponseHelper, taskHelper, readAccessHelper);
+
 		this.kdsClientFactory = kdsClientFactory;
+		this.mailService = mailService;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
+
 		Objects.requireNonNull(kdsClientFactory, "kdsClientFactory");
+		Objects.requireNonNull(mailService, "mailService");
 	}
 
 	@Override
@@ -53,7 +61,18 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 	@Override
 	protected void afterQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
 	{
+		IdType id = questionnaireResponse.getIdElement();
+		id.setIdBase(getFhirWebserviceClientProvider().getLocalBaseUrl());
+		String projectIdentifier = (String) userTask.getExecution()
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
+		String subject = "New user-task in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
+				+ "'";
+		String message = "A new user-task 'release-data-set' for data-sharing project '" + projectIdentifier
+				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
+				+ "' is waiting for it's completion. It can be accessed using the following link: " + id.getValue();
+
+		mailService.send(subject, message);
 	}
 
 	private void adaptReleaseItem(QuestionnaireResponse.QuestionnaireResponseItemComponent item,

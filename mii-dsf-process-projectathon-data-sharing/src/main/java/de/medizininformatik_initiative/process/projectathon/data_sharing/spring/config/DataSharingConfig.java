@@ -1,5 +1,6 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.spring.config;
 
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
@@ -71,6 +72,9 @@ public class DataSharingConfig
 
 	@Autowired
 	private EndpointProvider endpointProvider;
+
+	@Autowired
+	private MailService mailService;
 
 	@Autowired
 	private FhirContext fhirContext;
@@ -154,7 +158,7 @@ public class DataSharingConfig
 	public ReleaseDataSetListener releaseDataSetListener()
 	{
 		return new ReleaseDataSetListener(clientProvider, organizationProvider, questionnaireResponseHelper, taskHelper,
-				readAccessHelper, kdsFhirClientConfig.kdsClientFactory());
+				readAccessHelper, kdsFhirClientConfig.kdsClientFactory(), mailService);
 	}
 
 	@Bean
@@ -283,7 +287,7 @@ public class DataSharingConfig
 	public ReleaseMergedDataSetListener releaseMergedDataSetListener()
 	{
 		return new ReleaseMergedDataSetListener(clientProvider, organizationProvider, questionnaireResponseHelper,
-				taskHelper, readAccessHelper);
+				taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
