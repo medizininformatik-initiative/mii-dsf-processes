@@ -103,6 +103,6 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 		return questionnaireResponse.getItem().stream()
 				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId()))
 				.flatMap(i -> i.getAnswer().stream()).filter(a -> a.getValue() instanceof StringType)
-				.map(a -> (StringType) a.getValue()).map(PrimitiveType::getValue).map(String::toLowerCase);
+				.map(a -> (StringType) a.getValue()).map(PrimitiveType::getValue).map(String::toLowerCase).map(String::trim);
 	}
 }
