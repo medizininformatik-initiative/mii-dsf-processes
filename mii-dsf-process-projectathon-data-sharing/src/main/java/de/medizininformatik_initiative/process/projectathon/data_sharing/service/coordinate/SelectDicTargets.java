@@ -59,16 +59,16 @@ public class SelectDicTargets extends AbstractServiceDelegate implements Initial
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		Stream<String> medics = getMedicIdentifiers(projectIdentifier);
+		Stream<String> medics = getMedicIdentifiers(execution, projectIdentifier);
 		List<Target> targets = getMedicTargets(medics);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targets)));
 	}
 
-	private Stream<String> getMedicIdentifiers(String projectIdentifier)
+	private Stream<String> getMedicIdentifiers(DelegateExecution execution, String projectIdentifier)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		return getTaskHelper()
 				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER)

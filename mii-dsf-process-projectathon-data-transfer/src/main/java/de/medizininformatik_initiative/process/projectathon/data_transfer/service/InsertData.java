@@ -53,7 +53,8 @@ public class InsertData extends AbstractServiceDelegate
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String sendingOrganization = getLeadingTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
+		String sendingOrganization = getLeadingTaskFromExecutionVariables(execution).getRequester().getIdentifier()
+				.getValue();
 
 		try
 		{
@@ -73,7 +74,7 @@ public class InsertData extends AbstractServiceDelegate
 
 			idsOfCreatedResources.stream()
 					.filter(i -> ResourceType.DocumentReference.name().equals(i.getResourceType()))
-					.forEach(this::addOutputToLeadingTask);
+					.forEach(i -> addOutputToLeadingTask(execution, i));
 
 			idsOfCreatedResources.forEach(id -> toLogMessage(id, sendingOrganization, projectIdentifier));
 		}
@@ -101,14 +102,14 @@ public class InsertData extends AbstractServiceDelegate
 				projectIdentifier);
 	}
 
-	private void addOutputToLeadingTask(IdType id)
+	private void addOutputToLeadingTask(DelegateExecution execution, IdType id)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 
 		task.addOutput().setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
 				.setSystem(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER)
 				.setCode(ConstantsDataTransfer.CODESYSTEM_MII_DATA_TRANSFER_VALUE_DOCUMENT_REFERENCE_LOCATION);
 
-		updateLeadingTaskInExecutionVariables(task);
+		updateLeadingTaskInExecutionVariables(execution, task);
 	}
 }

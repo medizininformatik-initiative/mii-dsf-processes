@@ -67,6 +67,7 @@ public class SelectCosTarget extends AbstractServiceDelegate implements Initiali
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier)
 				.map(e -> Target.createUniDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress()))
-				.get();
+				.orElseThrow(() -> new RuntimeException(
+						"No endpoint of COS organization with identifier '" + identifier + "' found"));
 	}
 }

@@ -58,7 +58,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
 		String searchBundleIdentifier = CODESYSTEM_MII_KDS_REPORT + "|" + CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE;
-		Bundle bundle = searchSearchBundle(target, searchBundleIdentifier);
+		Bundle bundle = searchSearchBundle(execution, target, searchBundleIdentifier);
 		dataLogger.logResource("Search Response", bundle);
 
 		Bundle searchBundle = extractSearchBundle(bundle, searchBundleIdentifier);
@@ -68,7 +68,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 				FhirResourceValues.create(searchBundle));
 	}
 
-	private Bundle searchSearchBundle(Target target, String searchBundleIdentifier)
+	private Bundle searchSearchBundle(DelegateExecution execution, Target target, String searchBundleIdentifier)
 	{
 		FhirWebserviceClient client = getFhirWebserviceClientProvider().getWebserviceClient(target.getEndpointUrl());
 
@@ -87,9 +87,9 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 				statusCode = CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_NOT_ALLOWED;
 			}
 
-			Task task = getLeadingTaskFromExecutionVariables();
+			Task task = getLeadingTaskFromExecutionVariables(execution);
 			task.addOutput(statusGenerator.createKdsReportStatusOutput(statusCode, createErrorMessage(exception)));
-			updateLeadingTaskInExecutionVariables(task);
+			updateLeadingTaskInExecutionVariables(execution, task);
 
 			throw new RuntimeException("Error while reading search Bundle with identifier '" + searchBundleIdentifier
 					+ "' from organization '" + task.getRequester().getReference() + "': " + exception.getMessage());

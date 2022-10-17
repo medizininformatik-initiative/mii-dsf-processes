@@ -48,14 +48,14 @@ public class SendReceipt extends AbstractTaskMessageSend implements Initializing
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
 		if (execution.getVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR) != null)
-			return createReceiptError();
+			return createReceiptError(execution);
 		else
 			return createReceiptOk();
 	}
 
-	private Stream<Task.ParameterComponent> createReceiptError()
+	private Stream<Task.ParameterComponent> createReceiptError(DelegateExecution execution)
 	{
-		return kdsReportStatusGenerator.transformOutputToInputComponent(getLeadingTaskFromExecutionVariables())
+		return kdsReportStatusGenerator.transformOutputToInputComponent(getLeadingTaskFromExecutionVariables(execution))
 				.map(this::receiveToReceiptStatus);
 	}
 

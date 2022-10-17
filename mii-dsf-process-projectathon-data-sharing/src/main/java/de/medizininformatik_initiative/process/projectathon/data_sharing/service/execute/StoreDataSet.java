@@ -57,7 +57,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 
 		logger.info(
 				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
-				binaryId, cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
+				binaryId, cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
 				Variables.stringValue(binaryId));

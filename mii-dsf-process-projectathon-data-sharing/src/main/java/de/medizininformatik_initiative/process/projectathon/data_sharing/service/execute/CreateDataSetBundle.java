@@ -66,15 +66,15 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
 		Resource resource = (Resource) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
-		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, resource);
+		Bundle bundle = createTransactionBundle(execution, projectIdentifier, documentReference, resource);
 
 		dataLogger.logResource("Created data-set Bundle", bundle);
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET, FhirResourceValues.create(bundle));
 	}
 
-	private Bundle createTransactionBundle(String projectIdentifier, DocumentReference documentReference,
-			Resource resource)
+	private Bundle createTransactionBundle(DelegateExecution execution, String projectIdentifier,
+			DocumentReference documentReference, Resource resource)
 	{
 		Resource attachmentToTransmit = resource.setId(UUID.randomUUID().toString());
 
@@ -87,7 +87,7 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 				.setValue(organizationProvider.getLocalIdentifierValue());
 		documentReferenceToTransmit.setDate(documentReference.getDate());
 
-		String contentType = getFirstAttachmentContentType(documentReference);
+		String contentType = getFirstAttachmentContentType(execution, documentReference);
 		documentReferenceToTransmit.addContent().getAttachment().setContentType(contentType)
 				.setUrl("urn:uuid:" + resource.getId());
 
@@ -101,7 +101,7 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 		return bundle;
 	}
 
-	private String getFirstAttachmentContentType(DocumentReference documentReference)
+	private String getFirstAttachmentContentType(DelegateExecution execution, DocumentReference documentReference)
 	{
 		List<Attachment> attachments = Stream.of(documentReference).filter(DocumentReference::hasContent)
 				.flatMap(dr -> dr.getContent().stream())
@@ -110,15 +110,15 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 				.collect(toList());
 
 		if (attachments.size() < 1)
-			throw new IllegalArgumentException(
-					"Could not find any attachment with url in DocumentReference with id='" + documentReference.getId()
-							+ "' belonging to task with id='" + getLeadingTaskFromExecutionVariables().getId() + "'");
+			throw new IllegalArgumentException("Could not find any attachment with url in DocumentReference with id='"
+					+ documentReference.getId() + "' belonging to task with id='"
+					+ getLeadingTaskFromExecutionVariables(execution).getId() + "'");
 
 		if (attachments.size() > 1)
 			logger.warn(
 					"Found {} attachments in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
-					attachments.size(), documentReference.getId(), getLeadingTaskFromExecutionVariables().getId(),
-					attachments.get(0));
+					attachments.size(), documentReference.getId(),
+					getLeadingTaskFromExecutionVariables(execution).getId(), attachments.get(0));
 
 		return attachments.get(0).getContentType();
 	}

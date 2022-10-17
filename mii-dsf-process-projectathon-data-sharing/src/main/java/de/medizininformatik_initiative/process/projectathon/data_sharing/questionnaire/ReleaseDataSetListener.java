@@ -36,11 +36,11 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 	}
 
 	@Override
-	protected void modifyQuestionnaireResponse(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
+	protected void beforeQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
 	{
-		String projectIdentifier = (String) getExecution()
+		String projectIdentifier = (String) userTask.getExecution()
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String cosIdentifier = (String) getExecution()
+		String cosIdentifier = (String) userTask.getExecution()
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String kdsStoreBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
 
@@ -48,6 +48,12 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId()))
 				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasText)
 				.forEach(i -> adaptReleaseItem(i, projectIdentifier, cosIdentifier, kdsStoreBaseUrl));
+	}
+
+	@Override
+	protected void afterQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
+	{
+
 	}
 
 	private void adaptReleaseItem(QuestionnaireResponse.QuestionnaireResponseItemComponent item,

@@ -47,7 +47,7 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 	protected void doExecute(DelegateExecution execution)
 	{
 		String cosIdentifier = getCosIdentifier(execution);
-		String correlationKey = getCorrelationKey();
+		String correlationKey = getCorrelationKey(execution);
 		Target target = getCosTarget(cosIdentifier, correlationKey);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
@@ -59,11 +59,11 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 
 	}
 
-	private String getCorrelationKey()
+	private String getCorrelationKey(DelegateExecution execution)
 	{
-		return getTaskHelper().getFirstInputParameterStringValue(getLeadingTaskFromExecutionVariables(),
+		return getTaskHelper().getFirstInputParameterStringValue(getLeadingTaskFromExecutionVariables(execution),
 				ConstantsBase.CODESYSTEM_HIGHMED_BPMN, ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_CORRELATION_KEY)
-				.get();
+				.orElseThrow(() -> new RuntimeException("No correlation key found"));
 	}
 
 	private Target getCosTarget(String identifier, String correlationKey)
@@ -74,6 +74,7 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier)
 				.map(e -> Target.createBiDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress(), correlationKey))
-				.get();
+				.orElseThrow(() -> new RuntimeException(
+						"No endpoint of COS organization with identifier '" + identifier + "' found"));
 	}
 }

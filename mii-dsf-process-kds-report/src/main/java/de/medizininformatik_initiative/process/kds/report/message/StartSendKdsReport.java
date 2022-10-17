@@ -24,7 +24,8 @@ public class StartSendKdsReport extends AbstractTaskMessageSend
 	@Override
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
-		return getLeadingTaskFromExecutionVariables().getInput().stream().filter(Task.ParameterComponent::hasType)
+		return getLeadingTaskFromExecutionVariables(execution).getInput().stream()
+				.filter(Task.ParameterComponent::hasType)
 				.filter(i -> i.getType().getCoding().stream()
 						.anyMatch(c -> ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT.equals(c.getSystem())
 								&& ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE

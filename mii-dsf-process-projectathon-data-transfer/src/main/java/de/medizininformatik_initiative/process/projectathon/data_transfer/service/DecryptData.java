@@ -54,9 +54,9 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		byte[] bundleEncrypted = (byte[]) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED);
 		String localOrganizationIdentifier = organizationProvider.getLocalIdentifierValue();
-		String sendingOrganizationIdentifier = getSendingOrganizationIdentifier();
+		String sendingOrganizationIdentifier = getSendingOrganizationIdentifier(execution);
 
-		Bundle bundleDecrypted = decryptBundle(keyProvider.getPrivateKey(), bundleEncrypted,
+		Bundle bundleDecrypted = decryptBundle(execution, keyProvider.getPrivateKey(), bundleEncrypted,
 				sendingOrganizationIdentifier, localOrganizationIdentifier);
 
 		dataLogger.logResource("Decrypted Transfer Bundle", bundleDecrypted);
@@ -65,9 +65,9 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 				FhirResourceValues.create(bundleDecrypted));
 	}
 
-	private String getSendingOrganizationIdentifier()
+	private String getSendingOrganizationIdentifier(DelegateExecution execution)
 	{
-		Reference requester = getLeadingTaskFromExecutionVariables().getRequester();
+		Reference requester = getLeadingTaskFromExecutionVariables(execution).getRequester();
 
 		if (requester.hasIdentifier() && requester.getIdentifier().hasValue())
 			return requester.getIdentifier().getValue();
@@ -75,8 +75,8 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 			throw new IllegalArgumentException("Task is missing requester identifier");
 	}
 
-	private Bundle decryptBundle(PrivateKey privateKey, byte[] bundleEncrypted, String sendingOrganizationIdentifier,
-			String receivingOrganizationIdentifier)
+	private Bundle decryptBundle(DelegateExecution execution, PrivateKey privateKey, byte[] bundleEncrypted,
+			String sendingOrganizationIdentifier, String receivingOrganizationIdentifier)
 	{
 		try
 		{
@@ -87,7 +87,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		}
 		catch (Exception exception)
 		{
-			String taskId = getLeadingTaskFromExecutionVariables().getId();
+			String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
 			throw new RuntimeException("Could not decrypt received data-set for task with id='" + taskId + "'");
 		}
 	}

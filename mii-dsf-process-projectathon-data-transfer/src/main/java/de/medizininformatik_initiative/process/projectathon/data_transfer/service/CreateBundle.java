@@ -66,7 +66,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
 		Resource resource = (Resource) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
-		Bundle bundle = createTransactionBundle(projectIdentifier, documentReference, resource);
+		Bundle bundle = createTransactionBundle(execution, projectIdentifier, documentReference, resource);
 
 		dataLogger.logResource("Created Transfer Bundle", bundle);
 
@@ -74,8 +74,8 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				FhirResourceValues.create(bundle));
 	}
 
-	private Bundle createTransactionBundle(String projectIdentifier, DocumentReference documentReference,
-			Resource resource)
+	private Bundle createTransactionBundle(DelegateExecution execution, String projectIdentifier,
+			DocumentReference documentReference, Resource resource)
 	{
 		Resource attachmentToTransmit = resource.setId(UUID.randomUUID().toString());
 
@@ -88,7 +88,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.setValue(organizationProvider.getLocalIdentifierValue());
 		documentReferenceToTransmit.setDate(documentReference.getDate());
 
-		String contentType = getFirstAttachmentContentType(documentReference);
+		String contentType = getFirstAttachmentContentType(execution, documentReference);
 		documentReferenceToTransmit.addContent().getAttachment().setContentType(contentType)
 				.setUrl("urn:uuid:" + resource.getId());
 
@@ -102,7 +102,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 		return bundle;
 	}
 
-	private String getFirstAttachmentContentType(DocumentReference documentReference)
+	private String getFirstAttachmentContentType(DelegateExecution execution, DocumentReference documentReference)
 	{
 		List<Attachment> attachments = Stream.of(documentReference).filter(DocumentReference::hasContent)
 				.flatMap(dr -> dr.getContent().stream())
@@ -111,15 +111,15 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.collect(toList());
 
 		if (attachments.size() < 1)
-			throw new IllegalArgumentException(
-					"Could not find any attachment with url in DocumentReference with id='" + documentReference.getId()
-							+ "' belonging to task with id='" + getLeadingTaskFromExecutionVariables().getId() + "'");
+			throw new IllegalArgumentException("Could not find any attachment with url in DocumentReference with id='"
+					+ documentReference.getId() + "' belonging to task with id='"
+					+ getLeadingTaskFromExecutionVariables(execution).getId() + "'");
 
 		if (attachments.size() > 1)
 			logger.warn(
 					"Found {} attachments in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
-					attachments.size(), documentReference.getId(), getLeadingTaskFromExecutionVariables().getId(),
-					attachments.get(0));
+					attachments.size(), documentReference.getId(),
+					getLeadingTaskFromExecutionVariables(execution).getId(), attachments.get(0));
 
 		return attachments.get(0).getContentType();
 	}

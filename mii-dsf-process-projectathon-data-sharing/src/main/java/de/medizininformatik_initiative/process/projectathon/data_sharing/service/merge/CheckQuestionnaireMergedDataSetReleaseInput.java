@@ -40,22 +40,22 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 
 		// Validity of the URL to access the merged data-set is checked as part of the default javascript code
 		String dataSetUrl = getDataSetUrl(questionnaireResponse);
-		storeDataSetUrlAsTaskOutput(dataSetUrl);
+		storeDataSetUrlAsTaskOutput(execution, dataSetUrl);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION,
 				Variables.stringValue(dataSetUrl));
 
 		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier))
 		{
 			logger.info("Released data-set provided for project-identifier='{}' referenced in Task with id='{}'",
-					projectIdentifier, getLeadingTaskFromExecutionVariables().getId());
+					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, true);
 		}
 		else
 		{
 			logger.warn(
 					"Could not release data-set project-identifier='{}' referenced in Task with id='{}': expected and provided project identifier do not match ({}/{}), restarting user task",
-					projectIdentifier, getLeadingTaskFromExecutionVariables().getId(), projectIdentifier.toLowerCase(),
-					getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
+					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId(),
+					projectIdentifier.toLowerCase(), getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, false);
 		}
 	}
@@ -74,16 +74,16 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 						+ ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL));
 	}
 
-	private void storeDataSetUrlAsTaskOutput(String dataSetUrl)
+	private void storeDataSetUrlAsTaskOutput(DelegateExecution execution, String dataSetUrl)
 	{
-		Task leadingTask = getLeadingTaskFromExecutionVariables();
+		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
 		Task.TaskOutputComponent dataSetLocationOutput = new Task.TaskOutputComponent();
 		dataSetLocationOutput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
 		dataSetLocationOutput.setValue(new UrlType().setValue(dataSetUrl));
 
 		leadingTask.addOutput(dataSetLocationOutput);
-		updateLeadingTaskInExecutionVariables(leadingTask);
+		updateLeadingTaskInExecutionVariables(execution, leadingTask);
 	}
 
 	private boolean projectIdentifierMatch(QuestionnaireResponse questionnaireResponse,

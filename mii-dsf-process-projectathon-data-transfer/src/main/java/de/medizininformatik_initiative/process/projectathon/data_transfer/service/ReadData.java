@@ -56,7 +56,7 @@ public class ReadData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String projectIdentifier = getProjectIdentifier(task);
 		String cosIdentifier = getCoordinatingSiteIdentifier(task);
 

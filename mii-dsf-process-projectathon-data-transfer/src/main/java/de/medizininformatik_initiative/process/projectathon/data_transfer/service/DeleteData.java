@@ -38,7 +38,7 @@ public class DeleteData extends AbstractServiceDelegate
 				"Permanently deleted encrypted Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' "
 						+ "referenced in Task with id='{}'",
 				binaryId.getValue(), coordinatingSiteIdentifier, projectIdentifier,
-				getLeadingTaskFromExecutionVariables().getId());
+				getLeadingTaskFromExecutionVariables(execution).getId());
 	}
 
 	private void deletePermanently(IdType binaryId)

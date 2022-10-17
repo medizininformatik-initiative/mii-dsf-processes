@@ -61,9 +61,10 @@ public class SendKdsReport extends AbstractTaskMessageSend implements Initializi
 	}
 
 	@Override
-	protected void handleIntermediateThrowEventError(Exception exception, String errorMessage)
+	protected void handleIntermediateThrowEventError(DelegateExecution execution, Exception exception,
+			String errorMessage)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 
 		if (task != null)
 		{
@@ -79,10 +80,10 @@ public class SendKdsReport extends AbstractTaskMessageSend implements Initializi
 			}
 
 			task.addOutput(statusGenerator.createKdsReportStatusOutput(statusCode, createErrorMessage(exception)));
-			updateLeadingTaskInExecutionVariables(task);
+			updateLeadingTaskInExecutionVariables(execution, task);
 		}
 
-		super.handleIntermediateThrowEventError(exception, errorMessage);
+		super.handleIntermediateThrowEventError(execution, exception, errorMessage);
 	}
 
 	@Override

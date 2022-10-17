@@ -59,7 +59,7 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String organizationIdentifier = getCurrentTaskFromExecutionVariables().getRequester().getIdentifier()
+		String organizationIdentifier = getCurrentTaskFromExecutionVariables(execution).getRequester().getIdentifier()
 				.getValue();
 
 		try
@@ -80,12 +80,12 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 
 			idsOfCreatedResources.stream()
 					.filter(i -> ResourceType.DocumentReference.name().equals(i.getResourceType()))
-					.forEach(this::addOutputToCurrentTask);
+					.forEach(i -> addOutputToCurrentTask(execution, i));
 
 			idsOfCreatedResources.forEach(id -> toLogMessage(id, organizationIdentifier, projectIdentifier));
 
 			Targets targets = (Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS);
-			removeOrganizationFromTargets(targets, organizationIdentifier);
+			removeOrganizationFromTargets(execution, targets, organizationIdentifier);
 		}
 		catch (Exception exception)
 		{
@@ -106,15 +106,15 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 		return new IdType(fhirBaseUrl + deliminator + id);
 	}
 
-	private void addOutputToCurrentTask(IdType id)
+	private void addOutputToCurrentTask(DelegateExecution execution, IdType id)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 
 		task.addOutput().setValue(new Reference(id.getValue()).setType(id.getResourceType())).getType().addCoding()
 				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DOCUMENT_REFERENCE_REFERENCE);
 
-		updateLeadingTaskInExecutionVariables(task);
+		updateLeadingTaskInExecutionVariables(execution, task);
 	}
 
 	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
@@ -125,12 +125,13 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 				projectIdentifier);
 	}
 
-	private void removeOrganizationFromTargets(Targets targets, String organizationIdentifier)
+	private void removeOrganizationFromTargets(DelegateExecution execution, Targets targets,
+			String organizationIdentifier)
 	{
 		List<Target> targetsWithoutReceivedIdentifier = targets.getEntries().stream()
 				.filter(t -> !organizationIdentifier.equals(t.getOrganizationIdentifierValue()))
 				.collect(Collectors.toList());
-		getExecution().setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
+		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targetsWithoutReceivedIdentifier)));
 	}
 }

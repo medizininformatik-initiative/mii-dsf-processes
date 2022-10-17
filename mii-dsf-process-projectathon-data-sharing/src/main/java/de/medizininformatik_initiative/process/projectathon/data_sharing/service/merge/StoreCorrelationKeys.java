@@ -51,7 +51,7 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 
 		String projectIdentifier = getProjectIdentifier(task);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,

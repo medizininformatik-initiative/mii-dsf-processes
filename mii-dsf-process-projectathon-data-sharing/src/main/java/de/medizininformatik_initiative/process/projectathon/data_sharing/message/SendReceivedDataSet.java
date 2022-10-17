@@ -25,7 +25,7 @@ public class SendReceivedDataSet extends AbstractTaskMessageSend
 	@Override
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
-		Task task = getCurrentTaskFromExecutionVariables();
+		Task task = getCurrentTaskFromExecutionVariables(execution);
 		Reference requester = task.getRequester();
 
 		Task.ParameterComponent input = getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,

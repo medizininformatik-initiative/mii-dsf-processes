@@ -48,7 +48,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		Identifier reportIdentifier = getReportIdentifier(task);
 
 		Bundle report = (Bundle) execution
@@ -67,7 +67,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 
 			task.addOutput(kdsReportStatusGenerator
 					.createKdsReportStatusOutput(ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_OK));
-			updateLeadingTaskInExecutionVariables(task);
+			updateLeadingTaskInExecutionVariables(execution, task);
 
 			logger.info("Stored KDS report bundle with id '{}' from organization '{}'", reportId.getValue(),
 					task.getRequester().getIdentifier().getValue());
@@ -77,7 +77,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 			task.setStatus(Task.TaskStatus.FAILED);
 			task.addOutput(kdsReportStatusGenerator.createKdsReportStatusOutput(
 					ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
-			updateLeadingTaskInExecutionVariables(task);
+			updateLeadingTaskInExecutionVariables(execution, task);
 
 			logger.warn("Storing report from Task with id '{}' failed: {}", task.getId(), exception.getMessage());
 			throw new BpmnError(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR,

@@ -41,7 +41,7 @@ public class SelectTargetDic extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String dicIdentifier = getDicOrganizationIdentifier(task);
 		Endpoint dicEndpoint = getDicEndpoint(dicIdentifier);
 		Target dicTarget = createTarget(dicIdentifier, dicEndpoint);
@@ -70,6 +70,6 @@ public class SelectTargetDic extends AbstractServiceDelegate implements Initiali
 	{
 		return endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).findFirst()
-				.map(Identifier::getValue).get();
+				.map(Identifier::getValue).orElseThrow(() -> new RuntimeException("No endpoint identifier found"));
 	}
 }

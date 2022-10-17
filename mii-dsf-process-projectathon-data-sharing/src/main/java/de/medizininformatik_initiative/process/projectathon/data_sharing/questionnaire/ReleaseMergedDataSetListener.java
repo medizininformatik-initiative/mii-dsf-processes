@@ -22,9 +22,9 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener
 	}
 
 	@Override
-	protected void modifyQuestionnaireResponse(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
+	protected void beforeQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
 	{
-		String projectIdentifier = (String) getExecution()
+		String projectIdentifier = (String) userTask.getExecution()
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
 		questionnaireResponse.getItem().stream()
@@ -32,6 +32,12 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener
 						|| ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL.equals(i.getLinkId()))
 				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasText)
 				.forEach(i -> replace(i, projectIdentifier));
+	}
+
+	@Override
+	protected void afterQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
+	{
+
 	}
 
 	private void replace(QuestionnaireResponse.QuestionnaireResponseItemComponent item, String projectIdentifier)

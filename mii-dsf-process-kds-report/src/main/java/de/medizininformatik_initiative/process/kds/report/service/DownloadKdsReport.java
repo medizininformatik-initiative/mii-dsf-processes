@@ -49,12 +49,12 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 
 		IdType reportReference = getReportReference(task);
 		logger.info("Downloading KDS report with id '{}'...", reportReference.getValue());
 
-		Bundle reportBundle = downloadReportBundle(reportReference, task);
+		Bundle reportBundle = downloadReportBundle(execution, reportReference, task);
 		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE,
 				FhirResourceValues.create(reportBundle));
 	}
@@ -77,7 +77,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 		return new IdType(reportReferences.get(0));
 	}
 
-	private Bundle downloadReportBundle(IdType reportReference, Task task)
+	private Bundle downloadReportBundle(DelegateExecution execution, IdType reportReference, Task task)
 	{
 		FhirWebserviceClient client = getFhirWebserviceClientProvider()
 				.getWebserviceClient(reportReference.getBaseUrl());
@@ -94,7 +94,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 			task.setStatus(Task.TaskStatus.FAILED);
 			task.addOutput(kdsReportStatusGenerator.createKdsReportStatusOutput(
 					ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
-			updateLeadingTaskInExecutionVariables(task);
+			updateLeadingTaskInExecutionVariables(execution, task);
 
 			logger.warn("Downloading report with id '{}' failed: {}", reportReference.getValue(),
 					exception.getMessage());

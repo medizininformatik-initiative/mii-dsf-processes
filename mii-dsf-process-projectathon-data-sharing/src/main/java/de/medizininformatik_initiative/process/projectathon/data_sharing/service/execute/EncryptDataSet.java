@@ -65,7 +65,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 		Bundle toEncrypt = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
 		PublicKey publicKey = readPublicKey(cosIdentifier, cosUrl);
-		byte[] encrypted = encrypt(publicKey, toEncrypt, localIdentifier, cosIdentifier);
+		byte[] encrypted = encrypt(execution, publicKey, toEncrypt, localIdentifier, cosIdentifier);
 
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
 				Variables.byteArrayValue(encrypted));
@@ -171,8 +171,8 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 							+ bundleId + "'");
 	}
 
-	private byte[] encrypt(PublicKey publicKey, Bundle bundle, String sendingOrganizationIdentifier,
-			String receivingOrganizationIdentifier)
+	private byte[] encrypt(DelegateExecution execution, PublicKey publicKey, Bundle bundle,
+			String sendingOrganizationIdentifier, String receivingOrganizationIdentifier)
 	{
 		try
 		{
@@ -184,7 +184,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 		}
 		catch (Exception exception)
 		{
-			String taskId = getLeadingTaskFromExecutionVariables().getId();
+			String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
 			throw new RuntimeException("Could not encrypt data-set to transmit for task with id='" + taskId + "'");
 		}
 	}

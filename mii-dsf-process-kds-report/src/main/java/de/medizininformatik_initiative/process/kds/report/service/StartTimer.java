@@ -61,7 +61,7 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_STOP_TIMER,
 				Variables.booleanValue(false));
 
-		String timerInterval = getTimerInterval();
+		String timerInterval = getTimerInterval(execution);
 		logger.debug("Setting variable '{}' to {}",
 				ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL, timerInterval);
 		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL,
@@ -92,10 +92,10 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 								+ ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_AUTOSTART + "' can exist"));
 	}
 
-	private String getTimerInterval()
+	private String getTimerInterval(DelegateExecution execution)
 	{
 		return getTaskHelper()
-				.getFirstInputParameterStringValue(getLeadingTaskFromExecutionVariables(),
+				.getFirstInputParameterStringValue(getLeadingTaskFromExecutionVariables(execution),
 						ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT,
 						ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_VALUE_TIMER_INTERVAL)
 				.orElse(ConstantsKdsReport.KDS_REPORT_TIMER_INTERVAL_DEFAULT_VALUE);

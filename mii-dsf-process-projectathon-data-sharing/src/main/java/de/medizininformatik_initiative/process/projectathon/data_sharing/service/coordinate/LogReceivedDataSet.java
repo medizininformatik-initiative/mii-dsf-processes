@@ -33,8 +33,8 @@ public class LogReceivedDataSet extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task currentTask = getCurrentTaskFromExecutionVariables();
-		Task leadingTask = getLeadingTaskFromExecutionVariables();
+		Task currentTask = getCurrentTaskFromExecutionVariables(execution);
+		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
 
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);

@@ -69,7 +69,8 @@ public class ValidateDataCos extends AbstractServiceDelegate implements Initiali
 			throw new RuntimeException("Bundle contains " + countDr + " DocumentReferences (expected 1)");
 		}
 
-		String identifierRequester = getLeadingTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
+		String identifierRequester = getLeadingTaskFromExecutionVariables(execution).getRequester().getIdentifier()
+				.getValue();
 		String identifierAuthor = documentReferences.stream().filter(DocumentReference::hasAuthor)
 				.flatMap(dr -> dr.getAuthor().stream()).filter(Reference::hasIdentifier).map(Reference::getIdentifier)
 				.filter(Identifier::hasValue).map(Identifier::getValue).findFirst().orElse("no-author");

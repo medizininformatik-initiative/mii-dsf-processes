@@ -37,7 +37,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 	{
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		Task task = getCurrentTaskFromExecutionVariables();
+		Task task = getCurrentTaskFromExecutionVariables(execution);
 		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 
 		IdType dataSetReference = getDataSetReference(task);

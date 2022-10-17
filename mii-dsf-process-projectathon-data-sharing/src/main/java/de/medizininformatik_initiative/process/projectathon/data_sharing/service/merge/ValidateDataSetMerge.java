@@ -68,7 +68,8 @@ public class ValidateDataSetMerge extends AbstractServiceDelegate implements Ini
 			throw new RuntimeException("Bundle contains " + countDr + " DocumentReferences (expected 1)");
 		}
 
-		String identifierRequester = getCurrentTaskFromExecutionVariables().getRequester().getIdentifier().getValue();
+		String identifierRequester = getCurrentTaskFromExecutionVariables(execution).getRequester().getIdentifier()
+				.getValue();
 		String identifierAuthor = documentReferences.stream().filter(DocumentReference::hasAuthor)
 				.flatMap(dr -> dr.getAuthor().stream()).filter(Reference::hasIdentifier).map(Reference::getIdentifier)
 				.filter(Identifier::hasValue).map(Identifier::getValue).findFirst().orElse("no-author");

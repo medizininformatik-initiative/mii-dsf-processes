@@ -73,7 +73,7 @@ public class StoreData extends AbstractServiceDelegate
 		logger.info(
 				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
 				binaryId, coordinatingSiteIdentifier, projectIdentifier,
-				getLeadingTaskFromExecutionVariables().getId());
+				getLeadingTaskFromExecutionVariables(execution).getId());
 
 		Target target = createTarget(coordinatingSiteIdentifier);
 

@@ -58,8 +58,8 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 	}
 
 	@Override
-	protected void sendTask(Target target, String instantiatesUri, String messageName, String businessKey,
-			String profile, Stream<Task.ParameterComponent> additionalInputParameters)
+	protected void sendTask(DelegateExecution execution, Target target, String instantiatesUri, String messageName,
+			String businessKey, String profile, Stream<Task.ParameterComponent> additionalInputParameters)
 	{
 		try
 		{

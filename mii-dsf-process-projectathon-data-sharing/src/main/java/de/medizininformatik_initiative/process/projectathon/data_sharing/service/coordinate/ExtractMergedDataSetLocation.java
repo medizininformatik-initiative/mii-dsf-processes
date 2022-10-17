@@ -20,10 +20,10 @@ public class ExtractMergedDataSetLocation extends AbstractServiceDelegate
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution delegateExecution)
+	protected void doExecute(DelegateExecution execution)
 	{
-		Task currenTask = getCurrentTaskFromExecutionVariables();
-		Task leadingTask = getLeadingTaskFromExecutionVariables();
+		Task currenTask = getCurrentTaskFromExecutionVariables(execution);
+		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
 
 		String dataSetLocation = currenTask.getInput().stream().filter(i -> i.getType().getCoding().stream()
 				.anyMatch(c -> ConstantsDataSharing.CODESYSTEM_DATA_SHARING.equals(c.getSystem())
@@ -38,6 +38,6 @@ public class ExtractMergedDataSetLocation extends AbstractServiceDelegate
 		dataSetLocationOutput.setValue(new UrlType().setValue(dataSetLocation));
 
 		leadingTask.addOutput(dataSetLocationOutput);
-		updateLeadingTaskInExecutionVariables(leadingTask);
+		updateLeadingTaskInExecutionVariables(execution, leadingTask);
 	}
 }

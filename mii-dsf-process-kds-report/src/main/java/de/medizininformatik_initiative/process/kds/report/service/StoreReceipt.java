@@ -45,17 +45,17 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task leadingTask = getLeadingTaskFromExecutionVariables();
-		Task currentTask = getCurrentTaskFromExecutionVariables();
+		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
+		Task currentTask = getCurrentTaskFromExecutionVariables(execution);
 
 		if (!currentTask.getId().equals(leadingTask.getId()))
 			handleReceivedResponse(leadingTask, currentTask);
 		else
 			handleMissingResponse(leadingTask);
 
-		addBusinessKeyOutput(leadingTask, execution);
+		addBusinessKeyOutput(execution, leadingTask);
 		writeStatusLog(leadingTask);
-		updateLeadingTaskInExecutionVariables(leadingTask);
+		updateLeadingTaskInExecutionVariables(execution, leadingTask);
 	}
 
 	private void handleReceivedResponse(Task leadingTask, Task currentTask)
@@ -80,7 +80,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 				ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIPT_MISSING));
 	}
 
-	private void addBusinessKeyOutput(Task leadingTask, DelegateExecution execution)
+	private void addBusinessKeyOutput(DelegateExecution execution, Task leadingTask)
 	{
 		Optional<String> businessKey = getTaskHelper().getFirstInputParameterStringValue(leadingTask,
 				CODESYSTEM_HIGHMED_BPMN, CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);

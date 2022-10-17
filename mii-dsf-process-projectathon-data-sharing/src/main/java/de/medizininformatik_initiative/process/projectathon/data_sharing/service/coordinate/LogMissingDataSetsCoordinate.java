@@ -30,13 +30,13 @@ public class LogMissingDataSetsCoordinate extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		String taskId = getLeadingTaskFromExecutionVariables().getId();
+		String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		Targets targets = (Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS);
 
 		logMissingDataSets(targets, taskId, projectIdentifier);
-		outputMissingDataSets(targets);
+		outputMissingDataSets(execution, targets);
 	}
 
 	private void logMissingDataSets(Targets targets, String taskId, String projectIdentifier)
@@ -50,11 +50,11 @@ public class LogMissingDataSetsCoordinate extends AbstractServiceDelegate
 				target.getOrganizationIdentifierValue(), taskId, projectIdentifier);
 	}
 
-	private void outputMissingDataSets(Targets targets)
+	private void outputMissingDataSets(DelegateExecution execution, Targets targets)
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		targets.getEntries().forEach(target -> output(task, target));
-		updateLeadingTaskInExecutionVariables(task);
+		updateLeadingTaskInExecutionVariables(execution, task);
 	}
 
 	private void output(Task task, Target target)

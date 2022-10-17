@@ -36,7 +36,7 @@ public class DownloadData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution) throws Exception
 	{
-		Task task = getLeadingTaskFromExecutionVariables();
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 		String projectIdentifier = getProjectIdentifier(task);
 
