@@ -1,6 +1,6 @@
 <Questionnaire xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://highmed.org/fhir/StructureDefinition/questionnaire|0.8.0"/>
+		<profile value="http://highmed.org/fhir/StructureDefinition/questionnaire|0.9.0"/>
 		<tag>
 			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag"/>
 			<code value="ALL"/>
