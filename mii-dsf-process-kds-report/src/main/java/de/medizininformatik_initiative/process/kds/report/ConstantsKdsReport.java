@@ -14,7 +14,6 @@ public interface ConstantsKdsReport
 	String PROCESS_NAME_FULL_KDS_REPORT_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_KDS_REPORT_SEND;
 
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL = "kdsReportTimerInterval";
-	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_STOP_TIMER = "kdsReportStopTimer";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE = "kdsReportSearchBundle";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE = "kdsReportSearchBundleResponseReference";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR = "kdsReportReceiveError";

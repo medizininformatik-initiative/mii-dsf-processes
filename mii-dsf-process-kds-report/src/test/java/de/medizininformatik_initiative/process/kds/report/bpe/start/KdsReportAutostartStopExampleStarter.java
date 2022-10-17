@@ -1,8 +1,6 @@
 package de.medizininformatik_initiative.process.kds.report.bpe.start;
 
-import static de.medizininformatik_initiative.process.kds.report.bpe.start.KdsReportAutostartStartExampleStarter.AUTOSTART_BUSINESS_KEY;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN;
-import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY;
 import static org.highmed.dsf.bpe.ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME;
 import static org.highmed.dsf.bpe.ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER;
 
@@ -48,8 +46,6 @@ public class KdsReportAutostartStopExampleStarter
 				.setValue(new StringType(ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_STOP_MESSAGE_NAME))
 				.getType().addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN)
 				.setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
-		task.addInput().setValue(new StringType(AUTOSTART_BUSINESS_KEY)).getType().addCoding()
-				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
 
 		return task;
 	}

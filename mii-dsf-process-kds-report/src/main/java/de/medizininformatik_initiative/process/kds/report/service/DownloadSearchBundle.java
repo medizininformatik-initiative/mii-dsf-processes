@@ -67,7 +67,6 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 				target.getOrganizationIdentifierValue(), getLeadingTaskFromExecutionVariables(execution).getId());
 
 		Bundle bundle = searchSearchBundle(execution, target, searchBundleIdentifier);
-
 		dataLogger.logResource("Search Response", bundle);
 
 		Bundle searchBundle = extractSearchBundle(bundle, searchBundleIdentifier);

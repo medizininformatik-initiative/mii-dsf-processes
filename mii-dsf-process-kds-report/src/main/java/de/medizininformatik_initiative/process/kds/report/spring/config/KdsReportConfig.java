@@ -24,7 +24,6 @@ import de.medizininformatik_initiative.process.kds.report.service.InsertKdsRepor
 import de.medizininformatik_initiative.process.kds.report.service.SelectTargetDic;
 import de.medizininformatik_initiative.process.kds.report.service.SelectTargetHrp;
 import de.medizininformatik_initiative.process.kds.report.service.StartTimer;
-import de.medizininformatik_initiative.process.kds.report.service.StopTimer;
 import de.medizininformatik_initiative.process.kds.report.service.StoreReceipt;
 import de.medizininformatik_initiative.process.kds.report.util.KdsReportStatusGenerator;
 import de.medizininformatik_initiative.processes.kds.client.spring.config.PropertiesConfig;
@@ -65,12 +64,6 @@ public class KdsReportConfig
 	public StartTimer startTimer()
 	{
 		return new StartTimer(clientProvider, taskHelper, readAccessHelper, organizationProvider, endpointProvider);
-	}
-
-	@Bean
-	public StopTimer stopTimer()
-	{
-		return new StopTimer(clientProvider, taskHelper, readAccessHelper);
 	}
 
 	@Bean

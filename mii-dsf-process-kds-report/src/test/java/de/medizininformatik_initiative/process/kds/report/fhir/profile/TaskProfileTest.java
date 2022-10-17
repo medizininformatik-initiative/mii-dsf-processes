@@ -106,8 +106,6 @@ public class TaskProfileTest
 		task.getRestriction().addRecipient().setType(ResourceType.Organization.name()).getIdentifier()
 				.setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER).setValue("DIC");
 
-		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
-				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
 		task.addInput()
 				.setValue(new StringType(ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_START_MESSAGE_NAME))
 				.getType().addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN)
@@ -146,8 +144,6 @@ public class TaskProfileTest
 				.setValue(new StringType(ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_STOP_MESSAGE_NAME))
 				.getType().addCoding().setSystem(CODESYSTEM_HIGHMED_BPMN)
 				.setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME);
-		task.addInput().setValue(new StringType(UUID.randomUUID().toString())).getType().addCoding()
-				.setSystem(CODESYSTEM_HIGHMED_BPMN).setCode(CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY);
 
 		return task;
 	}

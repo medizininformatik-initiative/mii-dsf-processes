@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0azvmx1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <bpmn:process id="medizininformatik-initiativede_kdsReportSend" isExecutable="true" camunda:versionTag="#{version}">
-    <bpmn:sequenceFlow id="SequenceFlow_0k1j79c" sourceRef="startSendKdsReport" targetRef="selectTargetHrp" />
-    <bpmn:sequenceFlow id="SequenceFlow_05ia6lz" sourceRef="selectTargetHrp" targetRef="downloadSearchBundle" />
     <bpmn:serviceTask id="selectTargetHrp" name="select target hrp" camunda:class="de.medizininformatik_initiative.process.kds.report.service.SelectTargetHrp">
-      <bpmn:incoming>SequenceFlow_0k1j79c</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_05ia6lz</bpmn:outgoing>
+      <bpmn:incoming>Flow_0jtrquu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zga5ci</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="EndEvent_1rdxonv">
       <bpmn:incoming>Flow_0d1hhpd</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:startEvent id="startSendKdsReport" name="start send kds report">
-      <bpmn:outgoing>SequenceFlow_0k1j79c</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0jtrquu</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1pklz6t" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0d1hhpd" sourceRef="storeReceipt" targetRef="EndEvent_1rdxonv" />
@@ -66,14 +64,16 @@
     <bpmn:sequenceFlow id="Flow_085f33c" sourceRef="wait" targetRef="Gateway_0tuxyny" />
     <bpmn:sequenceFlow id="Flow_0bq8udu" sourceRef="downloadSearchBundle" targetRef="checkSearchBundle" />
     <bpmn:serviceTask id="downloadSearchBundle" name="download search bundle" camunda:class="de.medizininformatik_initiative.process.kds.report.service.DownloadSearchBundle">
-      <bpmn:incoming>SequenceFlow_05ia6lz</bpmn:incoming>
+      <bpmn:incoming>Flow_0zga5ci</bpmn:incoming>
       <bpmn:outgoing>Flow_0bq8udu</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1bwmt5h" sourceRef="checkSearchBundle" targetRef="createKdsReport" />
-    <bpmn:serviceTask id="checkSearchBundle" name="check search bundle" camunda:class="de.medizininformatik_initiative.process.kds.report.service.DownloadSearchBundle">
+    <bpmn:serviceTask id="checkSearchBundle" name="check search bundle" camunda:class="de.medizininformatik_initiative.process.kds.report.service.CheckSearchBundle">
       <bpmn:incoming>Flow_0bq8udu</bpmn:incoming>
       <bpmn:outgoing>Flow_1bwmt5h</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zga5ci" sourceRef="selectTargetHrp" targetRef="downloadSearchBundle" />
+    <bpmn:sequenceFlow id="Flow_0jtrquu" sourceRef="startSendKdsReport" targetRef="selectTargetHrp" />
   </bpmn:process>
   <bpmn:message id="Message_10o3b8y" name="pong" />
   <bpmn:message id="Message_1pklz6t" name="kdsReportSendStart" />
@@ -122,11 +122,11 @@
         <di:waypoint x="1500" y="120" />
         <di:waypoint x="1582" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_05ia6lz_di" bpmnElement="SequenceFlow_05ia6lz">
+      <bpmndi:BPMNEdge id="Flow_0zga5ci_di" bpmnElement="Flow_0zga5ci">
         <di:waypoint x="400" y="120" />
         <di:waypoint x="470" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0k1j79c_di" bpmnElement="SequenceFlow_0k1j79c">
+      <bpmndi:BPMNEdge id="Flow_0jtrquu_di" bpmnElement="Flow_0jtrquu">
         <di:waypoint x="208" y="120" />
         <di:waypoint x="300" y="120" />
       </bpmndi:BPMNEdge>
