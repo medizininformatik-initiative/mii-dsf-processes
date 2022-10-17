@@ -24,6 +24,8 @@ import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.kds.report.util.KdsReportStatusGenerator;
@@ -31,6 +33,8 @@ import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class DownloadSearchBundle extends AbstractServiceDelegate implements InitializingBean
 {
+	private static final Logger logger = LoggerFactory.getLogger(DownloadSearchBundle.class);
+
 	private final KdsReportStatusGenerator statusGenerator;
 	private final DataLogger dataLogger;
 
@@ -58,7 +62,12 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
 		String searchBundleIdentifier = CODESYSTEM_MII_KDS_REPORT + "|" + CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE;
+
+		logger.info("Downloading search bundle='{}' from hrp='{}' for task with id='{}'", searchBundleIdentifier,
+				target.getOrganizationIdentifierValue(), getLeadingTaskFromExecutionVariables(execution).getId());
+
 		Bundle bundle = searchSearchBundle(execution, target, searchBundleIdentifier);
+
 		dataLogger.logResource("Search Response", bundle);
 
 		Bundle searchBundle = extractSearchBundle(bundle, searchBundleIdentifier);

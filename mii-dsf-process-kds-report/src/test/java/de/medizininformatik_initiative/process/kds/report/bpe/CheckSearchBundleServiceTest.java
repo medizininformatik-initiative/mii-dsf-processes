@@ -72,7 +72,6 @@ public class CheckSearchBundleServiceTest
 	public void testValid()
 	{
 		testValid("/fhir/Bundle/search-bundle.xml");
-
 	}
 
 	@Test
