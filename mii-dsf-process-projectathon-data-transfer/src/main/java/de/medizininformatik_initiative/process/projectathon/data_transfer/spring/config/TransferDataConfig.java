@@ -14,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
-
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProvider;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.crypto.KeyProviderImpl;
 import de.medizininformatik_initiative.process.projectathon.data_transfer.message.StartReceiveProcess;
@@ -59,15 +58,13 @@ public class TransferDataConfig
 	@Autowired
 	private MailService mailService;
 
-	@ProcessDocumentation(required = true, processNames = { "medizininformatik-initiativede_dataReceive" },
-			description = "Location of the COS private-key as 4096 Bit RSA PEM encoded, not encrypted file",
-			recommendation = "Use docker secret file to configure", example = "/run/secrets/cos_private_key.pem")
+	@ProcessDocumentation(required = true, processNames = {
+			"medizininformatik-initiativede_dataReceive" }, description = "Location of the COS private-key as 4096 Bit RSA PEM encoded, not encrypted file", recommendation = "Use docker secret file to configure", example = "/run/secrets/cos_private_key.pem")
 	@Value("${de.medizininformatik.initiative.cos.private.key:#{null}}")
 	private String cosPrivateKeyFile;
 
-	@ProcessDocumentation(required = true, processNames = { "medizininformatik-initiativede_dataReceive" },
-			description = "Location of the COS public-key as 4096 Bit RSA PEM encoded file",
-			recommendation = "Use docker secret file to configure", example = "/run/secrets/cos_public_key.pem")
+	@ProcessDocumentation(required = true, processNames = {
+			"medizininformatik-initiativede_dataReceive" }, description = "Location of the COS public-key as 4096 Bit RSA PEM encoded file", recommendation = "Use docker secret file to configure", example = "/run/secrets/cos_public_key.pem")
 	@Value("${de.medizininformatik.initiative.cos.public.key:#{null}}")
 	private String cosPublicKeyFile;
 

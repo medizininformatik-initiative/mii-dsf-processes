@@ -72,7 +72,7 @@ services:
 
 
   dic1-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -124,7 +124,7 @@ services:
       - db
       - proxy
   dic1-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -200,7 +200,7 @@ services:
 
 
   dic2-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -252,7 +252,7 @@ services:
       - db
       - proxy
   dic2-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -339,7 +339,7 @@ services:
           - dic2-fhir-store
 
   cos-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -391,7 +391,7 @@ services:
       - db
       - proxy
   cos-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]
@@ -470,7 +470,7 @@ services:
 
 
   hrp-fhir:
-    image: highmed/fhir
+    image: ghcr.io/highmed/fhir:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_fhir.jar", "org.highmed.dsf.fhir.StatusClient" ]
@@ -523,7 +523,7 @@ services:
       - db
       - proxy
   hrp-bpe:
-    image: highmed/bpe
+    image: ghcr.io/highmed/bpe:0.9.0
     restart: "no"
     healthcheck:
       test: [ "CMD", "java", "-cp", "dsf_bpe.jar", "org.highmed.dsf.bpe.StatusClient" ]

@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
-
 import de.medizininformatik_initiative.process.projectathon.data_transfer.ConstantsDataTransfer;
 import de.medizininformatik_initiative.processes.kds.client.KdsClient;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
@@ -58,8 +57,8 @@ public class InsertData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		String projectIdentifier = (String) execution.getVariable(
-				ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		String sendingOrganization = getLeadingTaskFromExecutionVariables(execution).getRequester().getIdentifier()
 				.getValue();
 		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET);
@@ -103,10 +102,11 @@ public class InsertData extends AbstractServiceDelegate
 	private void sendMail(List<IdType> createdIds, String sendingOrganization, String projectIdentifier)
 	{
 		String subject = "New data received in process '" + ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "'";
-		StringBuilder message = new StringBuilder("New data has been stored and can be accessed using the following links"
-				+ " for data-transfer project '" + projectIdentifier + "' in process '"
-				+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "' received from organization '"
-				+ sendingOrganization + "':\n\n");
+		StringBuilder message = new StringBuilder(
+				"New data has been stored and can be accessed using the following links"
+						+ " for data-transfer project '" + projectIdentifier + "' in process '"
+						+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "' received from organization '"
+						+ sendingOrganization + "':\n\n");
 
 		for (IdType id : createdIds)
 			message.append("- ").append(id.getValue()).append("\n");
