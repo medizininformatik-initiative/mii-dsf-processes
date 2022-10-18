@@ -18,6 +18,8 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.UrlType;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.Researchers;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
@@ -84,18 +87,18 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 	@Override
 	protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution)
 	{
-		String projectIdentifier = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String projectIdentifier = (String) execution.getVariable(
+				ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		Task.ParameterComponent projectIdentifierInput = getProjectIdentifierInput(projectIdentifier);
 
-		String contractLocation = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION);
+		String contractLocation = (String) execution.getVariable(
+				ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION);
 		Task.ParameterComponent contractLocationInput = getContractLocationInput(contractLocation);
 
 		Stream<Task.ParameterComponent> otherInputs = Stream.of(projectIdentifierInput, contractLocationInput);
 
-		List<String> researcherIdentifiers = ((Researchers) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS)).getEntries();
+		List<String> researcherIdentifiers = ((Researchers) execution.getVariable(
+				ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS)).getEntries();
 		Stream<Task.ParameterComponent> researcherIdentifierInputs = getResearcherIdentifierInputs(
 				researcherIdentifiers);
 
@@ -137,8 +140,9 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 		Task.ParameterComponent researcherIdentifierInput = new Task.ParameterComponent();
 		researcherIdentifierInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_RESEARCHER_IDENTIFIER);
-		researcherIdentifierInput.setValue(new Identifier()
-				.setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER).setValue(researcherIdentifier));
+		researcherIdentifierInput.setValue(
+				new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
+						.setValue(researcherIdentifier));
 
 		return researcherIdentifierInput;
 	}
@@ -150,9 +154,14 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 
 	private Task.ParameterComponent transformToInput(Target target)
 	{
-		return getTaskHelper().createInput(ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
-				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER,
-				target.getOrganizationIdentifierValue());
+		Task.ParameterComponent medicIdentifierInput = new Task.ParameterComponent();
+		medicIdentifierInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER);
+		medicIdentifierInput.setValue(new Reference().setIdentifier(
+				new Identifier().setSystem(ConstantsBase.NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
+						.setValue(target.getOrganizationIdentifierValue())).setType(ResourceType.Organization.name()));
+
+		return medicIdentifierInput;
 	}
 
 	private Task createTask(String profile, String instantiatesUri, String messageName, String businessKey)
@@ -168,16 +177,14 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 
 		task.setInstantiatesUri(instantiatesUri);
 
-		Task.ParameterComponent messageNameInput = new Task.ParameterComponent(
-				new CodeableConcept(new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
-						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME, null)),
-				new StringType(messageName));
+		Task.ParameterComponent messageNameInput = new Task.ParameterComponent(new CodeableConcept(
+				new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
+						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_MESSAGE_NAME, null)), new StringType(messageName));
 		task.getInput().add(messageNameInput);
 
-		Task.ParameterComponent businessKeyInput = new Task.ParameterComponent(
-				new CodeableConcept(new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
-						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY, null)),
-				new StringType(businessKey));
+		Task.ParameterComponent businessKeyInput = new Task.ParameterComponent(new CodeableConcept(
+				new Coding(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
+						ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_BUSINESS_KEY, null)), new StringType(businessKey));
 		task.getInput().add(businessKeyInput);
 
 		return task;
