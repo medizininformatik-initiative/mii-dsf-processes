@@ -72,7 +72,7 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 				+ "'";
 		String message = "A new user-task 'release-data-set' for data-sharing project '" + projectIdentifier
 				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
-				+ "' is waiting for it's completion. It can be accessed using the following link:\n\n" + "- "
+				+ "' is waiting for it's completion. It can be accessed using the following link:\n" + "- "
 				+ absoluteId.getValue();
 
 		mailService.send(subject, message);

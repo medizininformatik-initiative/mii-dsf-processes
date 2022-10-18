@@ -106,7 +106,7 @@ public class InsertData extends AbstractServiceDelegate
 				"New data has been stored and can be accessed using the following links"
 						+ " for data-transfer project '" + projectIdentifier + "' in process '"
 						+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "' received from organization '"
-						+ sendingOrganization + "':\n\n");
+						+ sendingOrganization + "':\n");
 
 		for (IdType id : createdIds)
 			message.append("- ").append(id.getValue()).append("\n");

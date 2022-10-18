@@ -63,7 +63,7 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener implem
 				+ "'";
 		String message = "A new user-task 'release-merged-data-set' for data-sharing project '" + projectIdentifier
 				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
-				+ "' is waiting for it's completion. It can be accessed using the following link:\n\n" + "- "
+				+ "' is waiting for it's completion. It can be accessed using the following link:\n" + "- "
 				+ absoluteId.getValue();
 
 		mailService.send(subject, message);
