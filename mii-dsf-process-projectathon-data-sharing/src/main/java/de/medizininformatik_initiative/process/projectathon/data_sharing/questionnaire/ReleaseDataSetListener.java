@@ -62,7 +62,9 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 	protected void afterQuestionnaireResponseCreate(DelegateTask userTask, QuestionnaireResponse questionnaireResponse)
 	{
 		IdType id = questionnaireResponse.getIdElement();
-		id.setIdBase(getFhirWebserviceClientProvider().getLocalBaseUrl());
+		IdType absoluteId = new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), id.getResourceType(),
+				id.getIdPart(), null);
+
 		String projectIdentifier = (String) userTask.getExecution()
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
@@ -70,7 +72,8 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 				+ "'";
 		String message = "A new user-task 'release-data-set' for data-sharing project '" + projectIdentifier
 				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
-				+ "' is waiting for it's completion. It can be accessed using the following link: " + id.getValue();
+				+ "' is waiting for it's completion. It can be accessed using the following link:\n\n"
+				+ "- " + absoluteId.getValue();
 
 		mailService.send(subject, message);
 	}
