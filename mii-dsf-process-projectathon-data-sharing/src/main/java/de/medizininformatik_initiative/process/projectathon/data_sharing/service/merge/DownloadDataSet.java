@@ -41,7 +41,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 
 		IdType dataSetReference = getDataSetReference(task);
-		logger.info("Downloading data-set with id='{}' from organization='{}' for project-identifier='{}'",
+		logger.info("Downloading data-set with id '{}' from organization '{}' for data-sharing project '{}'",
 				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);
@@ -57,10 +57,10 @@ public class DownloadDataSet extends AbstractServiceDelegate
 				.filter(Reference::hasReference).map(Reference::getReference).collect(toList());
 
 		if (dataSetReferences.size() < 1)
-			throw new IllegalArgumentException("No data-set reference present in task with id='" + task.getId() + "'");
+			throw new IllegalArgumentException("No data-set reference present in task with id '" + task.getId() + "'");
 
 		if (dataSetReferences.size() > 1)
-			logger.warn("Found {} data-set references in task with id='{}', using only the first",
+			logger.warn("Found {} data-set references in task with id '{}', using only the first",
 					dataSetReferences.size(), task.getId());
 
 		return new IdType(dataSetReferences.get(0));
@@ -78,7 +78,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 		}
 		catch (Exception exception)
 		{
-			throw new RuntimeException("Downloading Binary with id='" + dataSetReference.getValue() + "' failed.",
+			throw new RuntimeException("Downloading Binary with id '" + dataSetReference.getValue() + "' failed",
 					exception);
 		}
 	}

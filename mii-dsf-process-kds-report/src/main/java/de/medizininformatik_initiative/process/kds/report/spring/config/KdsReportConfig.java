@@ -1,5 +1,6 @@
 package de.medizininformatik_initiative.process.kds.report.spring.config;
 
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
@@ -52,6 +53,9 @@ public class KdsReportConfig
 
 	@Autowired
 	private PropertiesConfig kdsFhirClientConfig;
+
+	@Autowired
+	private MailService mailService;
 
 	@ProcessDocumentation(processNames = {
 			"medizininformatik-initiativede_kdsReportSend" }, description = "The KDS FHIR server type, possible values are [blaze, other] ; must be set, if a Blaze server is used")
@@ -117,7 +121,7 @@ public class KdsReportConfig
 	@Bean
 	public StoreReceipt storeReceipt()
 	{
-		return new StoreReceipt(clientProvider, taskHelper, readAccessHelper, kdsReportStatusGenerator());
+		return new StoreReceipt(clientProvider, taskHelper, readAccessHelper, kdsReportStatusGenerator(), mailService);
 	}
 
 	// kdsReportReceive Process
@@ -131,7 +135,8 @@ public class KdsReportConfig
 	@Bean
 	public InsertKdsReport insertKdsReport()
 	{
-		return new InsertKdsReport(clientProvider, taskHelper, readAccessHelper, kdsReportStatusGenerator());
+		return new InsertKdsReport(clientProvider, taskHelper, readAccessHelper, kdsReportStatusGenerator(),
+				mailService);
 	}
 
 	@Bean

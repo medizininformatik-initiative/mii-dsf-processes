@@ -51,7 +51,7 @@
       <bpmn:incoming>Flow_1fi7ktr</bpmn:incoming>
       <bpmn:outgoing>Flow_085f33c</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0wa7xi7">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1fi7ktr" sourceRef="Gateway_1uv2c5f" targetRef="wait" />
@@ -80,6 +80,14 @@
   <bpmn:message id="Message_2irb7l0" name="kdsReportReceive" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_kdsReportSend">
+      <bpmndi:BPMNEdge id="Flow_0jtrquu_di" bpmnElement="Flow_0jtrquu">
+        <di:waypoint x="208" y="120" />
+        <di:waypoint x="300" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zga5ci_di" bpmnElement="Flow_0zga5ci">
+        <di:waypoint x="400" y="120" />
+        <di:waypoint x="470" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bwmt5h_di" bpmnElement="Flow_1bwmt5h">
         <di:waypoint x="730" y="120" />
         <di:waypoint x="800" y="120" />
@@ -121,14 +129,6 @@
       <bpmndi:BPMNEdge id="Flow_0d1hhpd_di" bpmnElement="Flow_0d1hhpd">
         <di:waypoint x="1500" y="120" />
         <di:waypoint x="1582" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zga5ci_di" bpmnElement="Flow_0zga5ci">
-        <di:waypoint x="400" y="120" />
-        <di:waypoint x="470" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jtrquu_di" bpmnElement="Flow_0jtrquu">
-        <di:waypoint x="208" y="120" />
-        <di:waypoint x="300" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1cxtndb_di" bpmnElement="selectTargetHrp">
         <dc:Bounds x="300" y="80" width="100" height="80" />

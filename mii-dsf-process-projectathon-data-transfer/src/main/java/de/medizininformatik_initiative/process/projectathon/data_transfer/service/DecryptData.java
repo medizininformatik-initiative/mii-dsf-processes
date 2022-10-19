@@ -88,7 +88,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		catch (Exception exception)
 		{
 			String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
-			throw new RuntimeException("Could not decrypt received data-set for task with id='" + taskId + "'");
+			throw new RuntimeException("Could not decrypt received data-set for task with id '" + taskId + "'");
 		}
 	}
 }

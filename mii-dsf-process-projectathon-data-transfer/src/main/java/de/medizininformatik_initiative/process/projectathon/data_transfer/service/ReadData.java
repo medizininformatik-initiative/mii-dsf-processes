@@ -63,7 +63,7 @@ public class ReadData extends AbstractServiceDelegate
 		KdsClient kdsClient = kdsClientFactory.getKdsClient();
 
 		logger.info(
-				"Reading data-set on FHIR server with baseUrl='{}' for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				"Reading data-set on FHIR server with baseUrl '{}' for COS '{}' and data-transfer project '{}' referenced in Task with id '{}'",
 				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
 
 		DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
@@ -91,10 +91,10 @@ public class ReadData extends AbstractServiceDelegate
 				.map(Identifier::getValue).collect(toList());
 
 		if (identifiers.size() < 1)
-			throw new IllegalArgumentException("No project-identifier present in task with id='" + task.getId() + "'");
+			throw new IllegalArgumentException("No project-identifier present in task with id '" + task.getId() + "'");
 
 		if (identifiers.size() > 1)
-			logger.warn("Found {} project-identifiers in task with id='{}', using only the first", identifiers.size(),
+			logger.warn("Found {} project-identifiers in task with id '{}', using only the first", identifiers.size(),
 					task.getId());
 
 		return identifiers.get(0);
@@ -118,12 +118,12 @@ public class ReadData extends AbstractServiceDelegate
 				.filter(r -> r instanceof DocumentReference).map(r -> ((DocumentReference) r)).collect(toList());
 
 		if (documentReferences.size() < 1)
-			throw new IllegalArgumentException("Could not find any DocumentReference for project-identifier='"
-					+ projectIdentifier + "' referenced in task with id='" + taskId + "'");
+			throw new IllegalArgumentException("Could not find any DocumentReference for data-transfer project '"
+					+ projectIdentifier + "' referenced in task with id '" + taskId + "'");
 
 		if (documentReferences.size() > 1)
 			logger.warn(
-					"Found {} DocumentReferences for project-identifier='{}' referenced in task with id='{}', using first ({})",
+					"Found {} DocumentReferences for data-transfer project '{}' referenced in task with id '{}', using first ({})",
 					documentReferences.size(), projectIdentifier, taskId,
 					documentReferences.get(0).getIdElement().getValue());
 

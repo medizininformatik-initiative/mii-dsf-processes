@@ -39,14 +39,14 @@ public class CheckQuestionnaireDataSetReleaseInput extends AbstractServiceDelega
 		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier))
 		{
 			logger.info(
-					"Released data-set provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+					"Released data-set provided for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
 					cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, true);
 		}
 		else
 		{
 			logger.warn(
-					"Could not release data-set for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}': expected and provided project identifier do not match ({}/{}), restarting user task",
+					"Could not release data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}': expected and provided project identifier do not match ({}/{}), restarting user task",
 					cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId(),
 					projectIdentifier.toLowerCase(), getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, false);

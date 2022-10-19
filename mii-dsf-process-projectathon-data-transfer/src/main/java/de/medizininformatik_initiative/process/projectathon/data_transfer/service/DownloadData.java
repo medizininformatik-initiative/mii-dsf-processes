@@ -42,7 +42,7 @@ public class DownloadData extends AbstractServiceDelegate
 
 		IdType dataSetReference = getDataSetReference(task);
 
-		logger.info("Downloading Binary with id='{}' from organization='{}' for project-identifier='{}'",
+		logger.info("Downloading Binary with id '{}' from organization '{}' for data-transfer project '{}'",
 				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
 		byte[] bundleEncrypted = readDataSet(dataSetReference);
@@ -63,7 +63,7 @@ public class DownloadData extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in task with id '" + task.getId() + "'"));
 	}
 
 	private IdType getDataSetReference(Task task)
@@ -74,10 +74,10 @@ public class DownloadData extends AbstractServiceDelegate
 				.filter(Reference::hasReference).map(Reference::getReference).collect(toList());
 
 		if (dataSetReferences.size() < 1)
-			throw new IllegalArgumentException("No data-set reference present in task with id='" + task.getId() + "'");
+			throw new IllegalArgumentException("No data-set reference present in task with id '" + task.getId() + "'");
 
 		if (dataSetReferences.size() > 1)
-			logger.warn("Found {} data-set references in task with id='{}', using only the first",
+			logger.warn("Found {} data-set references in task with id '{}', using only the first",
 					dataSetReferences.size(), task.getId());
 
 		return new IdType(dataSetReferences.get(0));
@@ -95,7 +95,7 @@ public class DownloadData extends AbstractServiceDelegate
 		}
 		catch (Exception exception)
 		{
-			throw new RuntimeException("Downloading Binary with id='" + dataSetReference.getValue() + "' failed.",
+			throw new RuntimeException("Downloading Binary with id '" + dataSetReference.getValue() + "' failed",
 					exception);
 		}
 	}

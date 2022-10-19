@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
@@ -25,16 +26,19 @@ public class StoreDataSet extends AbstractServiceDelegate
 {
 	private static final Logger logger = LoggerFactory.getLogger(StoreDataSet.class);
 
-	private final DataLogger dataLogger;
 	private final OrganizationProvider organizationProvider;
+	private final DataLogger dataLogger;
+	private final MailService mailService;
 
 	public StoreDataSet(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			OrganizationProvider organizationProvider, ReadAccessHelper readAccessHelper, DataLogger dataLogger)
+			OrganizationProvider organizationProvider, ReadAccessHelper readAccessHelper, DataLogger dataLogger,
+			MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.dataLogger = dataLogger;
+		this.mailService = mailService;
 	}
 
 	@Override
@@ -42,8 +46,9 @@ public class StoreDataSet extends AbstractServiceDelegate
 	{
 		super.afterPropertiesSet();
 
-		Objects.requireNonNull(dataLogger, "dataLogger");
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
+		Objects.requireNonNull(dataLogger, "dataLogger");
+		Objects.requireNonNull(mailService, "mailService");
 	}
 
 	@Override
@@ -57,13 +62,11 @@ public class StoreDataSet extends AbstractServiceDelegate
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED);
 
 		String binaryId = storeBinary(bundleEncrypted, cosIdentifier);
-
-		logger.info(
-				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
-				binaryId, cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
-
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
 				Variables.stringValue(binaryId));
+
+		log(projectIdentifier, cosIdentifier, binaryId, getLeadingTaskFromExecutionVariables(execution).getId());
+		sendMail(projectIdentifier, cosIdentifier, binaryId);
 	}
 
 	private String storeBinary(byte[] content, String cosIdentifier)
@@ -90,5 +93,24 @@ public class StoreDataSet extends AbstractServiceDelegate
 		return organizationProvider.getOrganization(cosIdentifier)
 				.orElseThrow(() -> new RuntimeException("Could not find organization with id '" + cosIdentifier + "'"))
 				.getIdElement().toVersionless().getValue();
+	}
+
+	private void log(String projectIdentifier, String cosIdentifier, String binaryId, String taskid)
+	{
+		logger.info(
+				"Stored Binary with id '{}' provided for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
+				binaryId, cosIdentifier, projectIdentifier, taskid);
+	}
+
+	private void sendMail(String projectIdentifier, String cosIdentifier, String binaryId)
+	{
+		String subject = "Data-set provided in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
+				+ "'";
+		String message = "The data-set for data-sharing project '" + projectIdentifier + "' in process '"
+				+ ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
+				+ "' has been successfully provided for COS'" + cosIdentifier + "' at the following location:\n" + "- "
+				+ binaryId;
+
+		mailService.send(subject, message);
 	}
 }

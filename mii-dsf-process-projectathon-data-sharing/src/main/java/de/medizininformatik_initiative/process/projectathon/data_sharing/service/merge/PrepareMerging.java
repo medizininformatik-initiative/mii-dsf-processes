@@ -87,7 +87,7 @@ public class PrepareMerging extends AbstractServiceDelegate implements Initializ
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in task with id '" + task.getId() + "'"));
 	}
 
 	private String getContractLocation(Task task)
@@ -96,7 +96,7 @@ public class PrepareMerging extends AbstractServiceDelegate implements Initializ
 				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
-						"No contract-location present in task with id='" + task.getId() + "'"));
+						"No contract-location present in task with id '" + task.getId() + "'"));
 	}
 
 	private String getExtractionInterval(Task task)
@@ -142,6 +142,6 @@ public class PrepareMerging extends AbstractServiceDelegate implements Initializ
 				.map(e -> Target.createBiDirectionalTarget(organizationIdentifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress(), correlationKey))
 				.orElseThrow(() -> new RuntimeException(
-						"No endpoint of found for organization='" + organizationIdentifier + "'"));
+						"No endpoint of found for organization '" + organizationIdentifier + "'"));
 	}
 }

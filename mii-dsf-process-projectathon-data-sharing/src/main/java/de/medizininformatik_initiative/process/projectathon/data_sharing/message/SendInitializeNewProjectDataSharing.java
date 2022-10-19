@@ -75,11 +75,11 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 				throw new RuntimeException(message);
 			}
 			else
-				logger.debug("Initiated new DMS project instance with task-id: '{}'", outcome.getId());
+				logger.debug("Initializednew DMS project instance with task-id '{}'", outcome.getId());
 		}
 		catch (Exception exception)
 		{
-			logger.warn("Could not initiate new DMS project instance: {}", exception.getMessage());
+			logger.warn("Could not initialize new DMS project instance {}", exception.getMessage());
 		}
 	}
 

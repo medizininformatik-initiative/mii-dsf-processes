@@ -66,7 +66,7 @@ public class InsertData extends AbstractServiceDelegate
 		KdsClient kdsClient = kdsClientFactory.getKdsClient();
 
 		logger.info(
-				"Inserting data-set on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				"Inserting data-set on FHIR server with baseUrl '{}' received from organization '{}' for data-transfer project '{}'",
 				kdsClient.getFhirBaseUrl(), sendingOrganization, projectIdentifier);
 
 		try
@@ -77,7 +77,7 @@ public class InsertData extends AbstractServiceDelegate
 		catch (Exception exception)
 		{
 			logger.error(
-					"Could not insert data received from organization='{}' for project-identifier='{}', error-message='{}'",
+					"Could not insert data received from organization '{}' for data-transfer project '{}', error-message='{}'",
 					sendingOrganization, projectIdentifier, exception.getMessage());
 		}
 	}
@@ -103,10 +103,9 @@ public class InsertData extends AbstractServiceDelegate
 	{
 		String subject = "New data received in process '" + ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "'";
 		StringBuilder message = new StringBuilder(
-				"New data has been stored and can be accessed using the following links"
-						+ " for data-transfer project '" + projectIdentifier + "' in process '"
+				"New data has been stored for data-transfer project '" + projectIdentifier + "' in process '"
 						+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "' received from organization '"
-						+ sendingOrganization + "':\n");
+						+ sendingOrganization + "' and can be accessed using the following links:\n");
 
 		for (IdType id : createdIds)
 			message.append("- ").append(id.getValue()).append("\n");
@@ -125,7 +124,7 @@ public class InsertData extends AbstractServiceDelegate
 	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)
 	{
 		logger.info(
-				"Stored {} with id='{}' on FHIR server with baseUrl='{}' received from organization='{}' for project-identifier='{}'",
+				"Stored {} with id '{}' on FHIR server with baseUrl '{}' received from organization '{}' for data-transfer project '{}'",
 				idType.getResourceType(), idType.getIdPart(), idType.getBaseUrl(), sendingOrganization,
 				projectIdentifier);
 	}

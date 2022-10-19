@@ -1,11 +1,13 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
@@ -17,17 +19,28 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
-public class LogReceivedDataSet extends AbstractServiceDelegate
+public class LogReceivedDataSet extends AbstractServiceDelegate implements InitializingBean
 {
 	private static final Logger logger = LoggerFactory.getLogger(LogReceivedDataSet.class);
 
+	private final MailService mailService;
+
 	public LogReceivedDataSet(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper)
+			ReadAccessHelper readAccessHelper, MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
+		this.mailService = mailService;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception
+	{
+		super.afterPropertiesSet();
+		Objects.requireNonNull(mailService, "mailService");
 	}
 
 	@Override
@@ -42,8 +55,8 @@ public class LogReceivedDataSet extends AbstractServiceDelegate
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String organizationIdentifier = getOrganizationIdentifier(currentTask);
 
-		logger.info("COS-identifier='{}' received data-set from organization='{}' in project='{}' for task-id='{}'",
-				cosIdentifier, organizationIdentifier, projectIdentifier, leadingTask.getId());
+		log(cosIdentifier, organizationIdentifier, projectIdentifier, leadingTask.getId());
+		sendMail(cosIdentifier, organizationIdentifier, projectIdentifier);
 
 		List<Target> targets = ((Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS))
 				.getEntries();
@@ -60,5 +73,22 @@ public class LogReceivedDataSet extends AbstractServiceDelegate
 				.getFirstInputParameterReferenceValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER)
 				.map(Reference::getIdentifier).map(Identifier::getValue).orElse("unknown");
+	}
+
+	private void log(String cosIdentifier, String organizationIdentifier, String projectIdentifier, String taskId)
+	{
+		logger.info("COS '{}' received data-set from organization '{}' in data-sharing project '{}' for task-id '{}'",
+				cosIdentifier, organizationIdentifier, projectIdentifier, taskId);
+	}
+
+	private void sendMail(String cosIdentifier, String organizationIdentifier, String projectIdentifier)
+	{
+		String subject = "New data received in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
+				+ "'";
+		String message = "New data has been stored at COS '" + cosIdentifier + "' for data-sharing project '"
+				+ projectIdentifier + "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
+				+ "' received from organization '" + organizationIdentifier + "':\n";
+
+		mailService.send(subject, message);
 	}
 }

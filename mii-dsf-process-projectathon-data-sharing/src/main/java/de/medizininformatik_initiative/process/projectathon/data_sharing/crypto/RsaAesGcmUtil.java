@@ -37,7 +37,7 @@ public class RsaAesGcmUtil
 		byte[] encryptedData = AesGcmUtil.encrypt(data, aad, aesKey);
 
 		if (encryptedAesKey.length != ENCRYPTED_AES_KEY_LENGTH)
-			throw new IllegalStateException("Encrypted AES key length = " + ENCRYPTED_AES_KEY_LENGTH + " expected");
+			throw new IllegalStateException("Encrypted AES key length " + ENCRYPTED_AES_KEY_LENGTH + " expected");
 
 		byte[] output = new byte[encryptedAesKey.length + encryptedData.length];
 		System.arraycopy(encryptedAesKey, 0, output, 0, encryptedAesKey.length);

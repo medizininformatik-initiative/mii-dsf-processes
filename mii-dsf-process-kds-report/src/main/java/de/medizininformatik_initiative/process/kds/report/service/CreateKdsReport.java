@@ -80,7 +80,7 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 		Bundle responseBundle = executeSearchBundle(searchBundle);
 		Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
 
-		dataLogger.logResource("Report Bundle: {}", reportBundle);
+		dataLogger.logResource("Report Bundle", reportBundle);
 
 		String reportReference = storeResponseBundle(reportBundle);
 

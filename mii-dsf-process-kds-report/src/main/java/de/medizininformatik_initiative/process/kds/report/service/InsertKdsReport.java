@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
@@ -28,13 +29,16 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	private static final Logger logger = LoggerFactory.getLogger(InsertKdsReport.class);
 
 	private final KdsReportStatusGenerator kdsReportStatusGenerator;
+	private final MailService mailService;
 
 	public InsertKdsReport(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
-			ReadAccessHelper readAccessHelper, KdsReportStatusGenerator kdsReportStatusGenerator)
+			ReadAccessHelper readAccessHelper, KdsReportStatusGenerator kdsReportStatusGenerator,
+			MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.kdsReportStatusGenerator = kdsReportStatusGenerator;
+		this.mailService = mailService;
 	}
 
 	@Override
@@ -43,6 +47,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 		super.afterPropertiesSet();
 
 		Objects.requireNonNull(kdsReportStatusGenerator, "kdsReportStatusGenerator");
+		Objects.requireNonNull(mailService, "mailService");
 	}
 
 	@Override
@@ -69,8 +74,11 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 					.createKdsReportStatusOutput(ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_OK));
 			updateLeadingTaskInExecutionVariables(execution, task);
 
-			logger.info("Stored KDS report bundle with id '{}' from organization '{}'", reportId.getValue(),
-					task.getRequester().getIdentifier().getValue());
+			String sendingOrganization = task.getRequester().getIdentifier().getValue();
+			String reportLocation = reportId.getValue();
+			logger.info("Stored KDS report bundle with id '{}' from organization '{}'", reportLocation,
+					sendingOrganization);
+			sendMail(sendingOrganization, reportLocation);
 		}
 		catch (Exception exception)
 		{
@@ -89,5 +97,15 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	{
 		return new Identifier().setSystem(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER)
 				.setValue(task.getRequester().getIdentifier().getValue());
+	}
+
+	private void sendMail(String sendingOrganization, String reportLocation)
+	{
+		String subject = "New KDS report stored in process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_RECEIVE
+				+ "'";
+		String message = "A new KDS report has been stored in process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_RECEIVE
+				+ "' from organization '" + sendingOrganization + "' and can be accessed using the following link:\n" + "- " + reportLocation;
+
+		mailService.send(subject, message);
 	}
 }

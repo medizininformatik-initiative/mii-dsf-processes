@@ -68,7 +68,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 
 		if (reportReferences.size() < 1)
 			throw new IllegalArgumentException(
-					"No KDS report reference present in task with id='" + task.getId() + "'");
+					"No KDS report reference present in task with id '" + task.getId() + "'");
 
 		if (reportReferences.size() > 1)
 			logger.warn("Found {} KDS report references in task with id '{}', using only the first",

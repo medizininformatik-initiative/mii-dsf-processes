@@ -116,7 +116,7 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 
 		if (attachments.size() > 1)
 			logger.warn(
-					"Found {} attachments in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					"Found {} attachments in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
 					attachments.size(), documentReference.getId(),
 					getLeadingTaskFromExecutionVariables(execution).getId(), attachments.get(0));
 

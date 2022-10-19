@@ -74,7 +74,6 @@ public class SelectDataSetTarget extends AbstractServiceDelegate
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier)
 				.map(e -> Target.createBiDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress(), correlationKey))
-				.orElseThrow(() -> new RuntimeException(
-						"No endpoint of COS organization with identifier '" + identifier + "' found"));
+				.orElseThrow(() -> new RuntimeException("No endpoint of COS '" + identifier + "' found"));
 	}
 }

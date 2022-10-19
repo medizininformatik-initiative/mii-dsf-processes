@@ -60,7 +60,7 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 			FhirWebserviceClientProvider clientProvider, OrganizationProvider organizationProvider,
 			ReadAccessHelper readAccessHelper, DataLogger dataLogger)
 	{
-		logger.info("Configuring KeyProvider with private-key from {} and public-key from {}", privateKeyFile,
+		logger.info("Configuring KeyProvider with private-key from '{}' and public-key from '{}'", privateKeyFile,
 				publicKeyFile);
 
 		PrivateKey privateKey = null;
@@ -72,14 +72,14 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 			{
 				Path privateKeyPath = Paths.get(privateKeyFile);
 				if (!Files.isReadable(privateKeyPath))
-					throw new RuntimeException("PrivateKey at " + privateKeyFile + " not readable");
+					throw new RuntimeException("PrivateKey at '" + privateKeyFile + "' not readable");
 
 				privateKey = PemIo.readPrivateKeyFromPem(privateKeyPath);
 			}
 		}
 		catch (IOException | PKCSException e)
 		{
-			throw new RuntimeException("Error while reading PrivateKey from " + privateKeyFile, e);
+			throw new RuntimeException("Error while reading PrivateKey from '" + privateKeyFile + "'", e);
 		}
 
 		try
@@ -88,14 +88,14 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 			{
 				Path publicKeyPath = Paths.get(publicKeyFile);
 				if (!Files.isReadable(publicKeyPath))
-					throw new RuntimeException("PublicKey at " + publicKeyFile + " not readable");
+					throw new RuntimeException("PublicKey at '" + publicKeyFile + "' not readable");
 
 				publicKey = PemIo.readPublicKeyFromPem(publicKeyPath);
 			}
 		}
 		catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e)
 		{
-			throw new RuntimeException("Error while reading PublicKey from " + publicKeyFile, e);
+			throw new RuntimeException("Error while reading PublicKey from '" + publicKeyFile + "'", e);
 		}
 
 		return new KeyProviderImpl(privateKey, publicKey, clientProvider, organizationProvider, readAccessHelper,
@@ -159,12 +159,12 @@ public class KeyProviderImpl implements KeyProvider, InitializingBean
 				}
 				else
 				{
-					throw new RuntimeException("Exist " + output.getTotal() + " Bundle with identifier="
+					throw new RuntimeException("Exist " + output.getTotal() + " Bundle with identifier '"
 							+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY + "|"
-							+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY + ", expected only one");
+							+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY + "', expected only one");
 				}
 
-				logger.info("PublicKey Bundle has id='{}'", bundleOnServer.getId());
+				logger.info("PublicKey Bundle has id '{}'", bundleOnServer.getId());
 			}
 		}
 		catch (Exception exception)

@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
+import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.EndpointProvider;
@@ -39,16 +40,18 @@ public class StoreData extends AbstractServiceDelegate
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 	private final DataLogger dataLogger;
+	private final MailService mailService;
 
 	public StoreData(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider,
-			EndpointProvider endpointProvider, DataLogger dataLogger)
+			EndpointProvider endpointProvider, DataLogger dataLogger, MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
 
 		this.organizationProvider = organizationProvider;
 		this.endpointProvider = endpointProvider;
 		this.dataLogger = dataLogger;
+		this.mailService = mailService;
 	}
 
 	@Override
@@ -59,6 +62,7 @@ public class StoreData extends AbstractServiceDelegate
 		Objects.requireNonNull(organizationProvider, "organizationProvider");
 		Objects.requireNonNull(endpointProvider, "endpointProvider");
 		Objects.requireNonNull(dataLogger, "dataLogger");
+		Objects.requireNonNull(mailService, "mailService");
 	}
 
 	@Override
@@ -72,16 +76,14 @@ public class StoreData extends AbstractServiceDelegate
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
 		String binaryId = storeBinary(bundleEncrypted, coordinatingSiteIdentifier);
-
-		logger.info(
-				"Stored Binary with id='{}' provided for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
-				binaryId, coordinatingSiteIdentifier, projectIdentifier,
-				getLeadingTaskFromExecutionVariables(execution).getId());
-
-		Target target = createTarget(coordinatingSiteIdentifier);
-
 		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
 				Variables.stringValue(binaryId));
+
+		log(projectIdentifier, coordinatingSiteIdentifier, binaryId,
+				getLeadingTaskFromExecutionVariables(execution).getId());
+		sendMail(projectIdentifier, coordinatingSiteIdentifier, binaryId);
+
+		Target target = createTarget(coordinatingSiteIdentifier);
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
@@ -109,6 +111,23 @@ public class StoreData extends AbstractServiceDelegate
 		return organizationProvider.getOrganization(coordinatingSiteIdentifier).orElseThrow(
 				() -> new RuntimeException("Could not find organization with id '" + coordinatingSiteIdentifier + "'"))
 				.getIdElement().toVersionless().getValue();
+	}
+
+	private void log(String projectIdentifier, String cosIdentifier, String binaryId, String taskid)
+	{
+		logger.info(
+				"Stored Binary with id '{}' provided for COS '{}' and data-transfer project '{}' referenced in Task with id '{}'",
+				binaryId, cosIdentifier, projectIdentifier, taskid);
+	}
+
+	private void sendMail(String projectIdentifier, String cosIdentifier, String binaryId)
+	{
+		String subject = "Data-set provided in process '" + ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "'";
+		String message = "The data-set for data-transfer project '" + projectIdentifier + "' in process '"
+				+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "' has been successfully provided for COS'"
+				+ cosIdentifier + "' at the following location:\n" + "- " + binaryId;
+
+		mailService.send(subject, message);
 	}
 
 	private Target createTarget(String coordinatingSiteIdentifier)

@@ -131,13 +131,13 @@ public class DataSharingConfig
 	@Bean
 	public LogReceivedDataSet logReceivedDataSet()
 	{
-		return new LogReceivedDataSet(clientProvider, taskHelper, readAccessHelper);
+		return new LogReceivedDataSet(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
 	public LogMissingDataSetsCoordinate logMissingDataSetsCoordinate()
 	{
-		return new LogMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper);
+		return new LogMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
@@ -209,7 +209,7 @@ public class DataSharingConfig
 	public StoreDataSet storeDataSet()
 	{
 		return new StoreDataSet(clientProvider, taskHelper, organizationProvider, readAccessHelper,
-				kdsFhirClientConfig.dataLogger());
+				kdsFhirClientConfig.dataLogger(), mailService);
 	}
 
 	@Bean
@@ -269,7 +269,7 @@ public class DataSharingConfig
 	public InsertDataSet insertDataSet()
 	{
 		return new InsertDataSet(clientProvider, taskHelper, readAccessHelper, fhirContext,
-				kdsFhirClientConfig.kdsClientFactory());
+				kdsFhirClientConfig.kdsClientFactory(), mailService);
 	}
 
 	@Bean
@@ -281,7 +281,7 @@ public class DataSharingConfig
 	@Bean
 	public LogMissingDataSetsMerge logMissingDataSetsMerge()
 	{
-		return new LogMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper);
+		return new LogMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean

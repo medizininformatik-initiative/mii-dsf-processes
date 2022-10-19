@@ -58,7 +58,7 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		KdsClient kdsClient = kdsClientFactory.getKdsClient();
 
 		logger.info(
-				"Reading data-set on FHIR server with baseUrl='{}' for COS-identifier='{}' and project-identifier='{}' referenced in Task with id='{}'",
+				"Reading data-set on FHIR server with baseUrl '{}' for COS '{}' and  data-sharing project '{}' referenced in Task with id '{}'",
 				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
 
 		DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
@@ -78,12 +78,12 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 				.filter(r -> r instanceof DocumentReference).map(r -> ((DocumentReference) r)).collect(toList());
 
 		if (documentReferences.size() < 1)
-			throw new IllegalArgumentException("Could not find any DocumentReference for project-identifier='"
-					+ projectIdentifier + "' referenced in task with id='" + taskId + "'");
+			throw new IllegalArgumentException("Could not find any DocumentReference for data-sharing project '"
+					+ projectIdentifier + "' referenced in task with id '" + taskId + "'");
 
 		if (documentReferences.size() > 1)
 			logger.warn(
-					"Found {} DocumentReferences for project-identifier='{}' referenced in task with id='{}', using first ({})",
+					"Found {} DocumentReferences for  data-sharing project '{}' referenced in task with id '{}', using first ({})",
 					documentReferences.size(), projectIdentifier, taskId,
 					documentReferences.get(0).getIdElement().getValue());
 
@@ -107,12 +107,12 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 				.map(Attachment::getUrl).collect(toList());
 
 		if (urls.size() < 1)
-			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id='"
-					+ documentReference.getId() + "' belonging to task with id='" + taskId + "'");
+			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id '"
+					+ documentReference.getId() + "' belonging to task with id '" + taskId + "'");
 
 		if (urls.size() > 1)
 			logger.warn(
-					"Found {} attachment URLs in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					"Found {} attachment URLs in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
 					urls.size(), documentReference.getId(), taskId, urls.get(0));
 
 		return urls.get(0);
@@ -133,8 +133,8 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 			if (hasValidBaseUrl && isResourceReference)
 				return idType;
 			else
-				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id='"
-						+ documentReferenceId + "' belonging to task with id='" + taskId
+				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id '"
+						+ documentReferenceId + "' belonging to task with id '" + taskId
 						+ "' is not a valid KDS FHIR store reference");
 		}
 		catch (Exception exception)

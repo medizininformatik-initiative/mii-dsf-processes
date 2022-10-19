@@ -63,7 +63,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 
 		String searchBundleIdentifier = CODESYSTEM_MII_KDS_REPORT + "|" + CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE;
 
-		logger.info("Downloading search bundle='{}' from hrp='{}' for task with id='{}'", searchBundleIdentifier,
+		logger.info("Downloading search bundle '{}' from hrp '{}' for task with id '{}'", searchBundleIdentifier,
 				target.getOrganizationIdentifierValue(), getLeadingTaskFromExecutionVariables(execution).getId());
 
 		Bundle bundle = searchSearchBundle(execution, target, searchBundleIdentifier);

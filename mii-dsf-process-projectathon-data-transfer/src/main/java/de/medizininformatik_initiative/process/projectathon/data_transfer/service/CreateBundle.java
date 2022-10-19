@@ -111,13 +111,13 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.collect(toList());
 
 		if (attachments.size() < 1)
-			throw new IllegalArgumentException("Could not find any attachment with url in DocumentReference with id='"
-					+ documentReference.getId() + "' belonging to task with id='"
+			throw new IllegalArgumentException("Could not find any attachment with url in DocumentReference with id '"
+					+ documentReference.getId() + "' belonging to task with id '"
 					+ getLeadingTaskFromExecutionVariables(execution).getId() + "'");
 
 		if (attachments.size() > 1)
 			logger.warn(
-					"Found {} attachments in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					"Found {} attachments in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
 					attachments.size(), documentReference.getId(),
 					getLeadingTaskFromExecutionVariables(execution).getId(), attachments.get(0));
 

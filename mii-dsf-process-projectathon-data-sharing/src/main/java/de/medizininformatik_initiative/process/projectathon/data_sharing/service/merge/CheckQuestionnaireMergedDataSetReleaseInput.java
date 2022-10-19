@@ -46,14 +46,14 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 
 		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier))
 		{
-			logger.info("Released data-set provided for project-identifier='{}' referenced in Task with id='{}'",
+			logger.info("Released data-set provided for data-sharing project '{}' referenced in Task with id '{}'",
 					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, true);
 		}
 		else
 		{
 			logger.warn(
-					"Could not release data-set project-identifier='{}' referenced in Task with id='{}': expected and provided project identifier do not match ({}/{}), restarting user task",
+					"Could not release data-set for HRP and data-sharing project '{}' referenced in Task with id '{}': expected and provided project identifier do not match ({}/{}), restarting user task",
 					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId(),
 					projectIdentifier.toLowerCase(), getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, false);
