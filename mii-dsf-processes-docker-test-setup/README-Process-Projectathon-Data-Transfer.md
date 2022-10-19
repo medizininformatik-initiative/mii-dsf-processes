@@ -96,5 +96,6 @@ curl http://localhost:8082/fhir/DocumentReference
 Console 5: Stop everything
 
 ```sh
+cd mii-dsf-processes-docker-test-setup
 docker-compose down -v
 ```

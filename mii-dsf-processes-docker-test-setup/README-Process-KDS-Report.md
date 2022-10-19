@@ -96,5 +96,6 @@ https://hrp/fhir/Bundle?identifier=http://highmed.org/sid/organization-identifie
 Console 4: Stop everything
 
 ```sh
+cd mii-dsf-processes-docker-test-setup
 docker-compose down -v
 ```

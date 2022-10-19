@@ -130,9 +130,16 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 https://hrp/fhir/Task
 ```
 
-Console 2: Execute DIC1 user-task to release data-set for COS based on the URL in the log output
-Console 4: Execute DIC2 user-task to release data-set for COS based on the URL in the log output
-Console 6: Execute COS user-task to release merged data-set for HRP based on the URL in the log output
+Console 2: Execute DIC1 user-task to release data-set for COS based on the URL in the log output from console 2
+Console 4: Execute DIC2 user-task to release data-set for COS based on the URL in the log output from console 4
+
+Console 8: Check data transferred to COS (2 DocumentReferences expected)
+
+```sh
+curl http://localhost:8082/fhir/DocumentReference
+```
+
+Console 6: Execute COS user-task to release merged data-set for HRP based on the URL in the log output from console 6
 
 console 8 : Check if the Task starting the coordination process at the HRP contains a Task.output with 
             code `data-set-location` containing the URL inserted as part of the user-task at the COS 
@@ -148,5 +155,6 @@ https://hrp/fhir/Task?_sort=-_lastUpdated
 Console 8: Stop everything
 
 ```sh
+cd mii-dsf-processes-docker-test-setup
 docker-compose down -v
 ```
