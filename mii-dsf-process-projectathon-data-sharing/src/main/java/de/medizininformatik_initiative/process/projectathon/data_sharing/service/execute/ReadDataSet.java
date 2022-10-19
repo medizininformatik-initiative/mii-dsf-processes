@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -61,13 +63,28 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 				"Reading data-set on FHIR server with baseUrl '{}' for COS '{}' and  data-sharing project '{}' referenced in Task with id '{}'",
 				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
 
-		DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
-		Resource resource = readAttachment(kdsClient, documentReference, task.getId());
+		try
+		{
+			DocumentReference documentReference = readDocumentReference(kdsClient, projectIdentifier, task.getId());
+			Resource resource = readAttachment(kdsClient, documentReference, task.getId());
 
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE,
-				FhirResourceValues.create(documentReference));
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE,
-				FhirResourceValues.create(resource));
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE,
+					FhirResourceValues.create(documentReference));
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE,
+					FhirResourceValues.create(resource));
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not read data-set on FHIR server with baseUrl '" + kdsClient.getFhirBaseUrl()
+					+ "' for COS '" + cosIdentifier + "' and  data-sharing project '" + projectIdentifier
+					+ "' referenced in Task with id '" + task.getId() + "' - " + exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
+					exception);
+		}
 	}
 
 	private DocumentReference readDocumentReference(KdsClient kdsClient, String projectIdentifier, String taskId)

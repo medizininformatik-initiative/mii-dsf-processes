@@ -44,7 +44,7 @@
       <bpmn:incoming>Flow_0xadsy1</bpmn:incoming>
       <bpmn:outgoing>Flow_12n8hz7</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_00ok4yz" sourceRef="receiveMergedDataSet" targetRef="logMissingDataSets" />
+    <bpmn:sequenceFlow id="Flow_00ok4yz" sourceRef="receiveMergedDataSet" targetRef="communicateMissingDataSets" />
     <bpmn:intermediateCatchEvent id="receiveMergedDataSet" name="receive merged data-set">
       <bpmn:incoming>Flow_06c1pfq</bpmn:incoming>
       <bpmn:outgoing>Flow_00ok4yz</bpmn:outgoing>
@@ -68,14 +68,14 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_19771fo" messageRef="Message_3e5t313" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0ydqeyc" sourceRef="Gateway_0txto30" targetRef="receiveReceivedDataSet" />
-    <bpmn:sequenceFlow id="Flow_0133tn1" sourceRef="receiveReceivedDataSet" targetRef="logReceivedDataSet" />
-    <bpmn:sequenceFlow id="Flow_1hw65h4" sourceRef="logReceivedDataSet" targetRef="Gateway_0txto30" />
-    <bpmn:serviceTask id="logReceivedDataSet" name="log received data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet">
+    <bpmn:sequenceFlow id="Flow_0133tn1" sourceRef="receiveReceivedDataSet" targetRef="communicateReceivedDataSet" />
+    <bpmn:sequenceFlow id="Flow_1hw65h4" sourceRef="communicateReceivedDataSet" targetRef="Gateway_0txto30" />
+    <bpmn:serviceTask id="communicateReceivedDataSet" name="communicate received data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.CommunicateReceivedDataSet">
       <bpmn:incoming>Flow_0133tn1</bpmn:incoming>
       <bpmn:outgoing>Flow_1hw65h4</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1gu8xzh" sourceRef="logMissingDataSets" targetRef="extractMergedDataSetLocation" />
-    <bpmn:serviceTask id="logMissingDataSets" name="log missing data-sets" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate">
+    <bpmn:sequenceFlow id="Flow_1gu8xzh" sourceRef="communicateMissingDataSets" targetRef="extractMergedDataSetLocation" />
+    <bpmn:serviceTask id="communicateMissingDataSets" name="communicate missing data-sets" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.CommunicateMissingDataSetsCoordinate">
       <bpmn:incoming>Flow_00ok4yz</bpmn:incoming>
       <bpmn:outgoing>Flow_1gu8xzh</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -90,6 +90,10 @@
   <bpmn:message id="Message_3e5t313" name="sendReceivedDataSet" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_coordinateDataSharing">
+      <bpmndi:BPMNEdge id="Flow_1d6fc4e_di" bpmnElement="Flow_1d6fc4e">
+        <di:waypoint x="1480" y="100" />
+        <di:waypoint x="1552" y="100" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gu8xzh_di" bpmnElement="Flow_1gu8xzh">
         <di:waypoint x="1330" y="100" />
         <di:waypoint x="1380" y="100" />
@@ -140,10 +144,6 @@
         <di:waypoint x="208" y="197" />
         <di:waypoint x="270" y="197" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1d6fc4e_di" bpmnElement="Flow_1d6fc4e">
-        <di:waypoint x="1480" y="100" />
-        <di:waypoint x="1552" y="100" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="coordinateDataSharingStartEvent">
         <dc:Bounds x="172" y="179" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -153,6 +153,9 @@
       <bpmndi:BPMNShape id="Activity_1cenwv5_di" bpmnElement="selectDicTarget">
         <dc:Bounds x="430" y="157" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1v96c39_di" bpmnElement="coordinateDataSharingEndEvent">
+        <dc:Bounds x="1552" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00qrlc0_di" bpmnElement="selectCosTarget">
         <dc:Bounds x="600" y="157" width="100" height="80" />
@@ -184,15 +187,13 @@
           <dc:Bounds x="1100" y="315" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_194uyqv_di" bpmnElement="logReceivedDataSet">
+      <bpmndi:BPMNShape id="Activity_194uyqv_di" bpmnElement="communicateReceivedDataSet">
         <dc:Bounds x="1230" y="250" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_11bajvv_di" bpmnElement="logMissingDataSets">
-        <dc:Bounds x="1230" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1v96c39_di" bpmnElement="coordinateDataSharingEndEvent">
-        <dc:Bounds x="1552" y="82" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_11bajvv_di" bpmnElement="communicateMissingDataSets">
+        <dc:Bounds x="1230" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0yxyi07_di" bpmnElement="extractMergedDataSetLocation">
         <dc:Bounds x="1380" y="60" width="100" height="80" />

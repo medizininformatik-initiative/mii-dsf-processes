@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.ConstantsBase;
@@ -25,6 +26,7 @@ import org.hl7.fhir.r4.model.Attachment;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -57,18 +59,41 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		String cosIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
-		String cosUrl = ((Target) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET)).getEndpointUrl();
-		String localIdentifier = organizationProvider.getLocalIdentifierValue();
 
-		Bundle toEncrypt = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
+		logger.info(
+				"Encrypting transferable data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
+				cosIdentifier, projectIdentifier, task.getId());
 
-		PublicKey publicKey = readPublicKey(cosIdentifier, cosUrl);
-		byte[] encrypted = encrypt(execution, publicKey, toEncrypt, localIdentifier, cosIdentifier);
+		try
+		{
+			String cosUrl = ((Target) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGET))
+					.getEndpointUrl();
+			String localIdentifier = organizationProvider.getLocalIdentifierValue();
+			Bundle toEncrypt = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
-				Variables.byteArrayValue(encrypted));
+			PublicKey publicKey = readPublicKey(cosIdentifier, cosUrl);
+			byte[] encrypted = encrypt(execution, publicKey, toEncrypt, localIdentifier, cosIdentifier);
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
+					Variables.byteArrayValue(encrypted));
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not encrypt transferable data-set for COS '" + cosIdentifier
+					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ task.getId() + "' - " + exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
+					exception);
+		}
 	}
 
 	private PublicKey readPublicKey(String cosIdentifier, String cosUrl)

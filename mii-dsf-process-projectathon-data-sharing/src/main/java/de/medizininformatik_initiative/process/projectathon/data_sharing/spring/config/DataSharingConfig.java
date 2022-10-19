@@ -25,9 +25,9 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.message
 import de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseDataSetListener;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseMergedDataSetListener;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.CommunicateMissingDataSetsCoordinate;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.CommunicateReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.ExtractMergedDataSetLocation;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogMissingDataSetsCoordinate;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.LogReceivedDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.PrepareCoordination;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectDicTargets;
@@ -35,16 +35,19 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.service
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.CreateDataSetBundle;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.DeleteDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.EncryptDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.HandleErrorExecute;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.PrepareExecution;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.ReadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.StoreDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.ValidateDataSetExecute;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CheckQuestionnaireMergedDataSetReleaseInput;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CommunicateMissingDataSetsMerge;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DecryptDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DownloadDataSet;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.HandleErrorMergeReceive;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.HandleErrorMergeRelease;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.InsertDataSet;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.LogMissingDataSetsMerge;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.PrepareMerging;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.ValidateDataSetMerge;
@@ -129,15 +132,15 @@ public class DataSharingConfig
 	}
 
 	@Bean
-	public LogReceivedDataSet logReceivedDataSet()
+	public CommunicateReceivedDataSet communicateReceivedDataSet()
 	{
-		return new LogReceivedDataSet(clientProvider, taskHelper, readAccessHelper, mailService);
+		return new CommunicateReceivedDataSet(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
-	public LogMissingDataSetsCoordinate logMissingDataSetsCoordinate()
+	public CommunicateMissingDataSetsCoordinate communicateMissingDataSetsCoordinate()
 	{
-		return new LogMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper, mailService);
+		return new CommunicateMissingDataSetsCoordinate(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
@@ -159,6 +162,12 @@ public class DataSharingConfig
 	{
 		return new ReleaseDataSetListener(clientProvider, organizationProvider, questionnaireResponseHelper, taskHelper,
 				readAccessHelper, kdsFhirClientConfig.kdsClientFactory(), mailService);
+	}
+
+	@Bean
+	public HandleErrorExecute handleErrorExecute()
+	{
+		return new HandleErrorExecute(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean
@@ -240,6 +249,12 @@ public class DataSharingConfig
 	}
 
 	@Bean
+	public HandleErrorMergeReceive handleErrorMergeReceive()
+	{
+		return new HandleErrorMergeReceive(clientProvider, taskHelper, readAccessHelper, mailService);
+	}
+
+	@Bean
 	public DownloadDataSet downloadDataSet()
 	{
 		return new DownloadDataSet(clientProvider, taskHelper, readAccessHelper);
@@ -279,9 +294,15 @@ public class DataSharingConfig
 	}
 
 	@Bean
-	public LogMissingDataSetsMerge logMissingDataSetsMerge()
+	public HandleErrorMergeRelease handleErrorMergeRelease()
 	{
-		return new LogMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper, mailService);
+		return new HandleErrorMergeRelease(clientProvider, taskHelper, readAccessHelper, mailService);
+	}
+
+	@Bean
+	public CommunicateMissingDataSetsMerge communicateMissingDataSetsMerge()
+	{
+		return new CommunicateMissingDataSetsMerge(clientProvider, taskHelper, readAccessHelper, mailService);
 	}
 
 	@Bean

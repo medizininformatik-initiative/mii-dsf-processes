@@ -31,11 +31,11 @@
       <bpmn:incoming>SequenceFlow_09i9zb8</bpmn:incoming>
       <bpmn:outgoing>Flow_0epmqlh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="kds_report_download_error" name="kds report download error" attachedToRef="downloadKdsReport">
+    <bpmn:boundaryEvent id="kds_report_download_error" attachedToRef="downloadKdsReport">
       <bpmn:outgoing>Flow_01x9gay</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1da6qe6" errorRef="Error_1nrrh7v" camunda:errorCodeVariable="kdsReportReceiveError" />
     </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="kds_report_insert_error" name="kds report insert&#10;error" attachedToRef="insertKdsReport">
+    <bpmn:boundaryEvent id="kdsReportInsertError" attachedToRef="insertKdsReport">
       <bpmn:outgoing>Flow_0lhidy1</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0tqaoe1" errorRef="Error_1y2mnsr" camunda:errorCodeVariable="kdsReportReceiveError" />
     </bpmn:boundaryEvent>
@@ -46,7 +46,7 @@
       <bpmn:outgoing>Flow_0h57p0t</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_01x9gay" sourceRef="kds_report_download_error" targetRef="Gateway_0v34jo2" />
-    <bpmn:sequenceFlow id="Flow_0lhidy1" sourceRef="kds_report_insert_error" targetRef="Gateway_0v34jo2" />
+    <bpmn:sequenceFlow id="Flow_0lhidy1" sourceRef="kdsReportInsertError" targetRef="Gateway_0v34jo2" />
     <bpmn:sequenceFlow id="Flow_01ez25z" sourceRef="selectTargetDic" targetRef="sendReceipt" />
     <bpmn:sequenceFlow id="Flow_0h57p0t" sourceRef="Gateway_0v34jo2" targetRef="selectTargetDic" />
   </bpmn:process>
@@ -115,7 +115,7 @@
       <bpmndi:BPMNShape id="Gateway_0v34jo2_di" bpmnElement="Gateway_0v34jo2" isMarkerVisible="true">
         <dc:Bounds x="615" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_01kvabl_di" bpmnElement="kds_report_insert_error">
+      <bpmndi:BPMNShape id="Event_01kvabl_di" bpmnElement="kdsReportInsertError">
         <dc:Bounds x="502" y="142" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="530" y="176" width="79" height="27" />

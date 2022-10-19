@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -35,18 +36,36 @@ public class DownloadDataSet extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution) throws Exception
 	{
-		String projectIdentifier = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		Task task = getCurrentTaskFromExecutionVariables(execution);
 		String sendingOrganization = task.getRequester().getIdentifier().getValue();
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
 		IdType dataSetReference = getDataSetReference(task);
-		logger.info("Downloading data-set with id '{}' from organization '{}' for data-sharing project '{}'",
-				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
 
-		byte[] bundleEncrypted = readDataSet(dataSetReference);
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
-				Variables.byteArrayValue(bundleEncrypted));
+		logger.info(
+				"Downloading data-set with id '{}' from organization '{}' for data-sharing project '{}' in Task with id '{}'",
+				dataSetReference.getValue(), sendingOrganization, projectIdentifier, task.getId());
+
+		try
+		{
+			byte[] bundleEncrypted = readDataSet(dataSetReference);
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
+					Variables.byteArrayValue(bundleEncrypted));
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not download data-set with id '" + dataSetReference.getValue()
+					+ "' from organization '" + sendingOrganization + "' and  data-sharing project '"
+					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
+					+ exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR, message,
+					exception);
+		}
 	}
 
 	private IdType getDataSetReference(Task task)

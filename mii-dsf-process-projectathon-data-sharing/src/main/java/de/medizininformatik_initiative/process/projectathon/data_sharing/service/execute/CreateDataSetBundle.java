@@ -12,7 +12,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
@@ -24,6 +26,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -59,18 +62,41 @@ public class CreateDataSetBundle extends AbstractServiceDelegate implements Init
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String cosIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 
-		DocumentReference documentReference = (DocumentReference) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
-		Resource resource = (Resource) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
-		Bundle bundle = createTransactionBundle(execution, projectIdentifier, documentReference, resource);
+		logger.info(
+				"Creating transferable data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
+				cosIdentifier, projectIdentifier, task.getId());
 
-		dataLogger.logResource("Created data-set Bundle", bundle);
+		try
+		{
+			DocumentReference documentReference = (DocumentReference) execution
+					.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE);
+			Resource resource = (Resource) execution
+					.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
 
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET, FhirResourceValues.create(bundle));
+			Bundle bundle = createTransactionBundle(execution, projectIdentifier, documentReference, resource);
+			dataLogger.logResource("Created data-set Bundle", bundle);
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET,
+					FhirResourceValues.create(bundle));
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not create transferable data-set for COS '" + cosIdentifier
+					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ task.getId() + "' - " + exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
+					exception);
+		}
 	}
 
 	private Bundle createTransactionBundle(DelegateExecution execution, String projectIdentifier,

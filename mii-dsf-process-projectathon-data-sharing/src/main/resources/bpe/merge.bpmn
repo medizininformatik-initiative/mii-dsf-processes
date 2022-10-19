@@ -64,6 +64,37 @@
       </bpmn:serviceTask>
       <bpmn:sequenceFlow id="Flow_02stcrg" sourceRef="insertDataSet" targetRef="selectHrpTarget" />
       <bpmn:sequenceFlow id="Flow_11jdgiv" sourceRef="selectHrpTarget" targetRef="receiveDataSetEndEvent" />
+      <bpmn:boundaryEvent id="mergeDataSharingDownloadError" attachedToRef="downloadDataSet">
+        <bpmn:outgoing>Flow_0dqxj2h</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0uqhokx" errorRef="Error_1me7w45" camunda:errorCodeVariable="mergeDataSharingError" />
+      </bpmn:boundaryEvent>
+      <bpmn:boundaryEvent id="mergeDataSharingDecryptError" attachedToRef="decryptDataSet">
+        <bpmn:outgoing>Flow_11s52a5</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_18dms6c" errorRef="Error_1me7w45" camunda:errorCodeVariable="mergeDataSharingError" />
+      </bpmn:boundaryEvent>
+      <bpmn:boundaryEvent id="mergeDataSharingValidateError" attachedToRef="validateDataSet">
+        <bpmn:outgoing>Flow_00ucjat</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_1pke80s" errorRef="Error_1me7w45" camunda:errorCodeVariable="mergeDataSharingError" />
+      </bpmn:boundaryEvent>
+      <bpmn:boundaryEvent id="mergeDataSharingInsertError" attachedToRef="insertDataSet">
+        <bpmn:outgoing>Flow_0bm70mj</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0u3cvnq" errorRef="Error_1me7w45" camunda:errorCodeVariable="mergeDataSharingError" />
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_0bm70mj" sourceRef="mergeDataSharingInsertError" targetRef="handleErrorReceive" />
+      <bpmn:endEvent id="Event_1dn23zj">
+        <bpmn:incoming>Flow_1kvv83x</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1kvv83x" sourceRef="handleErrorReceive" targetRef="Event_1dn23zj" />
+      <bpmn:sequenceFlow id="Flow_00ucjat" sourceRef="mergeDataSharingValidateError" targetRef="handleErrorReceive" />
+      <bpmn:sequenceFlow id="Flow_11s52a5" sourceRef="mergeDataSharingDecryptError" targetRef="handleErrorReceive" />
+      <bpmn:sequenceFlow id="Flow_0dqxj2h" sourceRef="mergeDataSharingDownloadError" targetRef="handleErrorReceive" />
+      <bpmn:serviceTask id="handleErrorReceive" name="handle error" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.HandleErrorMergeReceive">
+        <bpmn:incoming>Flow_0bm70mj</bpmn:incoming>
+        <bpmn:incoming>Flow_00ucjat</bpmn:incoming>
+        <bpmn:incoming>Flow_11s52a5</bpmn:incoming>
+        <bpmn:incoming>Flow_0dqxj2h</bpmn:incoming>
+        <bpmn:outgoing>Flow_1kvv83x</bpmn:outgoing>
+      </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="SubProcess_0szmntn">
       <bpmn:outgoing>Flow_0jhnvx6</bpmn:outgoing>
@@ -88,16 +119,16 @@
       <bpmn:incoming>Flow_0jhnvx6</bpmn:incoming>
       <bpmn:outgoing>Flow_0h5giy2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0h5giy2" sourceRef="Gateway_1tzfud8" targetRef="logMissingDataSets" />
+    <bpmn:sequenceFlow id="Flow_0h5giy2" sourceRef="Gateway_1tzfud8" targetRef="communicateMissingDataSets" />
     <bpmn:sequenceFlow id="Flow_0jhnvx6" sourceRef="timerBoundaryEvent" targetRef="Gateway_1tzfud8" />
-    <bpmn:serviceTask id="logMissingDataSets" name="log missing data-sets" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.LogMissingDataSetsMerge">
+    <bpmn:serviceTask id="communicateMissingDataSets" name="communicate missing data-sets" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CommunicateMissingDataSetsMerge">
       <bpmn:incoming>Flow_0h5giy2</bpmn:incoming>
       <bpmn:outgoing>Flow_003vvug</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ylde6i" sourceRef="prepareMerging" targetRef="initializeNewDmsProject" />
-    <bpmn:sequenceFlow id="Flow_003vvug" sourceRef="logMissingDataSets" targetRef="releaseDataSet" />
+    <bpmn:sequenceFlow id="Flow_003vvug" sourceRef="communicateMissingDataSets" targetRef="releaseDataSet" />
     <bpmn:serviceTask id="Activity_0ejt1f1" name="select hrp target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget">
-      <bpmn:incoming>Flow_0xk2vc2</bpmn:incoming>
+      <bpmn:incoming>Flow_0nz9ktu</bpmn:incoming>
       <bpmn:outgoing>Flow_1fqjwj9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1fqjwj9" sourceRef="Activity_0ejt1f1" targetRef="sendMergedDataSetEndEvent" />
@@ -106,25 +137,13 @@
         <camunda:taskListener class="de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseMergedDataSetListener" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_003vvug</bpmn:incoming>
-      <bpmn:incoming>Flow_15wjuts</bpmn:incoming>
+      <bpmn:incoming>Flow_0w2oqrg</bpmn:incoming>
       <bpmn:outgoing>Flow_08vs89v</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_1md8qjp">
-      <bpmn:incoming>Flow_12g1inp</bpmn:incoming>
-      <bpmn:outgoing>Flow_0xk2vc2</bpmn:outgoing>
-      <bpmn:outgoing>Flow_15wjuts</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="checkQuestionnaireInput" name="check questionnaire input" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.CheckQuestionnaireMergedDataSetReleaseInput">
       <bpmn:incoming>Flow_08vs89v</bpmn:incoming>
-      <bpmn:outgoing>Flow_12g1inp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0nz9ktu</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_12g1inp" sourceRef="checkQuestionnaireInput" targetRef="Gateway_1md8qjp" />
-    <bpmn:sequenceFlow id="Flow_0xk2vc2" sourceRef="Gateway_1md8qjp" targetRef="Activity_0ejt1f1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${dataSetReleased}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_15wjuts" sourceRef="Gateway_1md8qjp" targetRef="releaseDataSet">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!dataSetReleased}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_08vs89v" sourceRef="releaseDataSet" targetRef="checkQuestionnaireInput" />
     <bpmn:sequenceFlow id="Flow_1vfcz6v" sourceRef="initializeNewDmsProject" targetRef="SubProcess_0szmntn" />
     <bpmn:intermediateThrowEvent id="initializeNewDmsProject" name="initialize new DMS project">
@@ -139,11 +158,23 @@
       <bpmn:outgoing>Flow_1vfcz6v</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_17tmwhi" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendInitializeNewProjectDataSharing" />
     </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0nz9ktu" sourceRef="checkQuestionnaireInput" targetRef="Activity_0ejt1f1" />
+    <bpmn:boundaryEvent id="Event_110n3cn" attachedToRef="checkQuestionnaireInput">
+      <bpmn:outgoing>Flow_13y6pw1</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0jbuz5r" errorRef="Error_1me7w45" camunda:errorCodeVariable="mergeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_13y6pw1" sourceRef="Event_110n3cn" targetRef="handelErrorRelease" />
+    <bpmn:sequenceFlow id="Flow_0w2oqrg" sourceRef="handelErrorRelease" targetRef="releaseDataSet" />
+    <bpmn:serviceTask id="handelErrorRelease" name="handle error" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.HandleErrorMergeRelease">
+      <bpmn:incoming>Flow_13y6pw1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0w2oqrg</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_0o1qqa7" name="mergeDataSharing" />
   <bpmn:message id="Message_10o3b8y" name="sendDataSet" />
   <bpmn:message id="Message_0lnamjn" name="sendMergedDataSet" />
   <bpmn:message id="Message_13g61sd" name="sendReceivedDataSet" />
+  <bpmn:error id="Error_1me7w45" name="mergeDataSharingError" errorCode="mergeDataSharingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_mergeDataSharing">
       <bpmndi:BPMNEdge id="Flow_1vfcz6v_di" bpmnElement="Flow_1vfcz6v">
@@ -152,21 +183,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08vs89v_di" bpmnElement="Flow_08vs89v">
         <di:waypoint x="2210" y="167" />
-        <di:waypoint x="2280" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15wjuts_di" bpmnElement="Flow_15wjuts">
-        <di:waypoint x="2470" y="192" />
-        <di:waypoint x="2470" y="270" />
-        <di:waypoint x="2160" y="270" />
-        <di:waypoint x="2160" y="207" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xk2vc2_di" bpmnElement="Flow_0xk2vc2">
-        <di:waypoint x="2495" y="167" />
-        <di:waypoint x="2560" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12g1inp_di" bpmnElement="Flow_12g1inp">
-        <di:waypoint x="2380" y="167" />
-        <di:waypoint x="2445" y="167" />
+        <di:waypoint x="2390" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fqjwj9_di" bpmnElement="Flow_1fqjwj9">
         <di:waypoint x="2660" y="167" />
@@ -181,8 +198,8 @@
         <di:waypoint x="472" y="167" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jhnvx6_di" bpmnElement="Flow_0jhnvx6">
-        <di:waypoint x="1758" y="240" />
-        <di:waypoint x="1840" y="240" />
+        <di:waypoint x="1758" y="350" />
+        <di:waypoint x="1840" y="350" />
         <di:waypoint x="1840" y="192" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0h5giy2_di" bpmnElement="Flow_0h5giy2">
@@ -197,6 +214,20 @@
         <di:waypoint x="218" y="167" />
         <di:waypoint x="300" y="167" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nz9ktu_di" bpmnElement="Flow_0nz9ktu">
+        <di:waypoint x="2490" y="167" />
+        <di:waypoint x="2560" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13y6pw1_di" bpmnElement="Flow_13y6pw1">
+        <di:waypoint x="2490" y="225" />
+        <di:waypoint x="2490" y="300" />
+        <di:waypoint x="2350" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w2oqrg_di" bpmnElement="Flow_0w2oqrg">
+        <di:waypoint x="2250" y="300" />
+        <di:waypoint x="2160" y="300" />
+        <di:waypoint x="2160" y="207" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="mergeDataSharingStartEvent">
         <dc:Bounds x="182" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -207,9 +238,41 @@
         <dc:Bounds x="300" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
-        <dc:Bounds x="580" y="107" width="1160" height="133" />
+      <bpmndi:BPMNShape id="Activity_1bmf1yx_di" bpmnElement="checkQuestionnaireInput">
+        <dc:Bounds x="2390" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ywdtsd_di" bpmnElement="handelErrorRelease">
+        <dc:Bounds x="2250" y="260" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
+        <dc:Bounds x="580" y="107" width="1160" height="243" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0dqxj2h_di" bpmnElement="Flow_0dqxj2h">
+        <di:waypoint x="980" y="225" />
+        <di:waypoint x="980" y="290" />
+        <di:waypoint x="1510" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11s52a5_di" bpmnElement="Flow_11s52a5">
+        <di:waypoint x="1140" y="225" />
+        <di:waypoint x="1140" y="290" />
+        <di:waypoint x="1510" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00ucjat_di" bpmnElement="Flow_00ucjat">
+        <di:waypoint x="1300" y="225" />
+        <di:waypoint x="1300" y="290" />
+        <di:waypoint x="1510" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kvv83x_di" bpmnElement="Flow_1kvv83x">
+        <di:waypoint x="1610" y="290" />
+        <di:waypoint x="1672" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bm70mj_di" bpmnElement="Flow_0bm70mj">
+        <di:waypoint x="1450" y="225" />
+        <di:waypoint x="1450" y="290" />
+        <di:waypoint x="1510" y="290" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11jdgiv_di" bpmnElement="Flow_11jdgiv">
         <di:waypoint x="1610" y="167" />
         <di:waypoint x="1672" y="167" />
@@ -266,6 +329,25 @@
         <dc:Bounds x="1510" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dn23zj_di" bpmnElement="Event_1dn23zj">
+        <dc:Bounds x="1672" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kh3c5e_di" bpmnElement="handleErrorReceive">
+        <dc:Bounds x="1510" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_15on5fr" bpmnElement="mergeDataSharingInsertError">
+        <dc:Bounds x="1432" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1t14qu9" bpmnElement="mergeDataSharingValidateError">
+        <dc:Bounds x="1282" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_077rikd" bpmnElement="mergeDataSharingDecryptError">
+        <dc:Bounds x="1122" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rl4yb8_di" bpmnElement="mergeDataSharingDownloadError">
+        <dc:Bounds x="962" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_18ii2b8_di" bpmnElement="sendMergedDataSetEndEvent">
         <dc:Bounds x="2732" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -275,7 +357,7 @@
       <bpmndi:BPMNShape id="Gateway_1tzfud8_di" bpmnElement="Gateway_1tzfud8" isMarkerVisible="true">
         <dc:Bounds x="1815" y="142" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1guwjw0_di" bpmnElement="logMissingDataSets">
+      <bpmndi:BPMNShape id="Activity_1guwjw0_di" bpmnElement="communicateMissingDataSets">
         <dc:Bounds x="1930" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -287,21 +369,17 @@
         <dc:Bounds x="2110" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1md8qjp_di" bpmnElement="Gateway_1md8qjp" isMarkerVisible="true">
-        <dc:Bounds x="2445" y="142" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1bmf1yx_di" bpmnElement="checkQuestionnaireInput">
-        <dc:Bounds x="2280" y="127" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_06mz0zx_di" bpmnElement="initializeNewDmsProject">
         <dc:Bounds x="472" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="447" y="192" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_04vx4i8" bpmnElement="Event_110n3cn">
+        <dc:Bounds x="2472" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
-        <dc:Bounds x="1722" y="222" width="36" height="36" />
+        <dc:Bounds x="1722" y="332" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

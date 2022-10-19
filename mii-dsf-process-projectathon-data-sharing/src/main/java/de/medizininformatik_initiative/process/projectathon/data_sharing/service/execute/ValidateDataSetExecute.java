@@ -2,12 +2,17 @@ package de.medizininformatik_initiative.process.projectathon.data_sharing.servic
 
 import java.util.Objects;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
@@ -16,6 +21,8 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.util.Mi
 public class ValidateDataSetExecute extends AbstractServiceDelegate implements InitializingBean
 {
 	private final MimeTypeHelper mimeTypeHelper;
+
+	private static final Logger logger = LoggerFactory.getLogger(ValidateDataSetExecute.class);
 
 	public ValidateDataSetExecute(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, MimeTypeHelper mimeTypeHelper)
@@ -34,13 +41,37 @@ public class ValidateDataSetExecute extends AbstractServiceDelegate implements I
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Resource resource = (Resource) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
+		Task task = getLeadingTaskFromExecutionVariables(execution);
+		String projectIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
+		String cosIdentifier = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 
-		String mimeType = mimeTypeHelper.getMimeType(resource);
-		byte[] data = mimeTypeHelper.getData(resource);
+		logger.info("Validating data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
+				cosIdentifier, projectIdentifier, task.getId());
 
-		mimeTypeHelper.validate(data, mimeType);
+		try
+		{
+			Resource resource = (Resource) execution
+					.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_RESOURCE);
+
+			String mimeType = mimeTypeHelper.getMimeType(resource);
+			byte[] data = mimeTypeHelper.getData(resource);
+
+			mimeTypeHelper.validate(data, mimeType);
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not validate data-set for COS '" + cosIdentifier + "' and  data-sharing project '"
+					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
+					+ exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
+					exception);
+		}
 	}
 }
 

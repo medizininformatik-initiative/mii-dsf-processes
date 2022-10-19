@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.bpe.service.MailService;
@@ -62,31 +64,36 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getCurrentTaskFromExecutionVariables(execution);
+		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String organizationIdentifier = getCurrentTaskFromExecutionVariables(execution).getRequester().getIdentifier()
-				.getValue();
 		Bundle bundle = (Bundle) execution.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET);
 
 		KdsClient kdsClient = kdsClientFactory.getKdsClient();
 
 		logger.info(
-				"Inserting data-set on FHIR server with baseUrl '{}' received from organization '{}' for data-sharing project '{}'",
-				kdsClient.getFhirBaseUrl(), organizationIdentifier, projectIdentifier);
+				"Inserting decrypted data-set in FHIR server with baseUrl '{}' from organization '{}' for data-sharing project '{}' in Task with id '{}'",
+				kdsClient.getFhirBaseUrl(), sendingOrganization, projectIdentifier, task.getId());
 
 		try
 		{
-			List<IdType> idsOfCreatedResources = storeData(execution, kdsClient, bundle, organizationIdentifier,
+			List<IdType> idsOfCreatedResources = storeData(execution, kdsClient, bundle, sendingOrganization,
 					projectIdentifier);
-			sendMail(idsOfCreatedResources, organizationIdentifier, projectIdentifier);
+			sendMail(idsOfCreatedResources, sendingOrganization, projectIdentifier);
 		}
 		catch (Exception exception)
 		{
-			logger.error(
-					"Could not insert data-set received from organization '{}' for data-sharing project '{}', error-message: '{}'",
-					organizationIdentifier, projectIdentifier, exception.getMessage());
+			String message = "Could not insert data-set in FHIR server with baseUrl '" + kdsClient.getFhirBaseUrl()
+					+ "' from organization '" + sendingOrganization + "' and  data-sharing project '"
+					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
+					+ exception.getMessage();
 
-			// TODO stop current subprocess execution
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR, message,
+					exception);
 		}
 	}
 

@@ -7,7 +7,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_1rz1n9d" messageRef="Message_3j9kns3" />
     </bpmn:startEvent>
     <bpmn:serviceTask id="selectDataSetTarget" name="select data-set target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.SelectDataSetTarget">
-      <bpmn:incoming>Flow_1syoo6m</bpmn:incoming>
+      <bpmn:incoming>Flow_12g1inp</bpmn:incoming>
       <bpmn:outgoing>Flow_1f1mofe</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="prepareExecution" name="prepare execution" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.PrepareExecution">
@@ -76,48 +76,68 @@
         <camunda:taskListener class="de.medizininformatik_initiative.process.projectathon.data_sharing.questionnaire.ReleaseDataSetListener" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0l4r73o</bpmn:incoming>
-      <bpmn:incoming>Flow_0mot3h5</bpmn:incoming>
+      <bpmn:incoming>Flow_02rgwex</bpmn:incoming>
       <bpmn:outgoing>Flow_032k1c4</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_12g1inp" sourceRef="checkQuestionnaireInput" targetRef="Gateway_1md8qjp" />
-    <bpmn:exclusiveGateway id="Gateway_1md8qjp">
-      <bpmn:incoming>Flow_12g1inp</bpmn:incoming>
-      <bpmn:outgoing>Flow_1syoo6m</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0mot3h5</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1syoo6m" sourceRef="Gateway_1md8qjp" targetRef="selectDataSetTarget">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${dataSetReleased}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0mot3h5" sourceRef="Gateway_1md8qjp" targetRef="releaseDataSet">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!dataSetReleased}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12g1inp" sourceRef="checkQuestionnaireInput" targetRef="selectDataSetTarget" />
     <bpmn:serviceTask id="checkQuestionnaireInput" name="check questionnaire input" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.CheckQuestionnaireDataSetReleaseInput">
       <bpmn:incoming>Flow_032k1c4</bpmn:incoming>
       <bpmn:outgoing>Flow_12g1inp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="executeDataSharingReadError" attachedToRef="readDataSet">
+      <bpmn:outgoing>Flow_0mjc1t1</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0uqhokx" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="executeDataSharingStoreError" attachedToRef="storeDataSetForTarget">
+      <bpmn:outgoing>Flow_02v1yz0</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0hx2qcl" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="executeDataSharingEncryptError" attachedToRef="encryptDataSet">
+      <bpmn:outgoing>Flow_0slzzgh</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0b6gw8v" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="executeDataSharingCreateError" attachedToRef="createDataSetBundle">
+      <bpmn:outgoing>Flow_1bjrf5x</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1n4a0tp" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="executeDataSharingValidateError" attachedToRef="validateDataSet">
+      <bpmn:outgoing>Flow_0z1jiw3</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1tebs75" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0z1jiw3" sourceRef="executeDataSharingValidateError" targetRef="handleErrorExecute" />
+    <bpmn:sequenceFlow id="Flow_02rgwex" sourceRef="handleErrorExecute" targetRef="releaseDataSet" />
+    <bpmn:sequenceFlow id="Flow_0mjc1t1" sourceRef="executeDataSharingReadError" targetRef="handleErrorExecute" />
+    <bpmn:sequenceFlow id="Flow_1bjrf5x" sourceRef="executeDataSharingCreateError" targetRef="handleErrorExecute" />
+    <bpmn:sequenceFlow id="Flow_0slzzgh" sourceRef="executeDataSharingEncryptError" targetRef="handleErrorExecute" />
+    <bpmn:sequenceFlow id="Flow_02v1yz0" sourceRef="executeDataSharingStoreError" targetRef="handleErrorExecute" />
+    <bpmn:boundaryEvent id="Event_060bn2w" attachedToRef="checkQuestionnaireInput">
+      <bpmn:outgoing>Flow_0ur5qa0</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0bpbcmq" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0ur5qa0" sourceRef="Event_060bn2w" targetRef="handleErrorExecute" />
+    <bpmn:serviceTask id="handleErrorExecute" name="handle error" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.HandleErrorExecute">
+      <bpmn:incoming>Flow_0z1jiw3</bpmn:incoming>
+      <bpmn:incoming>Flow_0mjc1t1</bpmn:incoming>
+      <bpmn:incoming>Flow_1bjrf5x</bpmn:incoming>
+      <bpmn:incoming>Flow_0slzzgh</bpmn:incoming>
+      <bpmn:incoming>Flow_02v1yz0</bpmn:incoming>
+      <bpmn:incoming>Flow_0ur5qa0</bpmn:incoming>
+      <bpmn:outgoing>Flow_02rgwex</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_3j9kns3" name="executeDataSharing" />
   <bpmn:message id="Message_07oua04" name="sendDataSet" />
   <bpmn:message id="Message_0cl8lk6" name="sendDataSet" />
+  <bpmn:error id="Error_0q3eg9c" name="executeDataSharingError" errorCode="executeDataSharingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_executeDataSharing">
-      <bpmndi:BPMNEdge id="Flow_0mot3h5_di" bpmnElement="Flow_0mot3h5">
-        <di:waypoint x="850" y="142" />
-        <di:waypoint x="850" y="230" />
-        <di:waypoint x="520" y="230" />
-        <di:waypoint x="520" y="157" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1syoo6m_di" bpmnElement="Flow_1syoo6m">
-        <di:waypoint x="875" y="117" />
-        <di:waypoint x="970" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12g1inp_di" bpmnElement="Flow_12g1inp">
-        <di:waypoint x="750" y="117" />
-        <di:waypoint x="825" y="117" />
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="970" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_032k1c4_di" bpmnElement="Flow_032k1c4">
         <di:waypoint x="570" y="117" />
-        <di:waypoint x="650" y="117" />
+        <di:waypoint x="790" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fabv9h_di" bpmnElement="Flow_0fabv9h">
         <di:waypoint x="1400" y="117" />
@@ -136,20 +156,20 @@
         <di:waypoint x="1800" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r9k1xc_di" bpmnElement="Flow_1r9k1xc">
-        <di:waypoint x="2260" y="117" />
-        <di:waypoint x="2312" y="117" />
+        <di:waypoint x="2310" y="117" />
+        <di:waypoint x="2362" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13pbtdi_di" bpmnElement="Flow_13pbtdi">
-        <di:waypoint x="2098" y="117" />
-        <di:waypoint x="2160" y="117" />
+        <di:waypoint x="2138" y="117" />
+        <di:waypoint x="2210" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04axjb3_di" bpmnElement="Flow_04axjb3">
-        <di:waypoint x="2008" y="117" />
-        <di:waypoint x="2062" y="117" />
+        <di:waypoint x="2028" y="117" />
+        <di:waypoint x="2102" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xb11s5_di" bpmnElement="Flow_0xb11s5">
         <di:waypoint x="1900" y="117" />
-        <di:waypoint x="1972" y="117" />
+        <di:waypoint x="1992" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1im0jon_di" bpmnElement="Flow_1im0jon">
         <di:waypoint x="1560" y="117" />
@@ -162,6 +182,41 @@
       <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
         <di:waypoint x="218" y="117" />
         <di:waypoint x="300" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z1jiw3_di" bpmnElement="Flow_0z1jiw3">
+        <di:waypoint x="1400" y="175" />
+        <di:waypoint x="1400" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02rgwex_di" bpmnElement="Flow_02rgwex">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="520" y="230" />
+        <di:waypoint x="520" y="157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mjc1t1_di" bpmnElement="Flow_0mjc1t1">
+        <di:waypoint x="1240" y="175" />
+        <di:waypoint x="1240" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bjrf5x_di" bpmnElement="Flow_1bjrf5x">
+        <di:waypoint x="1560" y="175" />
+        <di:waypoint x="1560" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0slzzgh_di" bpmnElement="Flow_0slzzgh">
+        <di:waypoint x="1730" y="175" />
+        <di:waypoint x="1730" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02v1yz0_di" bpmnElement="Flow_02v1yz0">
+        <di:waypoint x="1900" y="175" />
+        <di:waypoint x="1900" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ur5qa0_di" bpmnElement="Flow_0ur5qa0">
+        <di:waypoint x="890" y="175" />
+        <di:waypoint x="890" y="230" />
+        <di:waypoint x="730" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
         <dc:Bounds x="182" y="99" width="36" height="36" />
@@ -190,24 +245,6 @@
       <bpmndi:BPMNShape id="Activity_0dqtkw1_di" bpmnElement="storeDataSetForTarget">
         <dc:Bounds x="1800" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1s6g0hy_di" bpmnElement="sendDataSet">
-        <dc:Bounds x="1972" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1957" y="142" width="67" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_04yyh6h_di" bpmnElement="waitForRetrievalByTarget">
-        <dc:Bounds x="2062" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2042" y="142" width="78" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSet">
-        <dc:Bounds x="2160" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
-        <dc:Bounds x="2312" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0koe0ly_di" bpmnElement="validateDataSet">
         <dc:Bounds x="1300" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -215,12 +252,48 @@
         <dc:Bounds x="470" y="77" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1md8qjp_di" bpmnElement="Gateway_1md8qjp" isMarkerVisible="true">
-        <dc:Bounds x="825" y="92" width="50" height="50" />
+      <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
+        <dc:Bounds x="2362" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSet">
+        <dc:Bounds x="2210" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04yyh6h_di" bpmnElement="waitForRetrievalByTarget">
+        <dc:Bounds x="2102" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2082" y="142" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1s6g0hy_di" bpmnElement="sendDataSet">
+        <dc:Bounds x="1992" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1977" y="142" width="67" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bmf1yx_di" bpmnElement="checkQuestionnaireInput">
-        <dc:Bounds x="650" y="77" width="100" height="80" />
+        <dc:Bounds x="790" y="77" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b181xa_di" bpmnElement="handleErrorExecute">
+        <dc:Bounds x="630" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rl4yb8_di" bpmnElement="executeDataSharingReadError">
+        <dc:Bounds x="1222" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_13eafno" bpmnElement="executeDataSharingStoreError">
+        <dc:Bounds x="1882" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1icwnub" bpmnElement="executeDataSharingEncryptError">
+        <dc:Bounds x="1712" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0eswkxc" bpmnElement="executeDataSharingCreateError">
+        <dc:Bounds x="1542" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_07hod2e" bpmnElement="executeDataSharingValidateError">
+        <dc:Bounds x="1382" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0b2yvvq" bpmnElement="Event_060bn2w">
+        <dc:Bounds x="872" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

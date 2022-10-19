@@ -23,13 +23,13 @@ import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
-public class LogReceivedDataSet extends AbstractServiceDelegate implements InitializingBean
+public class CommunicateReceivedDataSet extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(LogReceivedDataSet.class);
+	private static final Logger logger = LoggerFactory.getLogger(CommunicateReceivedDataSet.class);
 
 	private final MailService mailService;
 
-	public LogReceivedDataSet(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public CommunicateReceivedDataSet(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);

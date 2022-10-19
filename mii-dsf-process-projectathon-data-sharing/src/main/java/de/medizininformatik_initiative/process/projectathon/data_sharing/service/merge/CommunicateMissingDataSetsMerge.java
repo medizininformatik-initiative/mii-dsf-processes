@@ -1,4 +1,4 @@
-package de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate;
+package de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge;
 
 import java.util.Objects;
 
@@ -21,13 +21,13 @@ import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
-public class LogMissingDataSetsCoordinate extends AbstractServiceDelegate implements InitializingBean
+public class CommunicateMissingDataSetsMerge extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(LogMissingDataSetsCoordinate.class);
+	private static final Logger logger = LoggerFactory.getLogger(CommunicateMissingDataSetsMerge.class);
 
 	private final MailService mailService;
 
-	public LogMissingDataSetsCoordinate(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public CommunicateMissingDataSetsMerge(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, MailService mailService)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
@@ -47,35 +47,31 @@ public class LogMissingDataSetsCoordinate extends AbstractServiceDelegate implem
 		String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-		String cosIdentifier = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
-		Targets targets = (Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS);
+		Targets targets = ((Targets) execution.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS));
 
-		logMissingDataSets(targets, taskId, projectIdentifier, cosIdentifier);
-		sendMail(targets, projectIdentifier, cosIdentifier);
+		logMissingDataSets(targets, taskId, projectIdentifier);
+		sendMail(targets, projectIdentifier);
 		outputMissingDataSets(execution, targets);
 	}
 
-	private void logMissingDataSets(Targets targets, String taskId, String projectIdentifier, String cosIdentifier)
+	private void logMissingDataSets(Targets targets, String taskId, String projectIdentifier)
 	{
-		targets.getEntries().forEach(target -> log(target, taskId, projectIdentifier, cosIdentifier));
+		targets.getEntries().forEach(target -> log(target, taskId, projectIdentifier));
 	}
 
-	private void log(Target target, String taskId, String projectIdentifier, String cosIdentifier)
+	private void log(Target target, String taskId, String projectIdentifier)
 	{
-		logger.warn(
-				"Missing data-set at COS '" + cosIdentifier
-						+ "' from organization '{}' in data-sharing project '{}' and task-id '{}'",
+		logger.warn("Missing data-set from organization '{}' in data-sharing project '{}' and task-id '{}'",
 				target.getOrganizationIdentifierValue(), projectIdentifier, taskId);
 	}
 
-	private void sendMail(Targets targets, String projectIdentifier, String cosIdentifier)
+	private void sendMail(Targets targets, String projectIdentifier)
 	{
 		String subject = "Missing data-sets in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
 				+ "'";
-		StringBuilder message = new StringBuilder("Data-sets are missing at COS '" + cosIdentifier
-				+ "' for data-sharing project '" + projectIdentifier + "' in process '"
-				+ ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "' from the following organizations:\n");
+		StringBuilder message = new StringBuilder("Data-sets are missing for data-sharing project '" + projectIdentifier
+				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
+				+ "' from the following organizations:\n");
 
 		for (Target target : targets.getEntries())
 			message.append("- ").append(target.getOrganizationIdentifierValue()).append("\n");

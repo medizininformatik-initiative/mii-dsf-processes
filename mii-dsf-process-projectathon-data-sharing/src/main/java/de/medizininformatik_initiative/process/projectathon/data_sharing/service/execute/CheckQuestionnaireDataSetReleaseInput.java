@@ -2,7 +2,9 @@ package de.medizininformatik_initiative.process.projectathon.data_sharing.servic
 
 import java.util.stream.Stream;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
@@ -41,15 +43,19 @@ public class CheckQuestionnaireDataSetReleaseInput extends AbstractServiceDelega
 			logger.info(
 					"Released data-set provided for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
 					cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, true);
 		}
 		else
 		{
-			logger.warn(
-					"Could not release data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}': expected and provided project identifier do not match ({}/{}), restarting user task",
-					cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId(),
-					projectIdentifier.toLowerCase(), getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, false);
+			String message = "Could not release data-set for COS '" + cosIdentifier + "' and data-sharing project '"
+					+ projectIdentifier + "' referenced in Task with id '"
+					+ getLeadingTaskFromExecutionVariables(execution).getId()
+					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
+					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse) + ")";
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message);
 		}
 	}
 

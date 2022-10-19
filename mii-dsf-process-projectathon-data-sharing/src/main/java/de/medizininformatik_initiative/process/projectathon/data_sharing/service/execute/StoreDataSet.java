@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.ws.rs.core.MediaType;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
@@ -16,6 +17,7 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +56,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String cosIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String projectIdentifier = (String) execution
@@ -61,12 +64,32 @@ public class StoreDataSet extends AbstractServiceDelegate
 		byte[] bundleEncrypted = (byte[]) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED);
 
-		String binaryId = storeBinary(bundleEncrypted, cosIdentifier);
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
-				Variables.stringValue(binaryId));
+		logger.info(
+				"Storing encrypted transferable data-set for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
+				cosIdentifier, projectIdentifier, task.getId());
 
-		log(projectIdentifier, cosIdentifier, binaryId, getLeadingTaskFromExecutionVariables(execution).getId());
-		sendMail(projectIdentifier, cosIdentifier, binaryId);
+		try
+		{
+			String binaryId = storeBinary(bundleEncrypted, cosIdentifier);
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
+					Variables.stringValue(binaryId));
+
+			log(projectIdentifier, cosIdentifier, binaryId, getLeadingTaskFromExecutionVariables(execution).getId());
+			sendMail(projectIdentifier, cosIdentifier, binaryId);
+		}
+		catch (Exception exception)
+		{
+			String message = "Could not store encrypt transferable data-set for COS '" + cosIdentifier
+					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ task.getId() + "' - " + exception.getMessage();
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
+					exception);
+		}
+
 	}
 
 	private String storeBinary(byte[] content, String cosIdentifier)

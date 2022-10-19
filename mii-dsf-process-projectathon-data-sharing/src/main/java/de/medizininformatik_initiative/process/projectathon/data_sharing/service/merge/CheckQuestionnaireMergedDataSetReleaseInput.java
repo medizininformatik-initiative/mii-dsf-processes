@@ -1,7 +1,9 @@
 package de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.variable.Variables;
 import org.highmed.dsf.bpe.ConstantsBase;
@@ -38,40 +40,46 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 		QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) execution
 				.getVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_QUESTIONNAIRE_RESPONSE_COMPLETED);
 
-		// Validity of the URL to access the merged data-set is checked as part of the default javascript code
-		String dataSetUrl = getDataSetUrl(questionnaireResponse);
-		storeDataSetUrlAsTaskOutput(execution, dataSetUrl);
-		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION,
-				Variables.stringValue(dataSetUrl));
+		Optional<String> dataSetUrl = getDataSetUrl(questionnaireResponse);
 
-		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier))
+		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier) && dataSetUrl.isPresent())
 		{
-			logger.info("Released data-set provided for data-sharing project '{}' referenced in Task with id '{}'",
+			storeDataSetUrlAsTaskOutput(execution, dataSetUrl.get());
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION,
+					Variables.stringValue(dataSetUrl.get()));
+
+			logger.info(
+					"Released merged data-set for HRP and data-sharing project '{}' referenced in Task with id '{}'",
 					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, true);
 		}
 		else
 		{
-			logger.warn(
-					"Could not release data-set for HRP and data-sharing project '{}' referenced in Task with id '{}': expected and provided project identifier do not match ({}/{}), restarting user task",
-					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId(),
-					projectIdentifier.toLowerCase(), getProvidedProjectIdentifierAsLowerCase(questionnaireResponse));
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED, false);
+			String message = "Could not release merged data-set for HRP and data-sharing project '" + projectIdentifier
+					+ "' referenced in Task with id '" + getLeadingTaskFromExecutionVariables(execution).getId()
+					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
+					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse)
+					+ ") or QuestionnaireResponse with id '" + questionnaireResponse.getId()
+					+ "' is missing item with linkId '"
+					+ ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL + "'";
+
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
+					Variables.stringValue(message));
+
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR, message);
 		}
 	}
 
-	private String getDataSetUrl(QuestionnaireResponse questionnaireResponse)
+	private Optional<String> getDataSetUrl(QuestionnaireResponse questionnaireResponse)
 	{
 		return questionnaireResponse.getItem().stream()
 				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL
 						.equals(i.getLinkId()))
+				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasAnswer)
 				.flatMap(i -> i.getAnswer().stream())
+				.filter(QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent::hasValue)
 				.map(QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent::getValue)
 				.filter(a -> UriType.class.isAssignableFrom(a.getClass())).map(a -> (UriType) a)
-				.map(PrimitiveType::getValue).findFirst()
-				.orElseThrow(() -> new RuntimeException("QuestionnaireResponse with id " + questionnaireResponse.getId()
-						+ "is missing answer for linkId "
-						+ ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL));
+				.filter(PrimitiveType::hasValue).map(PrimitiveType::getValue).findFirst();
 	}
 
 	private void storeDataSetUrlAsTaskOutput(DelegateExecution execution, String dataSetUrl)
