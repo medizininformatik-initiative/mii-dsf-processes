@@ -52,6 +52,11 @@
 		<definition value="Location as URL where the contract of an approved data sharing project can be found"/>
 	</concept>
 	<concept>
+		<code value="extraction-interval"/>
+		<display value="Extraction Interval"/>
+		<definition value="Max time between request to extract a data-set and delivery of a data-set"/>
+	</concept>
+	<concept>
 		<code value="data-set-location"/>
 		<display value="Data Set Location"/>
 		<definition

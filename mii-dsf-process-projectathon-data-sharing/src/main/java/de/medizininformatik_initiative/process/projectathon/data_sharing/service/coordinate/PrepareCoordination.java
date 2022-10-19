@@ -43,6 +43,10 @@ public class PrepareCoordination extends AbstractServiceDelegate
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION,
 				Variables.stringValue(contractLocation));
 
+		String extractionInterval = getExtractionInterval(task);
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_EXTRACTION_INTERVAL,
+				Variables.stringValue(extractionInterval));
+
 		List<String> researcherIdentifiers = getResearcherIdentifiers(task);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS,
 				ResearchersValues.create(new Researchers(researcherIdentifiers)));
@@ -52,8 +56,9 @@ public class PrepareCoordination extends AbstractServiceDelegate
 				Variables.stringValue(cosIdentifier));
 
 		logger.info(
-				"Starting coordination of approved data sharing project [project-identifier: {}, contract-location: {}, researchers: {}, cos-identifier: {}]",
-				projectIdentifier, contractLocation, String.join(",", researcherIdentifiers), cosIdentifier);
+				"Starting coordination of approved data sharing project [project-identifier: {} ; contract-location: {} ; extraction-interval: {} ; researchers: {} ; cos-identifier: {}]",
+				projectIdentifier, contractLocation, extractionInterval, String.join(",", researcherIdentifiers),
+				cosIdentifier);
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -74,6 +79,14 @@ public class PrepareCoordination extends AbstractServiceDelegate
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
 						"No contract-location present in task with id='" + task.getId() + "'"));
+	}
+
+	private String getExtractionInterval(Task task)
+	{
+		return getTaskHelper()
+				.getFirstInputParameterStringValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_EXTRACTION_INTERVAL)
+				.orElse(ConstantsDataSharing.DATA_EXTRACTION_INTERVAL_DEFAULT_VALUE);
 	}
 
 	private List<String> getResearcherIdentifiers(Task task)

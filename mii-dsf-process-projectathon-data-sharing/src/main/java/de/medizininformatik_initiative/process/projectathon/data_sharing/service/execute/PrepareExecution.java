@@ -43,7 +43,7 @@ public class PrepareExecution extends AbstractServiceDelegate
 				Variables.stringValue(contractLocation));
 
 		logger.info(
-				"Starting extraction and transfer of approved data sharing project [project-identifier: {}, cos-identifier: {}, contract-location: {}]",
+				"Starting extraction and transfer of approved data sharing project [project-identifier: {} ; cos-identifier: {} ; contract-location: {}]",
 				projectIdentifier, cosIdentifier, contractLocation);
 	}
 

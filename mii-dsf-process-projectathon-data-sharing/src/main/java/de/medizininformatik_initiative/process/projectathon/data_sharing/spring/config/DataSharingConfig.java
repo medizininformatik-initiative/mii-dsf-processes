@@ -45,8 +45,8 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.service
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.DownloadDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.InsertDataSet;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.LogMissingDataSetsMerge;
+import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.PrepareMerging;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget;
-import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.ValidateDataSetMerge;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.util.MimeTypeHelper;
 import de.medizininformatik_initiative.processes.kds.client.spring.config.PropertiesConfig;
@@ -227,9 +227,9 @@ public class DataSharingConfig
 	// MERGE DATA SHARING PROCESS
 
 	@Bean
-	public StoreCorrelationKeys storeCorrelationKeys()
+	public PrepareMerging prepareMerging()
 	{
-		return new StoreCorrelationKeys(clientProvider, taskHelper, readAccessHelper, endpointProvider);
+		return new PrepareMerging(clientProvider, taskHelper, readAccessHelper, endpointProvider);
 	}
 
 	@Bean

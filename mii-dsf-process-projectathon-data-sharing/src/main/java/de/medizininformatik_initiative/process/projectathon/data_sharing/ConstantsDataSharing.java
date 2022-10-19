@@ -67,6 +67,7 @@ public interface ConstantsDataSharing
 	String CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER = "cos-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_PROJECT_IDENTIFIER = "project-identifier";
 	String CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION = "contract-location";
+	String CODESYSTEM_DATA_SHARING_VALUE_EXTRACTION_INTERVAL = "extraction-interval";
 	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION = "data-set-location";
 	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_REFERENCE = "data-set-reference";
 	String CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_MISSING = "data-set-missing";
@@ -99,6 +100,7 @@ public interface ConstantsDataSharing
 
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "projectIdentifier";
 	String BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION = "contractLocation";
+	String BPMN_EXECUTION_VARIABLE_EXTRACTION_INTERVAL = "extractionInterval";
 	String BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS = "researcherIdentifiers";
 	String BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER = "cosIdentifier";
 	String BPMN_EXECUTION_VARIABLE_DOCUMENT_REFERENCE = "documentReference";
@@ -108,4 +110,8 @@ public interface ConstantsDataSharing
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE = "dataSetReference";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_RELEASED = "dataSetReleased";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION = "dataSetLocation";
+
+	// OTHERS
+
+	String DATA_EXTRACTION_INTERVAL_DEFAULT_VALUE = "P28D";
 }

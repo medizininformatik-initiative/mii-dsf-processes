@@ -28,13 +28,13 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.Constan
 import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.Researchers;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.variables.ResearchersValues;
 
-public class StoreCorrelationKeys extends AbstractServiceDelegate implements InitializingBean
+public class PrepareMerging extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(StoreCorrelationKeys.class);
+	private static final Logger logger = LoggerFactory.getLogger(PrepareMerging.class);
 
 	private final EndpointProvider endpointProvider;
 
-	public StoreCorrelationKeys(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
+	public PrepareMerging(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, EndpointProvider endpointProvider)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
@@ -61,6 +61,10 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION,
 				Variables.stringValue(contractLocation));
 
+		String extractionInterval = getExtractionInterval(task);
+		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_EXTRACTION_INTERVAL,
+				Variables.stringValue(extractionInterval));
+
 		List<String> researcherIdentifiers = getResearcherIdentifiers(task);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS,
 				ResearchersValues.create(new Researchers(researcherIdentifiers)));
@@ -70,8 +74,8 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 				TargetsValues.create(new Targets(targets)));
 
 		logger.info(
-				"Starting data-set reception and merging of approved data sharing project [project-identifier: {}, contract-location: {}, researchers: {}, medics: {}]",
-				projectIdentifier, contractLocation, String.join(",", researcherIdentifiers),
+				"Starting data-set reception and merging of approved data sharing project [project-identifier: {} ; contract-location: {} ; extraction-interval: {} ; researchers: {} ; medics: {}]",
+				projectIdentifier, contractLocation, extractionInterval, String.join(",", researcherIdentifiers),
 				targets.stream().map(Target::getOrganizationIdentifierValue).collect(Collectors.joining(",")));
 	}
 
@@ -93,6 +97,14 @@ public class StoreCorrelationKeys extends AbstractServiceDelegate implements Ini
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
 						"No contract-location present in task with id='" + task.getId() + "'"));
+	}
+
+	private String getExtractionInterval(Task task)
+	{
+		return getTaskHelper()
+				.getFirstInputParameterStringValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_EXTRACTION_INTERVAL)
+				.orElseThrow(() -> new RuntimeException("No extraction interval provided by HRP"));
 	}
 
 	private List<String> getResearcherIdentifiers(Task task)

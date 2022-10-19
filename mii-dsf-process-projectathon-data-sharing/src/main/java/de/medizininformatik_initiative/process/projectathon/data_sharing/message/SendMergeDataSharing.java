@@ -15,6 +15,7 @@ import org.highmed.dsf.fhir.variables.Targets;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.UrlType;
 
@@ -41,7 +42,12 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_CONTRACT_LOCATION);
 		Task.ParameterComponent contractLocationInput = getContractLocationInput(contractLocation);
 
-		Stream<Task.ParameterComponent> otherInputs = Stream.of(projectIdentifierInput, contractLocationInput);
+		String extractionInterval = (String) execution
+				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_EXTRACTION_INTERVAL);
+		Task.ParameterComponent extractionIntervalInput = getExtractionIntervalInput(extractionInterval);
+
+		Stream<Task.ParameterComponent> otherInputs = Stream.of(projectIdentifierInput, contractLocationInput,
+				extractionIntervalInput);
 
 		List<String> researcherIdentifiers = ((Researchers) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS)).getEntries();
@@ -74,6 +80,16 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 		contractLocationInput.setValue(new UrlType(contractLocation));
 
 		return contractLocationInput;
+	}
+
+	private Task.ParameterComponent getExtractionIntervalInput(String extractionInterval)
+	{
+		Task.ParameterComponent extractionIntervalInput = new Task.ParameterComponent();
+		extractionIntervalInput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_EXTRACTION_INTERVAL);
+		extractionIntervalInput.setValue(new StringType(extractionInterval));
+
+		return extractionIntervalInput;
 	}
 
 	private Stream<Task.ParameterComponent> getResearcherIdentifierInputs(List<String> researchers)

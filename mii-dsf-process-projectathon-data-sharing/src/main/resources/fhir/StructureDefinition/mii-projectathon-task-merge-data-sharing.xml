@@ -27,7 +27,7 @@
     </element>
     <element id="Task.input">
       <path value="Task.input" />
-      <min value="4" />
+      <min value="5" />
       <max value="*" />
     </element>
     <element id="Task.input:message-name">
@@ -124,6 +124,52 @@
       <type>
         <code value="url" />
       </type>
+    </element>
+    <element id="Task.input:extraction-interval">
+      <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
+        <valueString value="Parameter" />
+      </extension>
+      <path value="Task.input" />
+      <sliceName value="extraction-interval" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:extraction-interval.type">
+      <path value="Task.input.type" />
+      <binding>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="TaskInputParameterType" />
+        </extension>
+        <strength value="required" />
+        <valueSet value="http://medizininformatik-initiative.de/fhir/ValueSet/data-sharing|#{version}" />
+      </binding>
+    </element>
+    <element id="Task.input:extraction-interval.type.coding">
+      <path value="Task.input.type.coding" />
+      <min value="1" />
+      <max value="1" />
+    </element>
+    <element id="Task.input:extraction-interval.type.coding.system">
+      <path value="Task.input.type.coding.system" />
+      <min value="1" />
+      <fixedUri value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-sharing" />
+    </element>
+    <element id="Task.input:extraction-interval.type.coding.code">
+      <path value="Task.input.type.coding.code" />
+      <min value="1" />
+      <fixedCode value="extraction-interval" />
+    </element>
+    <element id="Task.input:extraction-interval.value[x]">
+      <path value="Task.input.value[x]" />
+      <type>
+        <code value="string" />
+      </type>
+      <constraint>
+        <key value="extraction-interval-regex" />
+        <severity value="error" />
+        <human value="Must be ISO 8601 time duration pattern" />
+        <expression value="matches(&#39;^P(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)D)?(T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?$&#39;)" />
+      </constraint>
     </element>
     <element id="Task.input:researcher-identifier">
       <path value="Task.input" />

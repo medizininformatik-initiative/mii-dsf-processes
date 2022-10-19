@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1uxomks" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
   <bpmn:process id="medizininformatik-initiativede_mergeDataSharing" isExecutable="true" camunda:versionTag="#{version}">
-    <bpmn:sequenceFlow id="Flow_031nt59" sourceRef="mergeDataSharingStartEvent" targetRef="storeCorrelationKeys" />
+    <bpmn:sequenceFlow id="Flow_031nt59" sourceRef="mergeDataSharingStartEvent" targetRef="prepareMerging" />
     <bpmn:startEvent id="mergeDataSharingStartEvent" name="start merge data sharing process">
       <bpmn:outgoing>Flow_031nt59</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1rz1n9d" messageRef="Message_0o1qqa7" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="storeCorrelationKeys" name="store correlation keys" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.StoreCorrelationKeys">
+    <bpmn:serviceTask id="prepareMerging" name="prepare merging" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.PrepareMerging">
       <bpmn:incoming>Flow_031nt59</bpmn:incoming>
       <bpmn:outgoing>Flow_0ylde6i</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -68,7 +68,7 @@
     <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="SubProcess_0szmntn">
       <bpmn:outgoing>Flow_0jhnvx6</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1tbnu9y">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${extractionInterval}</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0usmzqr" sourceRef="SubProcess_0szmntn" targetRef="Gateway_1tzfud8" />
@@ -94,7 +94,7 @@
       <bpmn:incoming>Flow_0h5giy2</bpmn:incoming>
       <bpmn:outgoing>Flow_003vvug</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ylde6i" sourceRef="storeCorrelationKeys" targetRef="initializeNewDmsProject" />
+    <bpmn:sequenceFlow id="Flow_0ylde6i" sourceRef="prepareMerging" targetRef="initializeNewDmsProject" />
     <bpmn:sequenceFlow id="Flow_003vvug" sourceRef="logMissingDataSets" targetRef="releaseDataSet" />
     <bpmn:serviceTask id="Activity_0ejt1f1" name="select hrp target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.merge.SelectHrpTarget">
       <bpmn:incoming>Flow_0xk2vc2</bpmn:incoming>
@@ -203,7 +203,7 @@
           <dc:Bounds x="160" y="192" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_162649g_di" bpmnElement="storeCorrelationKeys">
+      <bpmndi:BPMNShape id="Activity_162649g_di" bpmnElement="prepareMerging">
         <dc:Bounds x="300" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

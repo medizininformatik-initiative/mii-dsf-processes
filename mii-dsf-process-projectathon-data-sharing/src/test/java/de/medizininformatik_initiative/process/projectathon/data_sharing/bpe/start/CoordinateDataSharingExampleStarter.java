@@ -57,6 +57,10 @@ public class CoordinateDataSharingExampleStarter
 				.addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION);
 
+		task.addInput().setValue(new StringType("PT10M")).getType().addCoding()
+				.setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_EXTRACTION_INTERVAL);
+
 		task.addInput()
 				.setValue(new Identifier().setSystem(ConstantsDataSharing.NAMINGSYSTEM_RESEARCHER_IDENTIFIER)
 						.setValue("Test_Researcher1"))
