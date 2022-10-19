@@ -87,7 +87,7 @@ curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
 https://dic1/fhir/Task
 ```
 
-Console 5: Check data transferred to COS
+Console 5: Check data transferred to COS (1 DocumentReferences expected)
 
 ```sh
 curl http://localhost:8082/fhir/DocumentReference

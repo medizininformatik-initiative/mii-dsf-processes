@@ -35,7 +35,7 @@
       <type>
          <coding>
             <system value="http://medizininformatik-initiative.de/fhir/CodeSystem/data-transfer" />
-            <code value="coordinating-site-identifier" />
+            <code value="cos-identifier" />
          </coding>
       </type>
       <valueReference>
