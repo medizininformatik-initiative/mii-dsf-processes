@@ -103,8 +103,9 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	{
 		String subject = "New KDS report stored in process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_RECEIVE
 				+ "'";
-		String message = "A new KDS report has been stored in process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_RECEIVE
-				+ "' from organization '" + sendingOrganization + "' and can be accessed using the following link:\n" + "- " + reportLocation;
+		String message = "A new KDS report has been stored in process '"
+				+ ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_RECEIVE + "' from organization '"
+				+ sendingOrganization + "' and can be accessed using the following link:\n" + "- " + reportLocation;
 
 		mailService.send(subject, message);
 	}
