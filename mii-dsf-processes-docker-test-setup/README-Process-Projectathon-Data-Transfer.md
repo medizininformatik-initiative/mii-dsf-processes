@@ -24,7 +24,20 @@ docker-compose up dic1-fhir-store-hapi
 
 Access at http://localhost:8080/fhir/
 
-Console 4: Start COS HAPI FHIR Server
+Console 2: Start DIC1 DSF FHIR Server and wait till started
+
+```sh
+docker-compose up -d dic1-fhir && docker-compose logs -f dic1-fhir
+```
+
+Console 2: Disconnect from log output (Ctrl-C) if Server started
+Console 2: Start DIC1 DSF BPE Server
+
+```sh
+docker-compose up -d dic1-bpe && docker-compose logs -f dic1-fhir dic1-bpe
+```
+
+Console 3: Start COS HAPI FHIR Server
 
 ```sh
 docker-compose up cos-fhir-store-hapi
@@ -32,27 +45,15 @@ docker-compose up cos-fhir-store-hapi
 
 Access at http://localhost:8082/fhir/
 
-Console 2: Start DIC1 DSF FHIR Server and wait till started
 
-```sh
-docker-compose up -d dic1-fhir && docker-compose logs -f dic1-fhir
-```
-
-Console 2: Disconnect from log output (Ctrl-C) if Server started 
-Console 2: Start DIC1 DSF BPE Server
-
-```sh
-docker-compose up -d dic1-bpe && docker-compose logs -f dic1-fhir dic1-bpe
-````
-
-Console 3: Start COS DSF FHIR Server and wait till started
+Console 4: Start COS DSF FHIR Server and wait till started
 
 ```sh
 docker-compose up -d cos-fhir && docker-compose logs -f cos-fhir
 ```
 
-Console 3: Disconnect from log output (Ctrl-C) if Server started 
-Console 3: Start COS DSF BPE Server
+Console 4: Disconnect from log output (Ctrl-C) if Server started 
+Console 4: Start COS DSF BPE Server
 
 ```sh
 docker-compose up -d cos-bpe && docker-compose logs -f cos-fhir cos-bpe
@@ -62,11 +63,11 @@ docker-compose up -d cos-bpe && docker-compose logs -f cos-fhir cos-bpe
 
 *Start curl commands in console 5 from root-folder:* `mii-dsf-processes`
 
-Console 5: Execute Demo Transaction-Bundle for HAPI
+Console 5: Execute Demo Transaction-Bundle for DIC1 HAPI FHIR Server
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Bundle/Dic1FhirStore_Demo.xml \
+-d @mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Bundle/DicFhirStore_Demo_CSV.xml \
 http://localhost:8080/fhir
 ```
 
@@ -78,7 +79,7 @@ example starter class with name* `DataSendExampleStarter` *in*
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Task/TaskStartDataSend_Demo.xml \
+-d @mii-dsf-process-projectathon-data-transfer/src/test/resources/fhir/Task/TaskStartDataSend_Demo_CSV.xml \
 --ssl-no-revoke --cacert mii-dsf-processes-test-data-generator/cert/ca/testca_certificate.pem \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \
