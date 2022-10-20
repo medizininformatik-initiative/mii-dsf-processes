@@ -60,7 +60,7 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		KdsClient kdsClient = kdsClientFactory.getKdsClient();
 
 		logger.info(
-				"Reading data-set on FHIR server with baseUrl '{}' for COS '{}' and  data-sharing project '{}' referenced in Task with id '{}'",
+				"Reading data-set on FHIR server with baseUrl '{}' for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
 				kdsClient.getFhirBaseUrl(), cosIdentifier, projectIdentifier, task.getId());
 
 		try
@@ -76,7 +76,7 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 		catch (Exception exception)
 		{
 			String message = "Could not read data-set on FHIR server with baseUrl '" + kdsClient.getFhirBaseUrl()
-					+ "' for COS '" + cosIdentifier + "' and  data-sharing project '" + projectIdentifier
+					+ "' for COS '" + cosIdentifier + "' and data-sharing project '" + projectIdentifier
 					+ "' referenced in Task with id '" + task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
@@ -96,11 +96,12 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 
 		if (documentReferences.size() < 1)
 			throw new IllegalArgumentException("Could not find any DocumentReference for data-sharing project '"
-					+ projectIdentifier + "' referenced in task with id '" + taskId + "'");
+					+ projectIdentifier + "' on FHIR store with baseUrl '" + kdsClient.getFhirBaseUrl()
+					+ "' referenced in Task with id '" + taskId + "'");
 
 		if (documentReferences.size() > 1)
 			logger.warn(
-					"Found {} DocumentReferences for  data-sharing project '{}' referenced in task with id '{}', using first ({})",
+					"Found {} DocumentReferences for data-sharing project '{}' referenced in Task with id '{}', using first ({})",
 					documentReferences.size(), projectIdentifier, taskId,
 					documentReferences.get(0).getIdElement().getValue());
 
@@ -110,7 +111,7 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 	private Resource readAttachment(KdsClient kdsClient, DocumentReference documentReference, String taskId)
 	{
 		String url = getAttachmentUrl(documentReference, taskId);
-		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(kdsClient, url, documentReference.getId(), taskId);
+		IdType urlIdType = checkValidKdsFhirStoreUrlAndGetIdType(kdsClient, url, documentReference, taskId);
 
 		return readAttachment(kdsClient, urlIdType);
 	}
@@ -125,18 +126,19 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 
 		if (urls.size() < 1)
 			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id '"
-					+ documentReference.getId() + "' belonging to task with id '" + taskId + "'");
+					+ getKdsFhirStoreAbsoluteId(documentReference.getIdElement()) + "' belonging to task with id '"
+					+ taskId + "'");
 
 		if (urls.size() > 1)
 			logger.warn(
 					"Found {} attachment URLs in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
-					urls.size(), documentReference.getId(), taskId, urls.get(0));
+					urls.size(), getKdsFhirStoreAbsoluteId(documentReference.getIdElement()), taskId, urls.get(0));
 
 		return urls.get(0);
 	}
 
-	private IdType checkValidKdsFhirStoreUrlAndGetIdType(KdsClient kdsClient, String url, String documentReferenceId,
-			String taskId)
+	private IdType checkValidKdsFhirStoreUrlAndGetIdType(KdsClient kdsClient, String url,
+			DocumentReference documentReference, String taskId)
 	{
 		try
 		{
@@ -151,12 +153,14 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 				return idType;
 			else
 				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id '"
-						+ documentReferenceId + "' belonging to task with id '" + taskId
-						+ "' is not a valid KDS FHIR store reference");
+						+ getKdsFhirStoreAbsoluteId(documentReference.getIdElement()) + "' belonging to Task with id '"
+						+ taskId + "' is not a valid KDS FHIR store reference (baseUrl if not empty must match '"
+						+ kdsClient.getFhirBaseUrl() + "', resource type must be set, id must be set)");
 		}
 		catch (Exception exception)
 		{
-			logger.error("Could not check if attachment url is a valid KDS FHIR store url: {}", exception.getMessage());
+			logger.error("Could not check if attachment url is a valid KDS FHIR store url - {}",
+					exception.getMessage());
 			throw exception;
 		}
 	}
@@ -164,5 +168,11 @@ public class ReadDataSet extends AbstractServiceDelegate implements Initializing
 	private Resource readAttachment(KdsClient kdsClient, IdType idType)
 	{
 		return kdsClient.readByIdType(idType);
+	}
+
+	private String getKdsFhirStoreAbsoluteId(IdType idType)
+	{
+		return new IdType(kdsClientFactory.getKdsClient().getFhirBaseUrl(), idType.getResourceType(),
+				idType.getIdPart(), idType.getVersionIdPart()).getValue();
 	}
 }

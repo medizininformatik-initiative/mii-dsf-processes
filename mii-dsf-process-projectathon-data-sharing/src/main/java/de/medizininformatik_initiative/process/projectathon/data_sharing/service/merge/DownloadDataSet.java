@@ -14,7 +14,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
-import org.highmed.fhir.client.FhirWebserviceClient;
+import org.highmed.fhir.client.BasicFhirWebserviceClient;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
@@ -56,9 +56,8 @@ public class DownloadDataSet extends AbstractServiceDelegate
 		catch (Exception exception)
 		{
 			String message = "Could not download data-set with id '" + dataSetReference.getValue()
-					+ "' from organization '" + sendingOrganization + "' and  data-sharing project '"
-					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
-					+ exception.getMessage();
+					+ "' from organization '" + sendingOrganization + "' and data-sharing project '" + projectIdentifier
+					+ "' referenced in Task with id '" + task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
 					Variables.stringValue(message));
@@ -76,10 +75,10 @@ public class DownloadDataSet extends AbstractServiceDelegate
 				.filter(Reference::hasReference).map(Reference::getReference).collect(toList());
 
 		if (dataSetReferences.size() < 1)
-			throw new IllegalArgumentException("No data-set reference present in task with id '" + task.getId() + "'");
+			throw new IllegalArgumentException("No data-set reference present in Task with id '" + task.getId() + "'");
 
 		if (dataSetReferences.size() > 1)
-			logger.warn("Found {} data-set references in task with id '{}', using only the first",
+			logger.warn("Found {} data-set references in Task with id '{}', using only the first",
 					dataSetReferences.size(), task.getId());
 
 		return new IdType(dataSetReferences.get(0));
@@ -87,8 +86,10 @@ public class DownloadDataSet extends AbstractServiceDelegate
 
 	private byte[] readDataSet(IdType dataSetReference)
 	{
-		FhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(dataSetReference.getBaseUrl());
+		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
+				.getWebserviceClient(dataSetReference.getBaseUrl())
+				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+						ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		try (InputStream binary = readBinaryResource(client, dataSetReference.getIdPart(),
 				dataSetReference.getVersionIdPart()))
@@ -102,7 +103,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 		}
 	}
 
-	private InputStream readBinaryResource(FhirWebserviceClient client, String id, String version)
+	private InputStream readBinaryResource(BasicFhirWebserviceClient client, String id, String version)
 	{
 		if (version != null && !version.isEmpty())
 			return client.readBinary(id, version, MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM));

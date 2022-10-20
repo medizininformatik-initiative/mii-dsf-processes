@@ -57,6 +57,7 @@ public class InsertData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		String sendingOrganization = getLeadingTaskFromExecutionVariables(execution).getRequester().getIdentifier()
@@ -76,9 +77,12 @@ public class InsertData extends AbstractServiceDelegate
 		}
 		catch (Exception exception)
 		{
-			logger.error(
-					"Could not insert data received from organization '{}' for data-transfer project '{}', error-message='{}'",
-					sendingOrganization, projectIdentifier, exception.getMessage());
+			logger.warn(
+					"Could not insert data-set from organization '{}' and data-transfer project '{}' referenced in Task with id '{}' - {}",
+					sendingOrganization, projectIdentifier, task.getId(), exception.getMessage());
+			throw new RuntimeException("Could not insert data-set from organization '" + sendingOrganization
+					+ "' and data-transfer project '" + projectIdentifier + "' referenced in Task with id '"
+					+ task.getId() + "'", exception);
 		}
 	}
 
@@ -115,10 +119,8 @@ public class InsertData extends AbstractServiceDelegate
 
 	private IdType setIdBase(IdType idType)
 	{
-		String id = idType.getValue();
 		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
-		String deliminator = fhirBaseUrl.endsWith("/") ? "" : "/";
-		return new IdType(fhirBaseUrl + deliminator + id);
+		return new IdType(fhirBaseUrl, idType.getResourceType(), idType.getIdPart(), idType.getVersionIdPart());
 	}
 
 	private void toLogMessage(IdType idType, String sendingOrganization, String projectIdentifier)

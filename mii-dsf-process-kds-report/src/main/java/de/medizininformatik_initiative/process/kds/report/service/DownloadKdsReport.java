@@ -12,7 +12,7 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
-import org.highmed.fhir.client.FhirWebserviceClient;
+import org.highmed.fhir.client.BasicFhirWebserviceClient;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Reference;
@@ -34,7 +34,6 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 			ReadAccessHelper readAccessHelper, KdsReportStatusGenerator kdsReportStatusGenerator)
 	{
 		super(clientProvider, taskHelper, readAccessHelper);
-
 		this.kdsReportStatusGenerator = kdsReportStatusGenerator;
 	}
 
@@ -42,7 +41,6 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 	public void afterPropertiesSet() throws Exception
 	{
 		super.afterPropertiesSet();
-
 		Objects.requireNonNull(kdsReportStatusGenerator, "kdsReportStatusGenerator");
 	}
 
@@ -50,13 +48,29 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 	protected void doExecute(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables(execution);
-
 		IdType reportReference = getReportReference(task);
-		logger.info("Downloading KDS report with id '{}'...", reportReference.getValue());
 
-		Bundle reportBundle = downloadReportBundle(execution, reportReference, task);
-		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE,
-				FhirResourceValues.create(reportBundle));
+		logger.info("Downloading KDS report with id '{}' referenced in Task with id '{}'", reportReference.getValue(),
+				task.getId());
+
+		try
+		{
+			Bundle reportBundle = downloadReportBundle(reportReference);
+			execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE,
+					FhirResourceValues.create(reportBundle));
+		}
+		catch (Exception exception)
+		{
+			task.setStatus(Task.TaskStatus.FAILED);
+			task.addOutput(kdsReportStatusGenerator.createKdsReportStatusOutput(
+					ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
+			updateLeadingTaskInExecutionVariables(execution, task);
+
+			logger.warn("Downloading report with id '{}' referenced in Task with id '{}' failed - {}",
+					reportReference.getValue(), task.getId(), exception.getMessage());
+			throw new BpmnError(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR,
+					exception.getMessage());
+		}
 	}
 
 	private IdType getReportReference(Task task)
@@ -68,7 +82,7 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 
 		if (reportReferences.size() < 1)
 			throw new IllegalArgumentException(
-					"No KDS report reference present in task with id '" + task.getId() + "'");
+					"No KDS report reference present in Task with id '" + task.getId() + "'");
 
 		if (reportReferences.size() > 1)
 			logger.warn("Found {} KDS report references in task with id '{}', using only the first",
@@ -77,29 +91,16 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 		return new IdType(reportReferences.get(0));
 	}
 
-	private Bundle downloadReportBundle(DelegateExecution execution, IdType reportReference, Task task)
+	private Bundle downloadReportBundle(IdType reportReference)
 	{
-		FhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(reportReference.getBaseUrl());
+		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
+				.getWebserviceClient(reportReference.getBaseUrl()).withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
-		try
-		{
-			if (reportReference.hasVersionIdPart())
-				return client.read(Bundle.class, reportReference.getIdPart(), reportReference.getVersionIdPart());
-			else
-				return client.read(Bundle.class, reportReference.getIdPart());
-		}
-		catch (Exception exception)
-		{
-			task.setStatus(Task.TaskStatus.FAILED);
-			task.addOutput(kdsReportStatusGenerator.createKdsReportStatusOutput(
-					ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
-			updateLeadingTaskInExecutionVariables(execution, task);
+		if (reportReference.hasVersionIdPart())
+			return client.read(Bundle.class, reportReference.getIdPart(), reportReference.getVersionIdPart());
+		else
+			return client.read(Bundle.class, reportReference.getIdPart());
 
-			logger.warn("Downloading report with id '{}' failed: {}", reportReference.getValue(),
-					exception.getMessage());
-			throw new BpmnError(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR,
-					exception.getMessage());
-		}
 	}
 }

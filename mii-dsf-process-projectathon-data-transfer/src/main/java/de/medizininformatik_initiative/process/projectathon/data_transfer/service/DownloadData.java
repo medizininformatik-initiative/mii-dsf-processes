@@ -13,7 +13,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
-import org.highmed.fhir.client.FhirWebserviceClient;
+import org.highmed.fhir.client.BasicFhirWebserviceClient;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
@@ -42,15 +42,29 @@ public class DownloadData extends AbstractServiceDelegate
 
 		IdType dataSetReference = getDataSetReference(task);
 
-		logger.info("Downloading Binary with id '{}' from organization '{}' for data-transfer project '{}'",
-				dataSetReference.getValue(), sendingOrganization, projectIdentifier);
+		logger.info(
+				"Downloading data-set with id '{}' from organization '{}' for data-transfer project '{}' referenced in Task with id '{}'",
+				dataSetReference.getValue(), sendingOrganization, projectIdentifier, task.getId());
 
-		byte[] bundleEncrypted = readDataSet(dataSetReference);
-		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
-				Variables.byteArrayValue(bundleEncrypted));
+		try
+		{
+			byte[] bundleEncrypted = readDataSet(dataSetReference);
+			execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED,
+					Variables.byteArrayValue(bundleEncrypted));
 
-		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
-				Variables.stringValue(projectIdentifier));
+			execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER,
+					Variables.stringValue(projectIdentifier));
+		}
+		catch (Exception exception)
+		{
+			logger.warn(
+					"Could not download data-set with id '{}' from organization '{}' and data-transfer project '{}' referenced in Task with id '{}' - {}",
+					dataSetReference.getValue(), sendingOrganization, projectIdentifier, task.getId(),
+					exception.getMessage());
+			throw new RuntimeException("Could not read data-set with id '" + dataSetReference.getValue()
+					+ "' from organization '" + sendingOrganization + "' and data-transfer project '"
+					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "'", exception);
+		}
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -63,7 +77,7 @@ public class DownloadData extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataTransfer.NAMINGSYSTEM_MII_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id '" + task.getId() + "'"));
+						"No project-identifier present in Task with id '" + task.getId() + "'"));
 	}
 
 	private IdType getDataSetReference(Task task)
@@ -74,10 +88,10 @@ public class DownloadData extends AbstractServiceDelegate
 				.filter(Reference::hasReference).map(Reference::getReference).collect(toList());
 
 		if (dataSetReferences.size() < 1)
-			throw new IllegalArgumentException("No data-set reference present in task with id '" + task.getId() + "'");
+			throw new IllegalArgumentException("No data-set reference present in Task with id '" + task.getId() + "'");
 
 		if (dataSetReferences.size() > 1)
-			logger.warn("Found {} data-set references in task with id '{}', using only the first",
+			logger.warn("Found {} data-set references in Task with id '{}', using only the first",
 					dataSetReferences.size(), task.getId());
 
 		return new IdType(dataSetReferences.get(0));
@@ -85,8 +99,10 @@ public class DownloadData extends AbstractServiceDelegate
 
 	private byte[] readDataSet(IdType dataSetReference)
 	{
-		FhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(dataSetReference.getBaseUrl());
+		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
+				.getWebserviceClient(dataSetReference.getBaseUrl())
+				.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_TIMES,
+						ConstantsDataTransfer.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		try (InputStream binary = readBinaryResource(client, dataSetReference.getIdPart(),
 				dataSetReference.getVersionIdPart()))
@@ -100,7 +116,7 @@ public class DownloadData extends AbstractServiceDelegate
 		}
 	}
 
-	private InputStream readBinaryResource(FhirWebserviceClient client, String id, String version)
+	private InputStream readBinaryResource(BasicFhirWebserviceClient client, String id, String version)
 	{
 		if (version != null && !version.isEmpty())
 			return client.readBinary(id, version, MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM));

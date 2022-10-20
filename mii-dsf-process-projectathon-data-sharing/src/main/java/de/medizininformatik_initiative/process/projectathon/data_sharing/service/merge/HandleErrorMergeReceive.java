@@ -48,10 +48,10 @@ public class HandleErrorMergeReceive extends AbstractServiceDelegate implements 
 
 		logger.warn(error);
 
-		String subject = "Error handling received data-set in process '"
+		String subject = "Error processing received data-set in process '"
 				+ ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "' for data-sharing project '"
 				+ projectIdentifier + "'";
-		String message = "The following error occurred whilst handling a received data-set in process '"
+		String message = "The following error occurred whilst processing a received data-set in process '"
 				+ ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "' for data-sharing project '"
 				+ projectIdentifier + "' Manual communication with the sending organization '" + sendingOrganization
 				+ "' is needed to repair the error.\n\n" + "Error:\n" + error;

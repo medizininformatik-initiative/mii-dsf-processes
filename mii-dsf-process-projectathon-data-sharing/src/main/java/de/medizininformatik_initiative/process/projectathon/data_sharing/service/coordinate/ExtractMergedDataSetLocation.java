@@ -22,22 +22,33 @@ public class ExtractMergedDataSetLocation extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		Task currenTask = getCurrentTaskFromExecutionVariables(execution);
+		Task currentTask = getCurrentTaskFromExecutionVariables(execution);
 		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
 
-		String dataSetLocation = currenTask.getInput().stream().filter(i -> i.getType().getCoding().stream()
+		String dataSetLocation = extractDataSetLocation(currentTask);
+		Task.TaskOutputComponent dataSetLocationOutput = createDataSetLocationOutput(dataSetLocation);
+
+		leadingTask.addOutput(dataSetLocationOutput);
+		updateLeadingTaskInExecutionVariables(execution, leadingTask);
+	}
+
+	private String extractDataSetLocation(Task currentTask)
+	{
+		return currentTask.getInput().stream().filter(i -> i.getType().getCoding().stream()
 				.anyMatch(c -> ConstantsDataSharing.CODESYSTEM_DATA_SHARING.equals(c.getSystem())
 						&& ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION.equals(c.getCode())))
 				.map(Task.ParameterComponent::getValue).filter(t -> t instanceof UrlType).map(t -> (UrlType) t)
 				.map(PrimitiveType::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"Task does not contain contract-location-input: " + currenTask.getId()));
+						"Could not find contract-location-input in Task with id '" + currentTask.getId() + "'"));
+	}
 
+	private Task.TaskOutputComponent createDataSetLocationOutput(String dataSetLocation)
+	{
 		Task.TaskOutputComponent dataSetLocationOutput = new Task.TaskOutputComponent();
 		dataSetLocationOutput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
 		dataSetLocationOutput.setValue(new UrlType().setValue(dataSetLocation));
 
-		leadingTask.addOutput(dataSetLocationOutput);
-		updateLeadingTaskInExecutionVariables(execution, leadingTask);
+		return dataSetLocationOutput;
 	}
 }

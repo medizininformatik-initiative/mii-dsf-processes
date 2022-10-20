@@ -32,11 +32,6 @@
 		<definition value="Search Bundle on which the KDS report is based" />
 	</concept>
 	<concept>
-		<code value="search-bundle-reference" />
-		<display value="Search Bundle Reference" />
-		<definition value="Reference to a search Bundle containing GET requests on which the KDS report is based on" />
-	</concept>
-	<concept>
 		<code value="search-bundle-response-reference" />
 		<display value="Search Bundle Response Reference" />
 		<definition value="Reference to a response search Bundle containing the KDS report" />

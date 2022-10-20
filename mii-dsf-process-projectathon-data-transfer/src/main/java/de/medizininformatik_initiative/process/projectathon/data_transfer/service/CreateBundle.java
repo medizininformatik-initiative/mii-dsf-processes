@@ -88,7 +88,7 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.setValue(organizationProvider.getLocalIdentifierValue());
 		documentReferenceToTransmit.setDate(documentReference.getDate());
 
-		String contentType = getFirstAttachmentContentType(execution, documentReference);
+		String contentType = getFirstAttachmentContentType(execution, documentReference, projectIdentifier);
 		documentReferenceToTransmit.addContent().getAttachment().setContentType(contentType)
 				.setUrl("urn:uuid:" + resource.getId());
 
@@ -102,7 +102,8 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 		return bundle;
 	}
 
-	private String getFirstAttachmentContentType(DelegateExecution execution, DocumentReference documentReference)
+	private String getFirstAttachmentContentType(DelegateExecution execution, DocumentReference documentReference,
+			String projectIdentifier)
 	{
 		List<Attachment> attachments = Stream.of(documentReference).filter(DocumentReference::hasContent)
 				.flatMap(dr -> dr.getContent().stream())
@@ -111,15 +112,10 @@ public class CreateBundle extends AbstractServiceDelegate implements Initializin
 				.collect(toList());
 
 		if (attachments.size() < 1)
-			throw new IllegalArgumentException("Could not find any attachment with url in DocumentReference with id '"
-					+ documentReference.getId() + "' belonging to task with id '"
-					+ getLeadingTaskFromExecutionVariables(execution).getId() + "'");
-
-		if (attachments.size() > 1)
-			logger.warn(
-					"Found {} attachments in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
-					attachments.size(), documentReference.getId(),
-					getLeadingTaskFromExecutionVariables(execution).getId(), attachments.get(0));
+			throw new IllegalArgumentException(
+					"Could not find any attachment in DocumentReference with masterIdentifier '" + projectIdentifier
+							+ "' stored on KDS FHIR server for Task with id '"
+							+ getLeadingTaskFromExecutionVariables(execution).getId() + "'");
 
 		return attachments.get(0).getContentType();
 	}

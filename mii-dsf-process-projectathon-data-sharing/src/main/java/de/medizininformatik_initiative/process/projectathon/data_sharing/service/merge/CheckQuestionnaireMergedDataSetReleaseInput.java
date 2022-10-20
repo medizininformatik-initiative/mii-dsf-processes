@@ -11,6 +11,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.PrimitiveType;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.StringType;
@@ -60,7 +61,8 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 					+ "' referenced in Task with id '" + task.getId()
 					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
 					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse)
-					+ ") or QuestionnaireResponse with id '" + questionnaireResponse.getId()
+					+ ") or QuestionnaireResponse with id '"
+					+ getDsfFhirServerAbsoluteId(questionnaireResponse.getIdElement())
 					+ "' is missing item with linkId '"
 					+ ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL + "'";
 
@@ -113,5 +115,11 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 				.flatMap(i -> i.getAnswer().stream()).filter(a -> a.getValue() instanceof StringType)
 				.map(a -> (StringType) a.getValue()).map(PrimitiveType::getValue).map(String::toLowerCase)
 				.map(String::trim);
+	}
+
+	private String getDsfFhirServerAbsoluteId(IdType idType)
+	{
+		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), idType.getResourceType(),
+				idType.getIdPart(), null).getValue();
 	}
 }

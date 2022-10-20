@@ -5,7 +5,7 @@ import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
-import org.highmed.fhir.client.FhirWebserviceClient;
+import org.highmed.fhir.client.BasicFhirWebserviceClient;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.IdType;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class DeleteDataSet extends AbstractServiceDelegate
 		deletePermanently(binaryId);
 
 		logger.info(
-				"Permanently deleted encrypted Binary with id '{}' provided for COS '{}' and  data-sharing project '{}' "
+				"Permanently deleted encrypted Binary with id '{}' provided for COS '{}' and data-sharing project '{}' "
 						+ "referenced in Task with id '{}'",
 				binaryId.getValue(), cosIdentifier, projectIdentifier,
 				getLeadingTaskFromExecutionVariables(execution).getId());
@@ -44,7 +44,9 @@ public class DeleteDataSet extends AbstractServiceDelegate
 
 	private void deletePermanently(IdType binaryId)
 	{
-		FhirWebserviceClient client = getFhirWebserviceClientProvider().getLocalWebserviceClient();
+		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withRetry(
+				ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES, ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN);
+
 		client.delete(Binary.class, binaryId.getIdPart());
 		client.deletePermanently(Binary.class, binaryId.getIdPart());
 	}

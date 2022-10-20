@@ -15,6 +15,7 @@ import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.UriComponents;
@@ -42,18 +43,30 @@ public class CheckSearchBundle extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		Bundle bundle = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE);
 
-		testProfile(bundle);
+		try
+		{
+			testProfile(bundle);
 
-		List<Bundle.BundleEntryComponent> searches = bundle.getEntry();
+			List<Bundle.BundleEntryComponent> searches = bundle.getEntry();
 
-		testNoResources(searches);
-		testRequestMethod(searches);
-		testRequestUrls(searches);
+			testNoResources(searches);
+			testRequestMethod(searches);
+			testRequestUrls(searches);
 
-		logger.info("Search Bundle contains only valid requests of type GET and valid search params {}",
-				VALID_SEARCH_PARAMS);
+			logger.info(
+					"Search Bundle downloaded as part of Task with id '{}' contains only valid requests of type GET and valid search params {}",
+					task.getId(), VALID_SEARCH_PARAMS);
+		}
+		catch (Exception exception)
+		{
+			logger.warn("Error while checking search bundle referenced in Task with id '{}' - {}", task.getId(),
+					exception.getMessage());
+			throw new RuntimeException("Error while checking search bundle referenced in Task with id '" + task.getId()
+					+ "' - " + exception.getMessage(), exception);
+		}
 	}
 
 	private void testProfile(Bundle bundle)

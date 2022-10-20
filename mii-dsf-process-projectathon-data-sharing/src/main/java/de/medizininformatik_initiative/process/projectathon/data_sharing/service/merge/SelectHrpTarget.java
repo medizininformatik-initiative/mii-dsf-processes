@@ -67,6 +67,7 @@ public class SelectHrpTarget extends AbstractServiceDelegate implements Initiali
 				ConstantsBase.CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_HRP, identifier)
 				.map(e -> Target.createUniDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress()))
-				.orElseThrow(() -> new RuntimeException("No endpoint of organization with role HRP found"));
+				.orElseThrow(() -> new RuntimeException(
+						"No Endpoint of organization with with identifier '" + identifier + "' found"));
 	}
 }

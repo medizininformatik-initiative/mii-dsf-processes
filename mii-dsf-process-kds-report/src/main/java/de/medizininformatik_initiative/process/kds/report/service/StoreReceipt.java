@@ -78,7 +78,9 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		// The currentTask finishes here but is not automatically set to completed
 		// because it is an additional currentTask during the execution of the main process
 		currentTask.setStatus(Task.TaskStatus.COMPLETED);
-		getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn().update(currentTask);
+		getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES, ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN)
+				.update(currentTask);
 	}
 
 	private void handleMissingResponse(Task leadingTask)
@@ -105,7 +107,7 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 				.forEach(c -> doWriteStatusLogAndSendMail(c, leadingTask.getId(), reportLocation));
 	}
 
-	private void doWriteStatusLogAndSendMail(Coding status, String taskId, String reportLocation)
+	private void doWriteStatusLogAndSendMail(Coding status, String leadingTaskId, String reportLocation)
 	{
 		String code = status.getCode();
 		String extension = status.hasExtension()
@@ -115,13 +117,13 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 
 		if (ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIPT_OK.equals(code))
 		{
-			logger.info("Task with id '{}' has KDS report-status code '{}'{}", taskId, code, extension);
+			logger.info("Task with id '{}' has KDS report-status code '{}'{}", leadingTaskId, code, extension);
 			sendSuccessfulMail(reportLocation, code, extension);
 		}
 		else
 		{
-			logger.warn("Task with id '{}' has KDS report-status code '{}'{}", taskId, code, extension);
-			sendErrorMail(reportLocation, code, extension);
+			logger.warn("Task with id '{}' has KDS report-status code '{}'{}", leadingTaskId, code, extension);
+			sendErrorMail(leadingTaskId, reportLocation, code, extension);
 		}
 	}
 
@@ -136,11 +138,12 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		mailService.send(subject, message);
 	}
 
-	private void sendErrorMail(String reportLocation, String code, String extension)
+	private void sendErrorMail(String leadingTaskId, String reportLocation, String code, String extension)
 	{
 		String subject = "Error in KDS report process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_SEND + "'";
 		String message = "A new KDS report could not be created and retrieved by the HRP, status code is '" + code + "'"
 				+ extension + " in process '" + ConstantsKdsReport.PROCESS_NAME_FULL_KDS_REPORT_SEND
+				+ "' belonging to Task with id '" + leadingTaskId
 				+ "' and can possibly be accessed using the following link:\n" + "- " + reportLocation;
 
 		mailService.send(subject, message);

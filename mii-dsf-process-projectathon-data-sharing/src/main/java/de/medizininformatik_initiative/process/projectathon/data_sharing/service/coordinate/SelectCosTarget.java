@@ -64,6 +64,6 @@ public class SelectCosTarget extends AbstractServiceDelegate implements Initiali
 				.map(e -> Target.createUniDirectionalTarget(identifier, e.getIdentifierFirstRep().getValue(),
 						e.getAddress()))
 				.orElseThrow(() -> new RuntimeException(
-						"No endpoint of COS organization with identifier '" + identifier + "' found"));
+						"No Endpoint of COS organization with identifier '" + identifier + "' found"));
 	}
 }

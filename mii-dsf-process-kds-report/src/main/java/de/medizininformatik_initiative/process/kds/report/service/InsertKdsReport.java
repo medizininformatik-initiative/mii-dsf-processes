@@ -13,9 +13,11 @@ import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.highmed.fhir.client.PreferReturnMinimal;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 	protected void doExecute(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables(execution);
+		String sendingOrganization = task.getRequester().getIdentifier().getValue();
 		Identifier reportIdentifier = getReportIdentifier(task);
 
 		Bundle report = (Bundle) execution
@@ -64,21 +67,24 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 		getReadAccessHelper().addLocal(report);
 		getReadAccessHelper().addOrganization(report, task.getRequester().getIdentifier().getValue());
 
+		PreferReturnMinimal client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 		try
 		{
-			IdType reportId = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-					.updateConditionaly(report, Map.of("identifier", Collections
-							.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
+			IdType reportId = client.updateConditionaly(report, Map.of("identifier",
+					Collections.singletonList(reportIdentifier.getSystem() + "|" + reportIdentifier.getValue())));
 
 			task.addOutput(kdsReportStatusGenerator
 					.createKdsReportStatusOutput(ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_OK));
 			updateLeadingTaskInExecutionVariables(execution, task);
 
-			String sendingOrganization = task.getRequester().getIdentifier().getValue();
-			String reportLocation = reportId.getValue();
-			logger.info("Stored KDS report bundle with id '{}' from organization '{}'", reportLocation,
-					sendingOrganization);
-			sendMail(sendingOrganization, reportLocation);
+			String absoluteReportId = new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(),
+					ResourceType.Bundle.name(), reportId.getIdPart(), reportId.getVersionIdPart()).getValue();
+
+			logger.info("Stored KDS report with id '{}' from organization '{}' referenced in Task with id '{}'",
+					absoluteReportId, sendingOrganization, task.getId());
+			sendMail(sendingOrganization, absoluteReportId);
 		}
 		catch (Exception exception)
 		{
@@ -87,7 +93,8 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 					ConstantsKdsReport.CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR, exception.getMessage()));
 			updateLeadingTaskInExecutionVariables(execution, task);
 
-			logger.warn("Storing report from Task with id '{}' failed: {}", task.getId(), exception.getMessage());
+			logger.warn("Storing KDS report from organization '{}' referenced in Task with id '{}' failed - {}",
+					sendingOrganization, task.getId(), exception.getMessage());
 			throw new BpmnError(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_RECEIVE_ERROR,
 					exception.getMessage());
 		}

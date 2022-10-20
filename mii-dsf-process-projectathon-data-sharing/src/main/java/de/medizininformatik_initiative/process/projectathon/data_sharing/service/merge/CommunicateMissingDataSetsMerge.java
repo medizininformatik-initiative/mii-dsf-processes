@@ -61,7 +61,7 @@ public class CommunicateMissingDataSetsMerge extends AbstractServiceDelegate imp
 
 	private void log(Target target, String taskId, String projectIdentifier)
 	{
-		logger.warn("Missing data-set from organization '{}' in data-sharing project '{}' and task-id '{}'",
+		logger.warn("Missing data-set from organization '{}' in data-sharing project '{}' and Task with id '{}'",
 				target.getOrganizationIdentifierValue(), projectIdentifier, taskId);
 	}
 

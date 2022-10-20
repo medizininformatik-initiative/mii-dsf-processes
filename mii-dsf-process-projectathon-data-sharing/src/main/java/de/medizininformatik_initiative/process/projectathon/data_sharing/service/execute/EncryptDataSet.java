@@ -85,7 +85,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 		catch (Exception exception)
 		{
 			String message = "Could not encrypt transferable data-set for COS '" + cosIdentifier
-					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ "' and data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
 					+ task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
@@ -98,9 +98,12 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 
 	private PublicKey readPublicKey(String cosIdentifier, String cosUrl)
 	{
-		Bundle searchBundle = getFhirWebserviceClientProvider().getWebserviceClient(cosUrl).search(Bundle.class,
-				Map.of("identifier", Collections.singletonList(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY + "|"
-						+ ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY)));
+		Bundle searchBundle = getFhirWebserviceClientProvider().getWebserviceClient(cosUrl)
+				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+						ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN)
+				.search(Bundle.class,
+						Map.of("identifier", Collections.singletonList(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY
+								+ "|" + ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY_VALUE_PUBLIC_KEY)));
 
 		if (searchBundle.getTotal() != 1 && searchBundle.getEntryFirstRep().getResource() instanceof Bundle)
 			throw new IllegalStateException(
@@ -108,14 +111,13 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 
 		Bundle publicKeyBundle = (Bundle) searchBundle.getEntryFirstRep().getResource();
 
-		logger.debug("Downloaded PublicKey Bundle with id='{}' from organization with identifier '{}'",
-				publicKeyBundle.getId(), cosIdentifier);
+		logger.debug("Downloaded PublicKey Bundle from organization with identifier '{}'", cosIdentifier);
 
 		DocumentReference documentReference = getDocumentReference(publicKeyBundle);
 		Binary binary = getBinary(publicKeyBundle);
 
 		PublicKey publicKey = getPublicKey(binary, publicKeyBundle.getId());
-		checkHash(documentReference, publicKey, publicKeyBundle.getId());
+		checkHash(documentReference, publicKey);
 
 		return publicKey;
 	}
@@ -127,12 +129,10 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 				.map(r -> ((DocumentReference) r)).collect(toList());
 
 		if (documentReferences.size() < 1)
-			throw new IllegalArgumentException(
-					"Could not find any DocumentReference in PublicKey Bundle with id '" + bundle.getId() + "'");
+			throw new IllegalArgumentException("Could not find any DocumentReference in PublicKey Bundle");
 
 		if (documentReferences.size() > 1)
-			logger.warn("Found {} DocumentReferences in PublicKey Bundle with id '{}', using the first",
-					documentReferences.size(), bundle.getId());
+			logger.warn("Found {} DocumentReferences in PublicKey Bundle, using the first", documentReferences.size());
 
 		return documentReferences.get(0);
 	}
@@ -143,12 +143,10 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 				.filter(r -> r instanceof Binary).map(b -> ((Binary) b)).collect(toList());
 
 		if (binaries.size() < 1)
-			throw new IllegalArgumentException(
-					"Could not find any Binary in PublicKey Bundle with id '" + bundle.getId() + "'");
+			throw new IllegalArgumentException("Could not find any Binary in PublicKey Bundle");
 
 		if (binaries.size() > 1)
-			logger.warn("Found {} Binaries in PublicKey Bundle with id '{}', using the first", binaries.size(),
-					bundle.getId());
+			logger.warn("Found {} Binaries in PublicKey Bundle, using the first", binaries.size());
 
 		return binaries.get(0);
 	}
@@ -161,13 +159,11 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 		}
 		catch (Exception exception)
 		{
-			throw new RuntimeException(
-					"Could not read PublicKey from Binary in PublicKey Bundle with id '" + publicKeyBundleId + "'",
-					exception);
+			throw new RuntimeException("Could not read PublicKey from Binary in PublicKey Bundle", exception);
 		}
 	}
 
-	private void checkHash(DocumentReference documentReference, PublicKey publicKey, String bundleId)
+	private void checkHash(DocumentReference documentReference, PublicKey publicKey)
 	{
 		long numberOfHashes = documentReference.getContent().stream()
 				.filter(DocumentReference.DocumentReferenceContentComponent::hasAttachment)
@@ -175,25 +171,20 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 				.map(Attachment::getHash).count();
 
 		if (numberOfHashes < 1)
-			throw new RuntimeException(
-					"Could not find any sha256-hash in DocumentReference from Bundle with id '" + bundleId + "'");
+			throw new RuntimeException("Could not find any sha256-hash in DocumentReference");
 
 		if (numberOfHashes > 1)
-			logger.warn("DocumentReference contains {} sha256-hashes, using the first from Bundle with id '{}'",
-					numberOfHashes, bundleId);
+			logger.warn("DocumentReference contains {} sha256-hashes, using the first", numberOfHashes);
 
 		byte[] documentReferenceHash = documentReference.getContentFirstRep().getAttachment().getHash();
 		byte[] publicKeyHash = DigestUtils.sha256(publicKey.getEncoded());
 
-		logger.debug("DocumentReference PublicKey sha256-hash '{}' from Bundle with id '{}'",
-				Hex.encodeHexString(documentReferenceHash), bundleId);
-		logger.debug("PublicKey actual sha256-hash '{}' from Bundle with id '{}'", Hex.encodeHexString(publicKeyHash),
-				bundleId);
+		logger.debug("DocumentReference PublicKey sha256-hash '{}'", Hex.encodeHexString(documentReferenceHash));
+		logger.debug("PublicKey actual sha256-hash '{}'", Hex.encodeHexString(publicKeyHash));
 
 		if (!Arrays.equals(documentReferenceHash, publicKeyHash))
 			throw new RuntimeException(
-					"Sha256-hash in DocumentReference does not match computed sha256-hash of Binary in Bundle with id '"
-							+ bundleId + "'");
+					"Sha256-hash in DocumentReference does not match computed sha256-hash of Binary");
 	}
 
 	private byte[] encrypt(DelegateExecution execution, PublicKey publicKey, Bundle bundle,
@@ -209,8 +200,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 		}
 		catch (Exception exception)
 		{
-			String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
-			throw new RuntimeException("Could not encrypt data-set to transmit for task with id '" + taskId + "'");
+			throw new RuntimeException("Could not encrypt data-set to transmit", exception);
 		}
 	}
 }

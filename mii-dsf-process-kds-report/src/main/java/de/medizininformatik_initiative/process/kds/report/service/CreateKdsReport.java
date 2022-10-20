@@ -23,16 +23,19 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
+import org.highmed.fhir.client.PreferReturnMinimal;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import de.medizininformatik_initiative.process.kds.report.ConstantsKdsReport;
 import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
@@ -74,18 +77,29 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		Bundle searchBundle = (Bundle) execution.getVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE);
 		Target target = (Target) execution.getVariable(BPMN_EXECUTION_VARIABLE_TARGET);
 
-		Bundle responseBundle = executeSearchBundle(searchBundle);
-		Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
+		try
+		{
+			Bundle responseBundle = executeSearchBundle(searchBundle);
 
-		dataLogger.logResource("Report Bundle", reportBundle);
+			Bundle reportBundle = transformToReportBundle(searchBundle, responseBundle, target);
+			dataLogger.logResource("Report Bundle", reportBundle);
 
-		String reportReference = storeResponseBundle(reportBundle);
+			String reportReference = storeResponseBundle(reportBundle, task.getId());
 
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE,
-				Variables.stringValue(reportReference));
+			execution.setVariable(BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE,
+					Variables.stringValue(reportReference));
+		}
+		catch (Exception exception)
+		{
+			logger.warn("Could not create KDS report referenced in Task with id '{}' - {}", task.getId(),
+					exception.getMessage());
+			throw new RuntimeException("Could not create KDS report referenced in Task with id '" + task.getId() + "'",
+					exception);
+		}
 	}
 
 	private Bundle executeSearchBundle(Bundle searchBundle)
@@ -190,17 +204,21 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 		reportEntry.setResource(reportEntryCapabilityStatement);
 	}
 
-	private String storeResponseBundle(Bundle responseBundle)
+	private String storeResponseBundle(Bundle responseBundle, String taskId)
 	{
-		IdType bundleIdType = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-				.updateConditionaly(responseBundle,
-						Map.of("identifier", Collections.singletonList(NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER
-								+ "|" + organizationProvider.getLocalIdentifierValue())));
+		PreferReturnMinimal client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
-		logger.info("Stored report bundle with id '{}'", bundleIdType.getValue());
+		IdType bundleIdType = client.updateConditionaly(responseBundle, Map.of("identifier", Collections.singletonList(
+				NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER + "|" + organizationProvider.getLocalIdentifierValue())));
 
-		return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Bundle.name(),
+		String absoluteId = new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Bundle.name(),
 				bundleIdType.getIdPart(), bundleIdType.getVersionIdPart()).getValue();
+
+		logger.info("Stored report bundle with id '{}' for Task referenced in '{}'", absoluteId, taskId);
+
+		return absoluteId;
 	}
 
 	private void fixBlazeCapabilityStatement(Bundle searchBundle, Bundle report)

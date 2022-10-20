@@ -49,7 +49,7 @@ public class CheckQuestionnaireDataSetReleaseInput extends AbstractServiceDelega
 		else
 		{
 			String message = "Could not release data-set for COS '" + cosIdentifier + "' and data-sharing project '"
-					+ projectIdentifier + "' referenced in Task with id '" + task.getId()
+					+ projectIdentifier + "' belonging to Task with id '" + task.getId()
 					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
 					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse) + ")";
 

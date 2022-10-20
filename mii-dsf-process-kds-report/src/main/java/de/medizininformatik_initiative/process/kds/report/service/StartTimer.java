@@ -14,6 +14,7 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -47,11 +48,13 @@ public class StartTimer extends AbstractServiceDelegate implements InitializingB
 	}
 
 	@Override
-	protected void doExecute(DelegateExecution execution) throws Exception
+	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String timerInterval = getTimerInterval(execution);
-		logger.debug("Setting variable '{}' to {}",
-				ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL, timerInterval);
+
+		logger.debug("Setting variable '{}' to {} referenced in Task with id '{}'",
+				ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL, timerInterval, task.getId());
 		execution.setVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL,
 				Variables.stringValue(timerInterval));
 

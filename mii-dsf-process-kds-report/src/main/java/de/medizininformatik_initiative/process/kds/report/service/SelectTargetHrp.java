@@ -60,10 +60,6 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 		String endpointIdentifier = extractEndpointIdentifier(endpoint);
 
 		Target target = createHrpTarget(organizationIdentifier, endpointIdentifier, endpoint.getAddress());
-
-		logger.info("Using HRP with identifier '{}' and endpoint '{}'", target.getOrganizationIdentifierValue(),
-				target.getEndpointUrl());
-
 		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
 	}
 
@@ -90,16 +86,16 @@ public class SelectTargetHrp extends AbstractServiceDelegate implements Initiali
 		return organization.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst()
-				.orElseThrow(() -> new RuntimeException("organization is missing identifier of type '"
-						+ NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER + "'"));
+				.orElseThrow(() -> new RuntimeException("organization with id '" + organization.getId()
+						+ "' is missing identifier of type '" + NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER + "'"));
 	}
 
 	private String extractEndpointIdentifier(Endpoint endpoint)
 	{
 		return endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).map(Identifier::getValue)
-				.findFirst().orElseThrow(() -> new RuntimeException(
-						"Endpoint is missing identifier of type '" + NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER + "'"));
+				.findFirst().orElseThrow(() -> new RuntimeException("Endpoint with id '" + endpoint.getId()
+						+ "' is missing identifier of type '" + NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER + "'"));
 	}
 
 	private Target createHrpTarget(String organizationIdentifier, String endpointIdentifier, String endpointAddress)

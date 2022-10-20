@@ -85,9 +85,8 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 		catch (Exception exception)
 		{
 			String message = "Could not insert data-set in FHIR server with baseUrl '" + kdsClient.getFhirBaseUrl()
-					+ "' from organization '" + sendingOrganization + "' and  data-sharing project '"
-					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
-					+ exception.getMessage();
+					+ "' from organization '" + sendingOrganization + "' and data-sharing project '" + projectIdentifier
+					+ "' referenced in Task with id '" + task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
 					Variables.stringValue(message));
@@ -135,10 +134,8 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 
 	private IdType setIdBase(IdType idType)
 	{
-		String id = idType.getValue();
 		String fhirBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
-		String deliminator = fhirBaseUrl.endsWith("/") ? "" : "/";
-		return new IdType(fhirBaseUrl + deliminator + id);
+		return new IdType(fhirBaseUrl, idType.getResourceType(), idType.getIdPart(), idType.getVersionIdPart());
 	}
 
 	private void addOutputToCurrentTask(DelegateExecution execution, IdType id)

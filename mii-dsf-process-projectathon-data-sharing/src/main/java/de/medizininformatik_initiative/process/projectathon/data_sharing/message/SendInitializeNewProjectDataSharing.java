@@ -63,6 +63,8 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 	protected void sendTask(DelegateExecution execution, Target target, String instantiatesUri, String messageName,
 			String businessKey, String profile, Stream<Task.ParameterComponent> additionalInputParameters)
 	{
+		Task dsfTask = getLeadingTaskFromExecutionVariables(execution);
+
 		try
 		{
 			Task task = createTask(profile, instantiatesUri, messageName, businessKey);
@@ -76,12 +78,14 @@ public class SendInitializeNewProjectDataSharing extends AbstractTaskMessageSend
 			}
 			else
 			{
-				logger.debug("Initialized new DMS project instance with task-id '{}'", outcome.getId());
+				logger.info("Initialized new DMS project instance having id '{}' for Task with id '{}'",
+						outcome.getId(), dsfTask.getId());
 			}
 		}
 		catch (Exception exception)
 		{
-			logger.warn("Could not initialize new DMS project instance - {}", exception.getMessage());
+			logger.warn("Could not initialize new DMS project instance for Task with id '{}' - {}", dsfTask.getId(),
+					exception.getMessage());
 		}
 	}
 

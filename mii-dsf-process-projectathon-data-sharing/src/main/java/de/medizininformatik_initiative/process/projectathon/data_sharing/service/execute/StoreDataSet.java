@@ -80,7 +80,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 		catch (Exception exception)
 		{
 			String message = "Could not store encrypt transferable data-set for COS '" + cosIdentifier
-					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ "' and data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
 					+ task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR_MESSAGE,
@@ -99,6 +99,8 @@ public class StoreDataSet extends AbstractServiceDelegate
 		try (InputStream in = new ByteArrayInputStream(content))
 		{
 			IdType created = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+					.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+							ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 					.createBinary(in, mediaType, securityContext);
 			return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Binary.name(),
 					created.getIdPart(), created.getVersionIdPart()).getValue();
@@ -106,7 +108,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 		catch (Exception exception)
 		{
 			logger.warn("Could not create binary - {}", exception.getMessage());
-			throw new RuntimeException(exception);
+			throw new RuntimeException("Could not create binary", exception);
 		}
 	}
 
@@ -117,11 +119,11 @@ public class StoreDataSet extends AbstractServiceDelegate
 				.getIdElement().toVersionless().getValue();
 	}
 
-	private void log(String projectIdentifier, String cosIdentifier, String binaryId, String taskid)
+	private void log(String projectIdentifier, String cosIdentifier, String binaryId, String taskId)
 	{
 		logger.info(
 				"Stored Binary with id '{}' provided for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
-				binaryId, cosIdentifier, projectIdentifier, taskid);
+				binaryId, cosIdentifier, projectIdentifier, taskId);
 	}
 
 	private void sendMail(String projectIdentifier, String cosIdentifier, String binaryId)
@@ -130,7 +132,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 				+ "'";
 		String message = "The data-set for data-sharing project '" + projectIdentifier + "' in process '"
 				+ ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING
-				+ "' has been successfully provided for COS'" + cosIdentifier + "' at the following location:\n" + "- "
+				+ "' has been successfully provided for COS '" + cosIdentifier + "' at the following location:\n" + "- "
 				+ binaryId;
 
 		mailService.send(subject, message);

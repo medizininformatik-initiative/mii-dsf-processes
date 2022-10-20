@@ -4,12 +4,6 @@ import static de.medizininformatik_initiative.process.projectathon.data_transfer
 
 public interface ConstantsDataTransfer
 {
-	String PROCESS_NAME_DATA_SEND = "dataSend";
-	String PROCESS_NAME_DATA_RECEIVE = "dataReceive";
-
-	String PROCESS_NAME_FULL_DATA_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_SEND;
-	String PROCESS_NAME_FULL_DATA_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_RECEIVE;
-
 	String BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER = "projectIdentifier";
 	String BPMN_EXECUTION_VARIABLE_COORDINATING_SITE_IDENTIFIER = "cos-identifier";
 	String BPMN_EXECUTION_VARIABLE_DATA_SET = "dataSet";
@@ -28,6 +22,15 @@ public interface ConstantsDataTransfer
 
 	String CODESYSTEM_MII_CRYPTOGRAPHY = "http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography";
 	String CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY = "public-key";
+
+	int DSF_CLIENT_RETRY_TIMES = 6;
+	long DSF_CLIENT_RETRY_INTERVAL_5MIN = 300000;
+
+	String PROCESS_NAME_DATA_SEND = "dataSend";
+	String PROCESS_NAME_DATA_RECEIVE = "dataReceive";
+
+	String PROCESS_NAME_FULL_DATA_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_SEND;
+	String PROCESS_NAME_FULL_DATA_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_DATA_RECEIVE;
 
 	String PROFILE_MII_TASK_START_DATA_SEND = "http://medizininformatik-initiative.de/fhir/StructureDefinition/task-start-data-send";
 	String PROFILE_MII_TASK_START_DATA_SEND_AND_LATEST_VERSION = PROFILE_MII_TASK_START_DATA_SEND + "|" + VERSION;

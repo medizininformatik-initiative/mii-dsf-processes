@@ -43,8 +43,8 @@ public class PrepareExecution extends AbstractServiceDelegate
 				Variables.stringValue(contractLocation));
 
 		logger.info(
-				"Starting extraction and transfer of approved data sharing project [project-identifier: {} ; cos-identifier: {} ; contract-location: {}]",
-				projectIdentifier, cosIdentifier, contractLocation);
+				"Starting extraction and transfer of approved data sharing project [project-identifier: {} ; cos-identifier: {} ; contract-location: {} ; task-id: {}]",
+				projectIdentifier, cosIdentifier, contractLocation, task.getId());
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -55,7 +55,7 @@ public class PrepareExecution extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id '" + task.getId() + "'"));
+						"No project-identifier present in Task with id '" + task.getId() + "'"));
 	}
 
 	private String getCosIdentifier(Task task)
@@ -74,6 +74,6 @@ public class PrepareExecution extends AbstractServiceDelegate
 				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id '" + task.getId() + "'"));
+						"No project-identifier present in Task with id '" + task.getId() + "'"));
 	}
 }

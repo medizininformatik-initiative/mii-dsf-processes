@@ -4,15 +4,6 @@ import static de.medizininformatik_initiative.process.kds.report.KdsReportProces
 
 public interface ConstantsKdsReport
 {
-	String PROCESS_NAME_KDS_REPORT_AUTOSTART = "kdsReportAutostart";
-	String PROCESS_NAME_KDS_REPORT_RECEIVE = "kdsReportReceive";
-	String PROCESS_NAME_KDS_REPORT_SEND = "kdsReportSend";
-
-	String PROCESS_NAME_FULL_KDS_REPORT_AUTOSTART = "medizininformatik-initiativede_"
-			+ PROCESS_NAME_KDS_REPORT_AUTOSTART;
-	String PROCESS_NAME_FULL_KDS_REPORT_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_KDS_REPORT_RECEIVE;
-	String PROCESS_NAME_FULL_KDS_REPORT_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_KDS_REPORT_SEND;
-
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_TIMER_INTERVAL = "kdsReportTimerInterval";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE = "kdsReportSearchBundle";
 	String BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE_RESPONSE_REFERENCE = "kdsReportSearchBundleResponseReference";
@@ -29,7 +20,6 @@ public interface ConstantsKdsReport
 
 	String CODESYSTEM_MII_KDS_REPORT = "http://medizininformatik-initiative.de/fhir/CodeSystem/kds-report";
 	String CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE = "search-bundle";
-	String CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE_REFERENCE = "search-bundle-reference";
 	String CODESYSTEM_MII_KDS_REPORT_VALUE_SEARCH_BUNDLE_RESPONSE_REFERENCE = "search-bundle-response-reference";
 	String CODESYSTEM_MII_KDS_REPORT_VALUE_REPORT_STATUS = "kds-report-status";
 	String CODESYSTEM_MII_KDS_REPORT_VALUE_TIMER_INTERVAL = "timer-interval";
@@ -42,6 +32,18 @@ public interface ConstantsKdsReport
 	String CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIPT_ERROR = "receipt-error";
 	String CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_OK = "receive-ok";
 	String CODESYSTEM_MII_KDS_REPORT_STATUS_VALUE_RECEIVE_ERROR = "receive-error";
+
+	int DSF_CLIENT_RETRY_TIMES = 6;
+	long DSF_CLIENT_RETRY_INTERVAL_5MIN = 300000;
+
+	String PROCESS_NAME_KDS_REPORT_AUTOSTART = "kdsReportAutostart";
+	String PROCESS_NAME_KDS_REPORT_RECEIVE = "kdsReportReceive";
+	String PROCESS_NAME_KDS_REPORT_SEND = "kdsReportSend";
+
+	String PROCESS_NAME_FULL_KDS_REPORT_AUTOSTART = "medizininformatik-initiativede_"
+			+ PROCESS_NAME_KDS_REPORT_AUTOSTART;
+	String PROCESS_NAME_FULL_KDS_REPORT_RECEIVE = "medizininformatik-initiativede_" + PROCESS_NAME_KDS_REPORT_RECEIVE;
+	String PROCESS_NAME_FULL_KDS_REPORT_SEND = "medizininformatik-initiativede_" + PROCESS_NAME_KDS_REPORT_SEND;
 
 	String PROCESS_MII_URI_BASE = "http://medizininformatik-initiative.de/bpe/Process/";
 

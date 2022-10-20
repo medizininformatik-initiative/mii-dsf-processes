@@ -12,7 +12,8 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.FhirResourceValues;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -23,6 +24,8 @@ import de.medizininformatik_initiative.processes.kds.client.logging.DataLogger;
 
 public class DecryptData extends AbstractServiceDelegate implements InitializingBean
 {
+	private static final Logger logger = LoggerFactory.getLogger(DecryptData.class);
+
 	private final OrganizationProvider organizationProvider;
 	private final KeyProvider keyProvider;
 	private final DataLogger dataLogger;
@@ -67,12 +70,7 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 
 	private String getSendingOrganizationIdentifier(DelegateExecution execution)
 	{
-		Reference requester = getLeadingTaskFromExecutionVariables(execution).getRequester();
-
-		if (requester.hasIdentifier() && requester.getIdentifier().hasValue())
-			return requester.getIdentifier().getValue();
-		else
-			throw new IllegalArgumentException("Task is missing requester identifier");
+		return getLeadingTaskFromExecutionVariables(execution).getRequester().getIdentifier().getValue();
 	}
 
 	private Bundle decryptBundle(DelegateExecution execution, PrivateKey privateKey, byte[] bundleEncrypted,
@@ -88,7 +86,10 @@ public class DecryptData extends AbstractServiceDelegate implements Initializing
 		catch (Exception exception)
 		{
 			String taskId = getLeadingTaskFromExecutionVariables(execution).getId();
-			throw new RuntimeException("Could not decrypt received data-set for task with id '" + taskId + "'");
+			logger.warn("Could not decrypt received data-set for Task with id '{}' - {}", taskId,
+					exception.getMessage());
+			throw new RuntimeException("Could not decrypt received data-set for Task with id '" + taskId + "'",
+					exception);
 		}
 	}
 }

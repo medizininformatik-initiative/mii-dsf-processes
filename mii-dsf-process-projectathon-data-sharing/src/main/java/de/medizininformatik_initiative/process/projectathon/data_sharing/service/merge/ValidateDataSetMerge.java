@@ -66,7 +66,7 @@ public class ValidateDataSetMerge extends AbstractServiceDelegate implements Ini
 		catch (Exception exception)
 		{
 			String message = "Could not validate decrypted data-set from organization '" + sendingOrganization
-					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ "' and data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
 					+ task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,

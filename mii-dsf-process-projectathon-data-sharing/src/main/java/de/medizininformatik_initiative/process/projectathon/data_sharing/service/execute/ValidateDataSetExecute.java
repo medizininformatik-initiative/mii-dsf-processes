@@ -62,7 +62,7 @@ public class ValidateDataSetExecute extends AbstractServiceDelegate implements I
 		}
 		catch (Exception exception)
 		{
-			String message = "Could not validate data-set for COS '" + cosIdentifier + "' and  data-sharing project '"
+			String message = "Could not validate data-set for COS '" + cosIdentifier + "' and data-sharing project '"
 					+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "' - "
 					+ exception.getMessage();
 

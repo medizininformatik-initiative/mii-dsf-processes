@@ -70,8 +70,8 @@ public class DecryptDataSet extends AbstractServiceDelegate implements Initializ
 
 		try
 		{
-			Bundle bundleDecrypted = decryptBundle(execution, keyProvider.getPrivateKey(), bundleEncrypted,
-					sendingOrganization, localOrganization);
+			Bundle bundleDecrypted = decryptBundle(keyProvider.getPrivateKey(), bundleEncrypted, sendingOrganization,
+					localOrganization);
 
 			dataLogger.logResource("Decrypted Transfer Bundle", bundleDecrypted);
 
@@ -81,7 +81,7 @@ public class DecryptDataSet extends AbstractServiceDelegate implements Initializ
 		catch (Exception exception)
 		{
 			String message = "Could not decrypt data-set from organization '" + sendingOrganization
-					+ "' and  data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
+					+ "' and data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
 					+ task.getId() + "' - " + exception.getMessage();
 
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
@@ -92,8 +92,8 @@ public class DecryptDataSet extends AbstractServiceDelegate implements Initializ
 		}
 	}
 
-	private Bundle decryptBundle(DelegateExecution execution, PrivateKey privateKey, byte[] bundleEncrypted,
-			String sendingOrganization, String receivingOrganization)
+	private Bundle decryptBundle(PrivateKey privateKey, byte[] bundleEncrypted, String sendingOrganization,
+			String receivingOrganization)
 	{
 		try
 		{
@@ -104,8 +104,8 @@ public class DecryptDataSet extends AbstractServiceDelegate implements Initializ
 		}
 		catch (Exception exception)
 		{
-			String taskId = getCurrentTaskFromExecutionVariables(execution).getId();
-			throw new RuntimeException("Could not decrypt received data-set for task with id '" + taskId + "'");
+			logger.warn("Could not decrypt data-set - {}", exception.getMessage());
+			throw new RuntimeException("Could not decrypt received data-set", exception);
 		}
 	}
 }

@@ -54,22 +54,23 @@ public class SelectTargetDic extends AbstractServiceDelegate implements Initiali
 		return task.getRequester().getIdentifier().getValue();
 	}
 
-	private Endpoint getDicEndpoint(String dicIndentifier)
+	private Endpoint getDicEndpoint(String dicIdentifier)
 	{
-		return endpointProvider.getFirstDefaultEndpoint(dicIndentifier).orElseThrow(
-				() -> new RuntimeException("Could not find default endpoint of organization '" + dicIndentifier + "'"));
+		return endpointProvider.getFirstDefaultEndpoint(dicIdentifier).orElseThrow(
+				() -> new RuntimeException("Could not find default endpoint of organization '" + dicIdentifier + "'"));
 	}
 
-	private Target createTarget(String dicIndentifier, Endpoint dicEndpoint)
+	private Target createTarget(String dicIdentifier, Endpoint dicEndpoint)
 	{
 		String dicEndpointIdentifier = getEndpointIdentifierValue(dicEndpoint);
-		return Target.createUniDirectionalTarget(dicIndentifier, dicEndpointIdentifier, dicEndpoint.getAddress());
+		return Target.createUniDirectionalTarget(dicIdentifier, dicEndpointIdentifier, dicEndpoint.getAddress());
 	}
 
 	private String getEndpointIdentifierValue(Endpoint endpoint)
 	{
 		return endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).findFirst()
-				.map(Identifier::getValue).orElseThrow(() -> new RuntimeException("No endpoint identifier found"));
+				.map(Identifier::getValue).orElseThrow(() -> new RuntimeException(
+						"No endpoint identifier found in endpoint with id '" + endpoint.getId() + "'"));
 	}
 }

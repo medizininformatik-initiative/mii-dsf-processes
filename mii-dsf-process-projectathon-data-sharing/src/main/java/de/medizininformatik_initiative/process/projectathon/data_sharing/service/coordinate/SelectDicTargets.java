@@ -56,24 +56,20 @@ public class SelectDicTargets extends AbstractServiceDelegate implements Initial
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
-		String projectIdentifier = (String) execution
-				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-
-		Stream<String> medics = getMedicIdentifiers(execution, projectIdentifier);
+		Stream<String> medics = getMedicIdentifiers(execution);
 		List<Target> targets = getMedicTargets(medics);
 
 		execution.setVariable(ConstantsBase.BPMN_EXECUTION_VARIABLE_TARGETS,
 				TargetsValues.create(new Targets(targets)));
 	}
 
-	private Stream<String> getMedicIdentifiers(DelegateExecution execution, String projectIdentifier)
+	private Stream<String> getMedicIdentifiers(DelegateExecution execution)
 	{
 		Task task = getLeadingTaskFromExecutionVariables(execution);
 		return getTaskHelper()
 				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER)
-				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue)
-				.peek(i -> logger.debug("Project '{}' has participating MeDIC '{}'", projectIdentifier, i));
+				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue);
 	}
 
 	private List<Target> getMedicTargets(Stream<String> identifiers)

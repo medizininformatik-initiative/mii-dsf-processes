@@ -77,7 +77,8 @@ public class CommunicateReceivedDataSet extends AbstractServiceDelegate implemen
 
 	private void log(String cosIdentifier, String organizationIdentifier, String projectIdentifier, String taskId)
 	{
-		logger.info("COS '{}' received data-set from organization '{}' in data-sharing project '{}' for task-id '{}'",
+		logger.info(
+				"COS '{}' received data-set from organization '{}' in data-sharing project '{}' for Task with id '{}'",
 				cosIdentifier, organizationIdentifier, projectIdentifier, taskId);
 	}
 

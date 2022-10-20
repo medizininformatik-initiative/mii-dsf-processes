@@ -27,6 +27,7 @@ import org.hl7.fhir.r4.model.Endpoint;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,7 @@ public class StoreData extends AbstractServiceDelegate
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		byte[] bundleEncrypted = (byte[]) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_ENCRYPTED);
 		String coordinatingSiteIdentifier = (String) execution
@@ -75,16 +77,28 @@ public class StoreData extends AbstractServiceDelegate
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		String binaryId = storeBinary(bundleEncrypted, coordinatingSiteIdentifier);
-		execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
-				Variables.stringValue(binaryId));
+		try
+		{
+			String binaryId = storeBinary(bundleEncrypted, coordinatingSiteIdentifier);
+			execution.setVariable(ConstantsDataTransfer.BPMN_EXECUTION_VARIABLE_DATA_SET_REFERENCE,
+					Variables.stringValue(binaryId));
 
-		log(projectIdentifier, coordinatingSiteIdentifier, binaryId,
-				getLeadingTaskFromExecutionVariables(execution).getId());
-		sendMail(projectIdentifier, coordinatingSiteIdentifier, binaryId);
+			log(projectIdentifier, coordinatingSiteIdentifier, binaryId, task.getId());
+			sendMail(projectIdentifier, coordinatingSiteIdentifier, binaryId);
 
-		Target target = createTarget(coordinatingSiteIdentifier);
-		execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
+			Target target = createTarget(coordinatingSiteIdentifier);
+			execution.setVariable(BPMN_EXECUTION_VARIABLE_TARGET, TargetValues.create(target));
+		}
+		catch (Exception exception)
+		{
+			logger.warn(
+					"Could not store data-set for COS '{}' and data-transfer project '{}' referenced in Task with id '{}' - {}",
+					coordinatingSiteIdentifier, projectIdentifier, task.getId(), exception.getMessage());
+			throw new RuntimeException(
+					"Could not store data-set for COS '" + coordinatingSiteIdentifier + "' and data-transfer project '"
+							+ projectIdentifier + "' referenced in Task with id '" + task.getId() + "'",
+					exception);
+		}
 	}
 
 	private String storeBinary(byte[] content, String coordinatingSiteIdentifier)
@@ -95,6 +109,8 @@ public class StoreData extends AbstractServiceDelegate
 		try (InputStream in = new ByteArrayInputStream(content))
 		{
 			IdType created = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
+					.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_TIMES,
+							ConstantsDataTransfer.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 					.createBinary(in, mediaType, securityContext);
 			return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Binary.name(),
 					created.getIdPart(), created.getVersionIdPart()).getValue();
@@ -102,7 +118,7 @@ public class StoreData extends AbstractServiceDelegate
 		catch (Exception exception)
 		{
 			logger.warn("Could not create binary - {}", exception.getMessage());
-			throw new RuntimeException(exception);
+			throw new RuntimeException("Could not create binary", exception);
 		}
 	}
 
@@ -124,7 +140,7 @@ public class StoreData extends AbstractServiceDelegate
 	{
 		String subject = "Data-set provided in process '" + ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "'";
 		String message = "The data-set for data-transfer project '" + projectIdentifier + "' in process '"
-				+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "' has been successfully provided for COS'"
+				+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_SEND + "' has been successfully provided for COS '"
 				+ cosIdentifier + "' at the following location:\n" + "- " + binaryId;
 
 		mailService.send(subject, message);
@@ -141,13 +157,16 @@ public class StoreData extends AbstractServiceDelegate
 	{
 		return endpointProvider.getFirstConsortiumEndpoint(
 				NAMINGSYSTEM_HIGHMED_ORGANIZATION_IDENTIFIER_MEDICAL_INFORMATICS_INITIATIVE_CONSORTIUM,
-				CODESYSTEM_HIGHMED_ORGANIZATION_ROLE, CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier).get();
+				CODESYSTEM_HIGHMED_ORGANIZATION_ROLE, CODESYSTEM_HIGHMED_ORGANIZATION_ROLE_VALUE_COS, identifier)
+				.orElseThrow(() -> new RuntimeException(
+						"Could not find Endpoint of organization with identifier '" + identifier + "'"));
 	}
 
 	private String getEndpointIdentifierValue(Endpoint endpoint)
 	{
 		return endpoint.getIdentifier().stream()
 				.filter(i -> NAMINGSYSTEM_HIGHMED_ENDPOINT_IDENTIFIER.equals(i.getSystem())).findFirst()
-				.map(Identifier::getValue).get();
+				.map(Identifier::getValue).orElseThrow(() -> new RuntimeException(
+						"Endpoint with id '" + endpoint.getId() + "' does not contain any identifier"));
 	}
 }

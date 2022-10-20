@@ -100,11 +100,14 @@ public class CheckSearchBundleServiceTest
 
 	private void testValid(String pathToBundle)
 	{
+		Task task = (Task) new Task().setId(UUID.randomUUID().toString());
+
 		try (InputStream in = getClass().getResourceAsStream(pathToBundle))
 		{
 			Bundle bundle = FhirContext.forR4().newXmlParser().parseResource(Bundle.class, in);
 			Mockito.when(execution.getVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE))
 					.thenReturn(bundle);
+			Mockito.when(taskHelper.getLeadingTaskFromExecutionVariables(execution)).thenReturn(task);
 
 			service.execute(execution);
 		}
@@ -124,6 +127,7 @@ public class CheckSearchBundleServiceTest
 			Mockito.when(execution.getVariable(ConstantsKdsReport.BPMN_EXECUTION_VARIABLE_KDS_REPORT_SEARCH_BUNDLE))
 					.thenReturn(bundle);
 			Mockito.when(taskHelper.getTask(execution)).thenReturn(task);
+			Mockito.when(taskHelper.getLeadingTaskFromExecutionVariables(execution)).thenReturn(task);
 			Mockito.when(execution.getProcessDefinitionId()).thenReturn("processDefinitionId");
 			Mockito.when(execution.getActivityInstanceId()).thenReturn("activityInstanceId");
 			Mockito.when(clientProvider.getLocalWebserviceClient()).thenReturn(webserviceClient);

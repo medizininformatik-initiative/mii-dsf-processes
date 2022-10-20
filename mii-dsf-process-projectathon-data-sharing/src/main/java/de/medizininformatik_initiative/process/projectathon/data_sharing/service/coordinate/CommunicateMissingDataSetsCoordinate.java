@@ -65,7 +65,7 @@ public class CommunicateMissingDataSetsCoordinate extends AbstractServiceDelegat
 	{
 		logger.warn(
 				"Missing data-set at COS '" + cosIdentifier
-						+ "' from organization '{}' in data-sharing project '{}' and task-id '{}'",
+						+ "' from organization '{}' in data-sharing project '{}' and Task with id '{}'",
 				target.getOrganizationIdentifierValue(), projectIdentifier, taskId);
 	}
 

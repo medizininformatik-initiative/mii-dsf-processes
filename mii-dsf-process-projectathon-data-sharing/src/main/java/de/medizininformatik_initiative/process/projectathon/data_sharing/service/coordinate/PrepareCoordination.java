@@ -51,14 +51,16 @@ public class PrepareCoordination extends AbstractServiceDelegate
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_RESEARCHER_IDENTIFIERS,
 				ResearchersValues.create(new Researchers(researcherIdentifiers)));
 
+		String medicIdentifiers = getMedicIdentifiers(task);
+
 		String cosIdentifier = getCosIdentifier(task);
 		execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER,
 				Variables.stringValue(cosIdentifier));
 
 		logger.info(
-				"Starting coordination of approved data sharing project [project-identifier: {} ; contract-location: {} ; extraction-interval: {} ; researchers: {} ; cos-identifier: {}]",
+				"Starting coordination of approved data sharing project [project-identifier: {} ; contract-location: {} ; extraction-interval: {} ; researchers: {} ; medics: {} ; cos-identifier: {} ; task-id: {}]",
 				projectIdentifier, contractLocation, extractionInterval, String.join(",", researcherIdentifiers),
-				cosIdentifier);
+				medicIdentifiers, cosIdentifier, task.getId());
 	}
 
 	private String getProjectIdentifier(Task task)
@@ -69,7 +71,7 @@ public class PrepareCoordination extends AbstractServiceDelegate
 				.filter(i -> i.getValue() instanceof Identifier).map(i -> (Identifier) i.getValue())
 				.filter(i -> ConstantsDataSharing.NAMINGSYSTEM_PROJECT_IDENTIFIER.equals(i.getSystem()))
 				.map(Identifier::getValue).findFirst().orElseThrow(() -> new RuntimeException(
-						"No project-identifier present in task with id='" + task.getId() + "'"));
+						"No project-identifier present in Task with id '" + task.getId() + "'"));
 	}
 
 	private String getContractLocation(Task task)
@@ -78,7 +80,7 @@ public class PrepareCoordination extends AbstractServiceDelegate
 				.getFirstInputParameterUrlValue(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_CONTRACT_LOCATION)
 				.map(UrlType::getValue).orElseThrow(() -> new RuntimeException(
-						"No contract-location present in task with id='" + task.getId() + "'"));
+						"No contract-location present in Task with id '" + task.getId() + "'"));
 	}
 
 	private String getExtractionInterval(Task task)
@@ -101,6 +103,15 @@ public class PrepareCoordination extends AbstractServiceDelegate
 				.map(Identifier::getValue).collect(Collectors.toList());
 	}
 
+	private String getMedicIdentifiers(Task task)
+	{
+		return getTaskHelper()
+				.getInputParameterReferenceValues(task, ConstantsDataSharing.CODESYSTEM_DATA_SHARING,
+						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER)
+				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue)
+				.collect(Collectors.joining(","));
+	}
+
 	private String getCosIdentifier(Task task)
 	{
 		return getTaskHelper()
@@ -108,6 +119,6 @@ public class PrepareCoordination extends AbstractServiceDelegate
 						ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_COS_IDENTIFIER)
 				.filter(Reference::hasIdentifier).map(Reference::getIdentifier).map(Identifier::getValue).findFirst()
 				.orElseThrow(
-						() -> new RuntimeException("No COS-identifier found in Task with id='" + task.getId() + "'"));
+						() -> new RuntimeException("No COS-identifier present in Task with id '" + task.getId() + "'"));
 	}
 }
