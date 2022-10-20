@@ -12,15 +12,11 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectDataSetTarget extends AbstractServiceDelegate
 {
-	private static final Logger logger = LoggerFactory.getLogger(SelectDataSetTarget.class);
-
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 

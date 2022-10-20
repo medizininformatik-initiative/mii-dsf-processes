@@ -50,7 +50,7 @@
       <bpmn:incoming>Flow_04axjb3</bpmn:incoming>
       <bpmn:outgoing>Flow_13pbtdi</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1gef5n0">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_13pbtdi" sourceRef="waitForRetrievalByTarget" targetRef="deleteDataSet" />
@@ -131,6 +131,41 @@
   <bpmn:error id="Error_0q3eg9c" name="executeDataSharingError" errorCode="executeDataSharingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_executeDataSharing">
+      <bpmndi:BPMNEdge id="Flow_0ur5qa0_di" bpmnElement="Flow_0ur5qa0">
+        <di:waypoint x="890" y="175" />
+        <di:waypoint x="890" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02v1yz0_di" bpmnElement="Flow_02v1yz0">
+        <di:waypoint x="1900" y="175" />
+        <di:waypoint x="1900" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0slzzgh_di" bpmnElement="Flow_0slzzgh">
+        <di:waypoint x="1730" y="175" />
+        <di:waypoint x="1730" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bjrf5x_di" bpmnElement="Flow_1bjrf5x">
+        <di:waypoint x="1560" y="175" />
+        <di:waypoint x="1560" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mjc1t1_di" bpmnElement="Flow_0mjc1t1">
+        <di:waypoint x="1240" y="175" />
+        <di:waypoint x="1240" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02rgwex_di" bpmnElement="Flow_02rgwex">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="520" y="230" />
+        <di:waypoint x="520" y="157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z1jiw3_di" bpmnElement="Flow_0z1jiw3">
+        <di:waypoint x="1400" y="175" />
+        <di:waypoint x="1400" y="230" />
+        <di:waypoint x="730" y="230" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12g1inp_di" bpmnElement="Flow_12g1inp">
         <di:waypoint x="890" y="117" />
         <di:waypoint x="970" y="117" />
@@ -183,41 +218,6 @@
         <di:waypoint x="218" y="117" />
         <di:waypoint x="300" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z1jiw3_di" bpmnElement="Flow_0z1jiw3">
-        <di:waypoint x="1400" y="175" />
-        <di:waypoint x="1400" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02rgwex_di" bpmnElement="Flow_02rgwex">
-        <di:waypoint x="630" y="230" />
-        <di:waypoint x="520" y="230" />
-        <di:waypoint x="520" y="157" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mjc1t1_di" bpmnElement="Flow_0mjc1t1">
-        <di:waypoint x="1240" y="175" />
-        <di:waypoint x="1240" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bjrf5x_di" bpmnElement="Flow_1bjrf5x">
-        <di:waypoint x="1560" y="175" />
-        <di:waypoint x="1560" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0slzzgh_di" bpmnElement="Flow_0slzzgh">
-        <di:waypoint x="1730" y="175" />
-        <di:waypoint x="1730" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02v1yz0_di" bpmnElement="Flow_02v1yz0">
-        <di:waypoint x="1900" y="175" />
-        <di:waypoint x="1900" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ur5qa0_di" bpmnElement="Flow_0ur5qa0">
-        <di:waypoint x="890" y="175" />
-        <di:waypoint x="890" y="230" />
-        <di:waypoint x="730" y="230" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
         <dc:Bounds x="182" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -245,18 +245,11 @@
       <bpmndi:BPMNShape id="Activity_0dqtkw1_di" bpmnElement="storeDataSetForTarget">
         <dc:Bounds x="1800" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0koe0ly_di" bpmnElement="validateDataSet">
-        <dc:Bounds x="1300" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05s8gly_di" bpmnElement="releaseDataSet">
-        <dc:Bounds x="470" y="77" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
-        <dc:Bounds x="2362" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSet">
-        <dc:Bounds x="2210" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1s6g0hy_di" bpmnElement="sendDataSet">
+        <dc:Bounds x="1992" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1977" y="142" width="67" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_04yyh6h_di" bpmnElement="waitForRetrievalByTarget">
         <dc:Bounds x="2102" y="99" width="36" height="36" />
@@ -264,11 +257,18 @@
           <dc:Bounds x="2082" y="142" width="78" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1s6g0hy_di" bpmnElement="sendDataSet">
-        <dc:Bounds x="1992" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1977" y="142" width="67" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSet">
+        <dc:Bounds x="2210" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
+        <dc:Bounds x="2362" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0koe0ly_di" bpmnElement="validateDataSet">
+        <dc:Bounds x="1300" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05s8gly_di" bpmnElement="releaseDataSet">
+        <dc:Bounds x="470" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bmf1yx_di" bpmnElement="checkQuestionnaireInput">
         <dc:Bounds x="790" y="77" width="100" height="80" />
@@ -277,23 +277,23 @@
       <bpmndi:BPMNShape id="Activity_0b181xa_di" bpmnElement="handleErrorExecute">
         <dc:Bounds x="630" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1rl4yb8_di" bpmnElement="executeDataSharingReadError">
-        <dc:Bounds x="1222" y="139" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_13eafno" bpmnElement="executeDataSharingStoreError">
-        <dc:Bounds x="1882" y="139" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1icwnub" bpmnElement="executeDataSharingEncryptError">
-        <dc:Bounds x="1712" y="139" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0eswkxc" bpmnElement="executeDataSharingCreateError">
-        <dc:Bounds x="1542" y="139" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_0b2yvvq" bpmnElement="Event_060bn2w">
+        <dc:Bounds x="872" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_07hod2e" bpmnElement="executeDataSharingValidateError">
         <dc:Bounds x="1382" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0b2yvvq" bpmnElement="Event_060bn2w">
-        <dc:Bounds x="872" y="139" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_0eswkxc" bpmnElement="executeDataSharingCreateError">
+        <dc:Bounds x="1542" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1icwnub" bpmnElement="executeDataSharingEncryptError">
+        <dc:Bounds x="1712" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_13eafno" bpmnElement="executeDataSharingStoreError">
+        <dc:Bounds x="1882" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rl4yb8_di" bpmnElement="executeDataSharingReadError">
+        <dc:Bounds x="1222" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

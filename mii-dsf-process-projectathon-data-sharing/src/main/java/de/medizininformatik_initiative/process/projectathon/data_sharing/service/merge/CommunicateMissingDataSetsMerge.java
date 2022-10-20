@@ -69,9 +69,10 @@ public class CommunicateMissingDataSetsMerge extends AbstractServiceDelegate imp
 	{
 		String subject = "Missing data-sets in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
 				+ "'";
-		StringBuilder message = new StringBuilder("Data-sets are missing for data-sharing project '" + projectIdentifier
-				+ "' in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
-				+ "' from the following organizations:\n");
+		StringBuilder message = new StringBuilder("Data-sets are missing for data-sharing project '")
+				.append(projectIdentifier).append("' in process '")
+				.append(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING)
+				.append("' from the following organizations:\n");
 
 		for (Target target : targets.getEntries())
 			message.append("- ").append(target.getOrganizationIdentifierValue()).append("\n");

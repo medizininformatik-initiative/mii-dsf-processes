@@ -89,7 +89,6 @@ public class StoreDataSet extends AbstractServiceDelegate
 			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_EXECUTE_ERROR, message,
 					exception);
 		}
-
 	}
 
 	private String storeBinary(byte[] content, String cosIdentifier)

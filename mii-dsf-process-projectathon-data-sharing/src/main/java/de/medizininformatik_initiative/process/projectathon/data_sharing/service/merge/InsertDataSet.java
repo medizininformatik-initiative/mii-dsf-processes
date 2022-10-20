@@ -121,10 +121,11 @@ public class InsertDataSet extends AbstractServiceDelegate implements Initializi
 	{
 		String subject = "New data received in process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
 				+ "'";
-		StringBuilder message = new StringBuilder(
-				"New data has been stored for data-sharing project '" + projectIdentifier + "' in process '"
-						+ ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "' received from organization '"
-						+ sendingOrganization + "' and can be accessed using the following links:\n");
+		StringBuilder message = new StringBuilder("New data has been stored for data-sharing project '")
+				.append(projectIdentifier).append("' in process '")
+				.append(ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING)
+				.append("' received from organization '").append(sendingOrganization)
+				.append("' and can be accessed using the following links:\n");
 
 		for (IdType id : idsOfCreatedResources)
 			message.append("- ").append(id.getValue()).append("\n");

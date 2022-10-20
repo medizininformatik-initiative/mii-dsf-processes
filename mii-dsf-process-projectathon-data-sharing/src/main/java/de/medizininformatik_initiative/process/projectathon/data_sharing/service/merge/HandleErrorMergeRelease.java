@@ -42,7 +42,7 @@ public class HandleErrorMergeRelease extends AbstractServiceDelegate implements 
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		logger.warn(error + " - creating new user-task 'release-merged-data-set'");
+		logger.warn("{} - creating new user-task 'release-merged-data-set'", error);
 
 		String subject = "Error whilst executing process '" + ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING
 				+ "' for data-sharing project '" + projectIdentifier + "'";

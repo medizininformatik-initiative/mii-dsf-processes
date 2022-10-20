@@ -12,16 +12,12 @@ import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.TargetValues;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectCosTarget extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(SelectCosTarget.class);
-
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 

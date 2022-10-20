@@ -102,10 +102,10 @@ public class InsertData extends AbstractServiceDelegate
 	private void sendMail(List<IdType> createdIds, String sendingOrganization, String projectIdentifier)
 	{
 		String subject = "New data received in process '" + ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "'";
-		StringBuilder message = new StringBuilder(
-				"New data has been stored for data-transfer project '" + projectIdentifier + "' in process '"
-						+ ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE + "' received from organization '"
-						+ sendingOrganization + "' and can be accessed using the following links:\n");
+		StringBuilder message = new StringBuilder("New data has been stored for data-transfer project '")
+				.append(projectIdentifier).append("' in process '")
+				.append(ConstantsDataTransfer.PROCESS_NAME_FULL_DATA_RECEIVE).append("' received from organization '")
+				.append(sendingOrganization).append("' and can be accessed using the following links:\n");
 
 		for (IdType id : createdIds)
 			message.append("- ").append(id.getValue()).append("\n");

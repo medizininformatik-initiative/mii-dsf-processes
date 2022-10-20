@@ -147,12 +147,12 @@ public class ReadData extends AbstractServiceDelegate
 				.map(Attachment::getUrl).collect(toList());
 
 		if (urls.size() < 1)
-			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id='"
-					+ documentReference.getId() + "' belonging to task with id='" + taskId + "'");
+			throw new IllegalArgumentException("Could not find any attachment URLs in DocumentReference with id '"
+					+ documentReference.getId() + "' belonging to task with id '" + taskId + "'");
 
 		if (urls.size() > 1)
 			logger.warn(
-					"Found {} attachment URLs in DocumentReference with id='{}' belonging to task with id='{}', using first ({})",
+					"Found {} attachment URLs in DocumentReference with id '{}' belonging to task with id '{}', using first ({})",
 					urls.size(), documentReference.getId(), taskId, urls.get(0));
 
 		return urls.get(0);
@@ -173,8 +173,8 @@ public class ReadData extends AbstractServiceDelegate
 			if (hasValidBaseUrl && isResourceReference)
 				return idType;
 			else
-				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id='"
-						+ documentReferenceId + "' belonging to task with id='" + taskId
+				throw new IllegalArgumentException("Attachment URL " + url + " in DocumentReference with id '"
+						+ documentReferenceId + "' belonging to task with id '" + taskId
 						+ "' is not a valid KDS FHIR store reference");
 		}
 		catch (Exception exception)

@@ -42,7 +42,7 @@ public class HandleErrorExecute extends AbstractServiceDelegate implements Initi
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
-		logger.warn(error + " - creating new user-task 'release-data-set'");
+		logger.warn("{} - creating new user-task 'release-data-set'", error);
 
 		String subject = "Error whilst executing process '"
 				+ ConstantsDataSharing.PROCESS_NAME_FULL_EXECUTE_DATA_SHARING + "' for data-sharing project '"

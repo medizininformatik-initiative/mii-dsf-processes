@@ -238,7 +238,7 @@
       <max value="1" />
       <type>
         <code value="Extension" />
-        <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-medic-identifier" />
+        <profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/extension-medic-identifier|#{version}" />
       </type>
     </element>
     <element id="Task.input:medic-correlation-key.type">
