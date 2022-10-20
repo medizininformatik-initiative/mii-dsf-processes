@@ -35,6 +35,7 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 		QuestionnaireResponse questionnaireResponse = (QuestionnaireResponse) execution
@@ -44,18 +45,19 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 
 		if (projectIdentifierMatch(questionnaireResponse, projectIdentifier) && dataSetUrl.isPresent())
 		{
-			storeDataSetUrlAsTaskOutput(execution, dataSetUrl.get());
+			storeDataSetUrlAsTaskOutput(task, dataSetUrl.get());
+			updateLeadingTaskInExecutionVariables(execution, task);
 			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SET_LOCATION,
 					Variables.stringValue(dataSetUrl.get()));
 
 			logger.info(
 					"Released merged data-set for HRP and data-sharing project '{}' referenced in Task with id '{}'",
-					projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
+					projectIdentifier, task.getId());
 		}
 		else
 		{
 			String message = "Could not release merged data-set for HRP and data-sharing project '" + projectIdentifier
-					+ "' referenced in Task with id '" + getLeadingTaskFromExecutionVariables(execution).getId()
+					+ "' referenced in Task with id '" + task.getId()
 					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
 					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse)
 					+ ") or QuestionnaireResponse with id '" + questionnaireResponse.getId()
@@ -82,16 +84,14 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 				.filter(PrimitiveType::hasValue).map(PrimitiveType::getValue).findFirst();
 	}
 
-	private void storeDataSetUrlAsTaskOutput(DelegateExecution execution, String dataSetUrl)
+	private void storeDataSetUrlAsTaskOutput(Task leadingTask, String dataSetUrl)
 	{
-		Task leadingTask = getLeadingTaskFromExecutionVariables(execution);
 		Task.TaskOutputComponent dataSetLocationOutput = new Task.TaskOutputComponent();
 		dataSetLocationOutput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
 				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
 		dataSetLocationOutput.setValue(new UrlType().setValue(dataSetUrl));
 
 		leadingTask.addOutput(dataSetLocationOutput);
-		updateLeadingTaskInExecutionVariables(execution, leadingTask);
 	}
 
 	private boolean projectIdentifierMatch(QuestionnaireResponse questionnaireResponse,

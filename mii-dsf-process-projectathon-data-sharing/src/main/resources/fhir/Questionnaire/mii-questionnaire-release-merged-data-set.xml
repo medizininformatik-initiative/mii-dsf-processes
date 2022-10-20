@@ -24,13 +24,18 @@
 		<text value="The user-task-id of the process execution"/>
 	</item>
 	<item>
+		<linkId value="display"/>
+		<type value="display"/>
+		<text value="{project-identifier-placeholder} merged data-set release: {new-line-placeholder} This user-task releases the merged data-set for the project {project-identifier-placeholder} and the german health research platform."/>
+	</item>
+	<item>
 		<linkId value="data-set-url"/>
 		<type value="url"/>
-		<text value="Please type the URL where the merged data-set for the project {project-identifier-placeholder} can be accessed by researchers."/>
+		<text value="Please type the URL where the merged data-set can be accessed by researchers."/>
 	</item>
 	<item>
 		<linkId value="release"/>
 		<type value="string"/>
-		<text value="To confirm the release of the merged data-set for the project {project-identifier-placeholder} and the german health research platform, please type in the project identifier."/>
+		<text value="To confirm the release of the merged data-set please type in the project identifier."/>
 	</item>
 </Questionnaire>

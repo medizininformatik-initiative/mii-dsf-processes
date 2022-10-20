@@ -53,9 +53,10 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 		String kdsStoreBaseUrl = kdsClientFactory.getKdsClient().getFhirBaseUrl();
 
 		questionnaireResponse.getItem().stream()
-				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId()))
+				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DISPLAY.equals(i.getLinkId())
+						|| ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId()))
 				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasText)
-				.forEach(i -> adaptReleaseItem(i, projectIdentifier, cosIdentifier, kdsStoreBaseUrl));
+				.forEach(i -> replace(i, projectIdentifier, cosIdentifier, kdsStoreBaseUrl));
 	}
 
 	@Override
@@ -78,8 +79,14 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 		mailService.send(subject, message);
 	}
 
-	private void adaptReleaseItem(QuestionnaireResponse.QuestionnaireResponseItemComponent item,
-			String projectIdentifier, String cosIdentifier, String kdsStoreBaseUrl)
+	@Override
+	protected boolean addBusinessKeyToQuestionnaireResponse()
+	{
+		return true;
+	}
+
+	private void replace(QuestionnaireResponse.QuestionnaireResponseItemComponent item, String projectIdentifier,
+			String cosIdentifier, String kdsStoreBaseUrl)
 	{
 		String finalText = replaceText(item.getText(), projectIdentifier, cosIdentifier, kdsStoreBaseUrl);
 		item.setText(finalText);
@@ -103,6 +110,7 @@ public class ReleaseDataSetListener extends DefaultUserTaskListener implements I
 				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_COS_IDENTIFIER,
 						"<b>" + cosIdentifier + "</b>")
 				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_KDS_STORE_BASE_URL,
-						"<b>" + kdsStoreBaseUrl + "</b>");
+						"<b>" + kdsStoreBaseUrl + "</b>")
+				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_NEW_LINE, "</br>");
 	}
 }

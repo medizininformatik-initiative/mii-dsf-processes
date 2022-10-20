@@ -13,6 +13,7 @@ import org.highmed.dsf.fhir.task.TaskHelper;
 import org.hl7.fhir.r4.model.PrimitiveType;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public class CheckQuestionnaireDataSetReleaseInput extends AbstractServiceDelega
 	@Override
 	protected void doExecute(DelegateExecution execution)
 	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
 		String cosIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_COS_IDENTIFIER);
 		String projectIdentifier = (String) execution
@@ -42,13 +44,12 @@ public class CheckQuestionnaireDataSetReleaseInput extends AbstractServiceDelega
 		{
 			logger.info(
 					"Released data-set provided for COS '{}' and data-sharing project '{}' referenced in Task with id '{}'",
-					cosIdentifier, projectIdentifier, getLeadingTaskFromExecutionVariables(execution).getId());
+					cosIdentifier, projectIdentifier, task.getId());
 		}
 		else
 		{
 			String message = "Could not release data-set for COS '" + cosIdentifier + "' and data-sharing project '"
-					+ projectIdentifier + "' referenced in Task with id '"
-					+ getLeadingTaskFromExecutionVariables(execution).getId()
+					+ projectIdentifier + "' referenced in Task with id '" + task.getId()
 					+ "': expected and provided project identifier do not match (" + projectIdentifier.toLowerCase()
 					+ "/" + getProvidedProjectIdentifierAsLowerCase(questionnaireResponse) + ")";
 

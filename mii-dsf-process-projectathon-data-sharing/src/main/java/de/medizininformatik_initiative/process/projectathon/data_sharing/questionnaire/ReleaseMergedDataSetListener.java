@@ -43,7 +43,8 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener implem
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
 
 		questionnaireResponse.getItem().stream()
-				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId())
+				.filter(i -> ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DISPLAY.equals(i.getLinkId())
+						|| ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_RELEASE.equals(i.getLinkId())
 						|| ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_ITEM_DATA_SET_URL.equals(i.getLinkId()))
 				.filter(QuestionnaireResponse.QuestionnaireResponseItemComponent::hasText)
 				.forEach(i -> replace(i, projectIdentifier));
@@ -69,6 +70,12 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener implem
 		mailService.send(subject, message);
 	}
 
+	@Override
+	protected boolean addBusinessKeyToQuestionnaireResponse()
+	{
+		return true;
+	}
+
 	private void replace(QuestionnaireResponse.QuestionnaireResponseItemComponent item, String projectIdentifier)
 	{
 		String finalText = replaceText(item.getText(), projectIdentifier);
@@ -87,7 +94,9 @@ public class ReleaseMergedDataSetListener extends DefaultUserTaskListener implem
 
 	private String replaceText(String toReplace, String projectIdentifier)
 	{
-		return toReplace.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER,
-				"<b>" + projectIdentifier + "</b>");
+		return toReplace
+				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_PROJECT_IDENTIFIER,
+						"<b>" + projectIdentifier + "</b>")
+				.replace(ConstantsDataSharing.QUESTIONNAIRES_RELEASE_DATA_SET_PLACEHOLDER_NEW_LINE, "</br>");
 	}
 }
