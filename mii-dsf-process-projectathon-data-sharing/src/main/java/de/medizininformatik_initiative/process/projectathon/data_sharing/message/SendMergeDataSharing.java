@@ -79,6 +79,11 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 		Task task = getLeadingTaskFromExecutionVariables(execution);
 		addErrorMessage(task, errorMessage);
 
+		logger.debug("Error while executing Task message send " + this.getClass().getName(), exception);
+		logger.error("Process {} has fatal error in step {} for task {}, reason: {}",
+				execution.getProcessDefinitionId(), execution.getActivityInstanceId(), this.getTaskAbsoluteUrl(task),
+				exception.getMessage());
+
 		try
 		{
 			if (task != null)
