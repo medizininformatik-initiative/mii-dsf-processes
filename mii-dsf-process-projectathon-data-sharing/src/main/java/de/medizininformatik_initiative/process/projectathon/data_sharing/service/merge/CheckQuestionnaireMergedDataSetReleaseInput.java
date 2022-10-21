@@ -88,12 +88,21 @@ public class CheckQuestionnaireMergedDataSetReleaseInput extends AbstractService
 
 	private void storeDataSetUrlAsTaskOutput(Task leadingTask, String dataSetUrl)
 	{
-		Task.TaskOutputComponent dataSetLocationOutput = new Task.TaskOutputComponent();
-		dataSetLocationOutput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
-				.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
-		dataSetLocationOutput.setValue(new UrlType().setValue(dataSetUrl));
+		Optional<Task.TaskOutputComponent> output = leadingTask.getOutput().stream()
+				.filter(Task.TaskOutputComponent::hasType)
+				.filter(o -> o.getType().getCoding().stream()
+						.anyMatch(c -> ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION.equals(
+								c.getCode()) && ConstantsDataSharing.CODESYSTEM_DATA_SHARING.equals(c.getSystem())))
+				.findFirst();
 
-		leadingTask.addOutput(dataSetLocationOutput);
+		output.ifPresentOrElse(o -> o.setValue(new UrlType().setValue(dataSetUrl)), () ->
+		{
+			Task.TaskOutputComponent dataSetLocationOutput = new Task.TaskOutputComponent();
+			dataSetLocationOutput.getType().addCoding().setSystem(ConstantsDataSharing.CODESYSTEM_DATA_SHARING)
+					.setCode(ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_DATA_SET_LOCATION);
+			dataSetLocationOutput.setValue(new UrlType().setValue(dataSetUrl));
+			leadingTask.addOutput(dataSetLocationOutput);
+		});
 	}
 
 	private boolean projectIdentifierMatch(QuestionnaireResponse questionnaireResponse,
