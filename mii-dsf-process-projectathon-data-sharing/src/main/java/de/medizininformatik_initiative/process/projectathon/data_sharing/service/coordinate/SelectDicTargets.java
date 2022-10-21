@@ -21,16 +21,12 @@ import org.highmed.dsf.fhir.variables.TargetsValues;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
 
 public class SelectDicTargets extends AbstractServiceDelegate implements InitializingBean
 {
-	private static final Logger logger = LoggerFactory.getLogger(SelectDicTargets.class);
-
 	private final OrganizationProvider organizationProvider;
 	private final EndpointProvider endpointProvider;
 
