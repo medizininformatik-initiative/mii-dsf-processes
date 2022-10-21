@@ -8,6 +8,7 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.AbstractTaskMessageSend;
 import org.highmed.dsf.fhir.task.TaskHelper;
+import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Task;
 
@@ -32,5 +33,12 @@ public class SendReceivedDataSet extends AbstractTaskMessageSend
 				ConstantsDataSharing.CODESYSTEM_DATA_SHARING_VALUE_MEDIC_IDENTIFIER, requester);
 
 		return Stream.of(input);
+	}
+
+	@Override
+	protected void doSend(FhirWebserviceClient client, Task task)
+	{
+		client.withMinimalReturn().withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES,
+				ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_10SEC).create(task);
 	}
 }

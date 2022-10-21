@@ -68,7 +68,7 @@ public class InsertKdsReport extends AbstractServiceDelegate implements Initiali
 		getReadAccessHelper().addOrganization(report, task.getRequester().getIdentifier().getValue());
 
 		PreferReturnMinimal client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 		try
 		{

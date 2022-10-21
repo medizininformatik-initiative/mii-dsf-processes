@@ -99,7 +99,7 @@ public class EncryptDataSet extends AbstractServiceDelegate implements Initializ
 	private PublicKey readPublicKey(String cosIdentifier, String cosUrl)
 	{
 		Bundle searchBundle = getFhirWebserviceClientProvider().getWebserviceClient(cosUrl)
-				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 				.search(Bundle.class,
 						Map.of("identifier", Collections.singletonList(ConstantsDataSharing.CODESYSTEM_CRYPTOGRAPHY

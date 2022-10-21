@@ -101,7 +101,7 @@ public class DownloadData extends AbstractServiceDelegate
 	{
 		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
 				.getWebserviceClient(dataSetReference.getBaseUrl())
-				.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsDataTransfer.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		try (InputStream binary = readBinaryResource(client, dataSetReference.getIdPart(),

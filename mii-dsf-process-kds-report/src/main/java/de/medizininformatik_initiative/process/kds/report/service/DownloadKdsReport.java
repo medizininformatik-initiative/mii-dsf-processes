@@ -94,8 +94,8 @@ public class DownloadKdsReport extends AbstractServiceDelegate implements Initia
 	private Bundle downloadReportBundle(IdType reportReference)
 	{
 		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(reportReference.getBaseUrl()).withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
-						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
+				.getWebserviceClient(reportReference.getBaseUrl()).withRetry(
+						ConstantsKdsReport.DSF_CLIENT_RETRY_6_TIMES, ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		if (reportReference.hasVersionIdPart())
 			return client.read(Bundle.class, reportReference.getIdPart(), reportReference.getVersionIdPart());

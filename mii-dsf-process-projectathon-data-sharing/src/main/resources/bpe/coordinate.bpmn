@@ -12,7 +12,7 @@
       <bpmn:outgoing>Flow_0et3g5v</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0xadsy1" sourceRef="selectCosTarget" targetRef="sendMergeDataSharing" />
-    <bpmn:endEvent id="coordinateDataSharingEndEvent">
+    <bpmn:endEvent id="coordinateDataSharingEndEvent" name="end coordinate data sharing process">
       <bpmn:incoming>Flow_1d6fc4e</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="selectCosTarget" name="select cos target" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.coordinate.SelectCosTarget">
@@ -156,6 +156,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1v96c39_di" bpmnElement="coordinateDataSharingEndEvent">
         <dc:Bounds x="1552" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1534" y="125" width="73" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00qrlc0_di" bpmnElement="selectCosTarget">
         <dc:Bounds x="600" y="157" width="100" height="80" />

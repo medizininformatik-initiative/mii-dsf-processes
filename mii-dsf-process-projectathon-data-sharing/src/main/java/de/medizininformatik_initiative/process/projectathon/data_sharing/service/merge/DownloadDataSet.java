@@ -59,10 +59,10 @@ public class DownloadDataSet extends AbstractServiceDelegate
 					+ "' from organization '" + sendingOrganization + "' and data-sharing project '" + projectIdentifier
 					+ "' referenced in Task with id '" + task.getId() + "' - " + exception.getMessage();
 
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_RECEIVE_ERROR_MESSAGE,
 					Variables.stringValue(message));
 
-			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR, message,
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_RECEIVE_ERROR, message,
 					exception);
 		}
 	}
@@ -88,7 +88,7 @@ public class DownloadDataSet extends AbstractServiceDelegate
 	{
 		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
 				.getWebserviceClient(dataSetReference.getBaseUrl())
-				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		try (InputStream binary = readBinaryResource(client, dataSetReference.getIdPart(),

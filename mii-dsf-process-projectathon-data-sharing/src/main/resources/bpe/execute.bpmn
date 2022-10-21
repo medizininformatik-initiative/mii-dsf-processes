@@ -33,35 +33,22 @@
       <bpmn:incoming>Flow_0ka75j2</bpmn:incoming>
       <bpmn:outgoing>Flow_0xb11s5</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateThrowEvent id="sendDataSet" name="send data-set">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/mergeDataSharing/#{version}</camunda:inputParameter>
-          <camunda:inputParameter name="messageName">sendDataSet</camunda:inputParameter>
-          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-data-set|#{version}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0xb11s5</bpmn:incoming>
-      <bpmn:outgoing>Flow_04axjb3</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0qsjdhs" messageRef="Message_0cl8lk6" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendDataSet" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="Flow_04axjb3" sourceRef="sendDataSet" targetRef="waitForRetrievalByTarget" />
     <bpmn:intermediateCatchEvent id="waitForRetrievalByTarget" name="wait for retrieval by target">
-      <bpmn:incoming>Flow_04axjb3</bpmn:incoming>
+      <bpmn:incoming>Flow_0jh322k</bpmn:incoming>
       <bpmn:outgoing>Flow_13pbtdi</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1gef5n0">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_13pbtdi" sourceRef="waitForRetrievalByTarget" targetRef="deleteDataSet" />
-    <bpmn:serviceTask id="deleteDataSet" name="delete data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.DeleteDataSet">
+    <bpmn:sequenceFlow id="Flow_13pbtdi" sourceRef="waitForRetrievalByTarget" targetRef="deleteDataSetSuccessfulSend" />
+    <bpmn:serviceTask id="deleteDataSetSuccessfulSend" name="delete data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.DeleteDataSet">
       <bpmn:incoming>Flow_13pbtdi</bpmn:incoming>
       <bpmn:outgoing>Flow_1r9k1xc</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="executeDataSharingEndEvent">
+    <bpmn:endEvent id="executeDataSharingEndEvent" name="end execute data sharing process">
       <bpmn:incoming>Flow_1r9k1xc</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1r9k1xc" sourceRef="deleteDataSet" targetRef="executeDataSharingEndEvent" />
+    <bpmn:sequenceFlow id="Flow_1r9k1xc" sourceRef="deleteDataSetSuccessfulSend" targetRef="executeDataSharingEndEvent" />
     <bpmn:sequenceFlow id="Flow_0ka75j2" sourceRef="encryptDataSet" targetRef="storeDataSetForTarget" />
     <bpmn:sequenceFlow id="Flow_0l4r73o" sourceRef="prepareExecution" targetRef="releaseDataSet" />
     <bpmn:sequenceFlow id="Flow_1f1mofe" sourceRef="selectDataSetTarget" targetRef="readDataSet" />
@@ -110,11 +97,11 @@
     <bpmn:sequenceFlow id="Flow_1bjrf5x" sourceRef="executeDataSharingCreateError" targetRef="handleErrorExecute" />
     <bpmn:sequenceFlow id="Flow_0slzzgh" sourceRef="executeDataSharingEncryptError" targetRef="handleErrorExecute" />
     <bpmn:sequenceFlow id="Flow_02v1yz0" sourceRef="executeDataSharingStoreError" targetRef="handleErrorExecute" />
-    <bpmn:boundaryEvent id="Event_060bn2w" attachedToRef="checkQuestionnaireInput">
+    <bpmn:boundaryEvent id="questionnaireError" attachedToRef="checkQuestionnaireInput">
       <bpmn:outgoing>Flow_0ur5qa0</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0bpbcmq" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_0ur5qa0" sourceRef="Event_060bn2w" targetRef="handleErrorExecute" />
+    <bpmn:sequenceFlow id="Flow_0ur5qa0" sourceRef="questionnaireError" targetRef="handleErrorExecute" />
     <bpmn:serviceTask id="handleErrorExecute" name="handle error" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.HandleErrorExecute">
       <bpmn:incoming>Flow_0z1jiw3</bpmn:incoming>
       <bpmn:incoming>Flow_0mjc1t1</bpmn:incoming>
@@ -122,8 +109,31 @@
       <bpmn:incoming>Flow_0slzzgh</bpmn:incoming>
       <bpmn:incoming>Flow_02v1yz0</bpmn:incoming>
       <bpmn:incoming>Flow_0ur5qa0</bpmn:incoming>
+      <bpmn:incoming>Flow_1hl6boh</bpmn:incoming>
       <bpmn:outgoing>Flow_02rgwex</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0jh322k" sourceRef="sendDataSet" targetRef="waitForRetrievalByTarget" />
+    <bpmn:sendTask id="sendDataSet" name="send data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.message.SendDataSet">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/mergeDataSharing/#{version}</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">sendDataSet</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-data-set|#{version}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xb11s5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jh322k</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:boundaryEvent id="Event_0gw37xg" attachedToRef="sendDataSet">
+      <bpmn:outgoing>Flow_0mill5i</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0g01vrv" errorRef="Error_0q3eg9c" camunda:errorCodeVariable="executeDataSharingError" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="deleteDataSetErrorSend" name="delete data-set" camunda:class="de.medizininformatik_initiative.process.projectathon.data_sharing.service.execute.DeleteDataSet">
+      <bpmn:incoming>Flow_0mill5i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hl6boh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0mill5i" sourceRef="Event_0gw37xg" targetRef="deleteDataSetErrorSend" />
+    <bpmn:sequenceFlow id="Flow_1hl6boh" sourceRef="deleteDataSetErrorSend" targetRef="handleErrorExecute" />
   </bpmn:process>
   <bpmn:message id="Message_3j9kns3" name="executeDataSharing" />
   <bpmn:message id="Message_07oua04" name="sendDataSet" />
@@ -131,6 +141,10 @@
   <bpmn:error id="Error_0q3eg9c" name="executeDataSharingError" errorCode="executeDataSharingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_executeDataSharing">
+      <bpmndi:BPMNEdge id="Flow_0jh322k_di" bpmnElement="Flow_0jh322k">
+        <di:waypoint x="2150" y="117" />
+        <di:waypoint x="2242" y="117" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ur5qa0_di" bpmnElement="Flow_0ur5qa0">
         <di:waypoint x="890" y="175" />
         <di:waypoint x="890" y="230" />
@@ -191,20 +205,16 @@
         <di:waypoint x="1800" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r9k1xc_di" bpmnElement="Flow_1r9k1xc">
-        <di:waypoint x="2310" y="117" />
-        <di:waypoint x="2362" y="117" />
+        <di:waypoint x="2470" y="117" />
+        <di:waypoint x="2542" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13pbtdi_di" bpmnElement="Flow_13pbtdi">
-        <di:waypoint x="2138" y="117" />
-        <di:waypoint x="2210" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04axjb3_di" bpmnElement="Flow_04axjb3">
-        <di:waypoint x="2028" y="117" />
-        <di:waypoint x="2102" y="117" />
+        <di:waypoint x="2278" y="117" />
+        <di:waypoint x="2370" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xb11s5_di" bpmnElement="Flow_0xb11s5">
         <di:waypoint x="1900" y="117" />
-        <di:waypoint x="1992" y="117" />
+        <di:waypoint x="2050" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1im0jon_di" bpmnElement="Flow_1im0jon">
         <di:waypoint x="1560" y="117" />
@@ -217,6 +227,15 @@
       <bpmndi:BPMNEdge id="Flow_031nt59_di" bpmnElement="Flow_031nt59">
         <di:waypoint x="218" y="117" />
         <di:waypoint x="300" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mill5i_di" bpmnElement="Flow_0mill5i">
+        <di:waypoint x="2150" y="175" />
+        <di:waypoint x="2150" y="230" />
+        <di:waypoint x="2060" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hl6boh_di" bpmnElement="Flow_1hl6boh">
+        <di:waypoint x="1960" y="230" />
+        <di:waypoint x="730" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="executeDataSharingStartEvent">
         <dc:Bounds x="182" y="99" width="36" height="36" />
@@ -245,23 +264,14 @@
       <bpmndi:BPMNShape id="Activity_0dqtkw1_di" bpmnElement="storeDataSetForTarget">
         <dc:Bounds x="1800" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1s6g0hy_di" bpmnElement="sendDataSet">
-        <dc:Bounds x="1992" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1977" y="142" width="67" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_04yyh6h_di" bpmnElement="waitForRetrievalByTarget">
-        <dc:Bounds x="2102" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2082" y="142" width="78" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSet">
-        <dc:Bounds x="2210" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1jxcog7_di" bpmnElement="deleteDataSetSuccessfulSend">
+        <dc:Bounds x="2370" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1p3koa2_di" bpmnElement="executeDataSharingEndEvent">
-        <dc:Bounds x="2362" y="99" width="36" height="36" />
+        <dc:Bounds x="2542" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2518" y="142" width="85" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0koe0ly_di" bpmnElement="validateDataSet">
         <dc:Bounds x="1300" y="77" width="100" height="80" />
@@ -277,7 +287,20 @@
       <bpmndi:BPMNShape id="Activity_0b181xa_di" bpmnElement="handleErrorExecute">
         <dc:Bounds x="630" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0b2yvvq" bpmnElement="Event_060bn2w">
+      <bpmndi:BPMNShape id="Activity_10fd0qd_di" bpmnElement="sendDataSet">
+        <dc:Bounds x="2050" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0bhxjae" bpmnElement="deleteDataSetErrorSend">
+        <dc:Bounds x="1960" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04yyh6h_di" bpmnElement="waitForRetrievalByTarget">
+        <dc:Bounds x="2242" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2222" y="142" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0b2yvvq" bpmnElement="questionnaireError">
         <dc:Bounds x="872" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_07hod2e" bpmnElement="executeDataSharingValidateError">
@@ -294,6 +317,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1rl4yb8_di" bpmnElement="executeDataSharingReadError">
         <dc:Bounds x="1222" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0jbq8s0" bpmnElement="Event_0gw37xg">
+        <dc:Bounds x="2132" y="139" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -99,7 +99,7 @@ public class StoreDataSet extends AbstractServiceDelegate
 		try (InputStream in = new ByteArrayInputStream(content))
 		{
 			IdType created = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-					.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES,
+					.withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES,
 							ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 					.createBinary(in, mediaType, securityContext);
 			return new IdType(getFhirWebserviceClientProvider().getLocalBaseUrl(), ResourceType.Binary.name(),

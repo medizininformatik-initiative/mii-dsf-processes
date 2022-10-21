@@ -45,7 +45,7 @@ public class DeleteDataSet extends AbstractServiceDelegate
 	private void deletePermanently(IdType binaryId)
 	{
 		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withRetry(
-				ConstantsDataSharing.DSF_CLIENT_RETRY_TIMES, ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN);
+				ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES, ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		client.delete(Binary.class, binaryId.getIdPart());
 		client.deletePermanently(Binary.class, binaryId.getIdPart());

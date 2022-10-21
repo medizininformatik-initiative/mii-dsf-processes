@@ -100,7 +100,7 @@ public class EncryptData extends AbstractServiceDelegate implements Initializing
 		String url = getEndpointUrl(coordinatingSiteIdentifier);
 
 		Bundle searchBundle = getFhirWebserviceClientProvider().getWebserviceClient(url)
-				.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsDataTransfer.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsDataTransfer.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 				.search(Bundle.class,
 						Map.of("identifier", Collections.singletonList(ConstantsDataTransfer.CODESYSTEM_MII_CRYPTOGRAPHY

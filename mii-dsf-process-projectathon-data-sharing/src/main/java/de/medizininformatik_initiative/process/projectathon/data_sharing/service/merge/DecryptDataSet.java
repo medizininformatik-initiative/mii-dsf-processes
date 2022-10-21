@@ -84,10 +84,10 @@ public class DecryptDataSet extends AbstractServiceDelegate implements Initializ
 					+ "' and data-sharing project '" + projectIdentifier + "' referenced in Task with id '"
 					+ task.getId() + "' - " + exception.getMessage();
 
-			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR_MESSAGE,
+			execution.setVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_RECEIVE_ERROR_MESSAGE,
 					Variables.stringValue(message));
 
-			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_ERROR, message,
+			throw new BpmnError(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_RECEIVE_ERROR, message,
 					exception);
 		}
 	}

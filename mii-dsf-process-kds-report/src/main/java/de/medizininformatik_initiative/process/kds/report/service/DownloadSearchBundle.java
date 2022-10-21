@@ -108,7 +108,7 @@ public class DownloadSearchBundle extends AbstractServiceDelegate implements Ini
 	private Bundle searchSearchBundle(Target target, String searchBundleIdentifier)
 	{
 		BasicFhirWebserviceClient client = getFhirWebserviceClientProvider()
-				.getWebserviceClient(target.getEndpointUrl()).withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+				.getWebserviceClient(target.getEndpointUrl()).withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		return client.searchWithStrictHandling(Bundle.class,

@@ -23,7 +23,7 @@ public interface ConstantsDataTransfer
 	String CODESYSTEM_MII_CRYPTOGRAPHY = "http://medizininformatik-initiative.de/fhir/CodeSystem/cryptography";
 	String CODESYSTEM_MII_CRYPTOGRAPHY_VALUE_PUBLIC_KEY = "public-key";
 
-	int DSF_CLIENT_RETRY_TIMES = 6;
+	int DSF_CLIENT_RETRY_6_TIMES = 6;
 	long DSF_CLIENT_RETRY_INTERVAL_5MIN = 300000;
 
 	String PROCESS_NAME_DATA_SEND = "dataSend";

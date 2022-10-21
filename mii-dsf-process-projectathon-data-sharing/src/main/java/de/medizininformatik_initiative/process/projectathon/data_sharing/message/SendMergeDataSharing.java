@@ -12,12 +12,15 @@ import org.highmed.dsf.fhir.task.AbstractTaskMessageSend;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.highmed.dsf.fhir.variables.Target;
 import org.highmed.dsf.fhir.variables.Targets;
+import org.highmed.fhir.client.FhirWebserviceClient;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Task;
 import org.hl7.fhir.r4.model.UrlType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.medizininformatik_initiative.process.projectathon.data_sharing.ConstantsDataSharing;
@@ -25,6 +28,8 @@ import de.medizininformatik_initiative.process.projectathon.data_sharing.variabl
 
 public class SendMergeDataSharing extends AbstractTaskMessageSend
 {
+	private static final Logger logger = LoggerFactory.getLogger(SendMergeDataSharing.class);
+
 	public SendMergeDataSharing(FhirWebserviceClientProvider clientProvider, TaskHelper taskHelper,
 			ReadAccessHelper readAccessHelper, OrganizationProvider organizationProvider, FhirContext fhirContext)
 	{
@@ -59,6 +64,38 @@ public class SendMergeDataSharing extends AbstractTaskMessageSend
 
 		return Stream.of(otherInputs, researcherIdentifierInputs, correlationKeyInputs).reduce(Stream::concat)
 				.orElseThrow(() -> new RuntimeException("Could not concat streams"));
+	}
+
+	@Override
+	protected void doSend(FhirWebserviceClient client, Task task)
+	{
+		client.withMinimalReturn().withRetry(ConstantsDataSharing.DSF_CLIENT_RETRY_6_TIMES,
+				ConstantsDataSharing.DSF_CLIENT_RETRY_INTERVAL_5MIN).create(task);
+	}
+
+	@Override
+	protected void handleSendTaskError(DelegateExecution execution, Exception exception, String errorMessage)
+	{
+		Task task = getLeadingTaskFromExecutionVariables(execution);
+		addErrorMessage(task, errorMessage);
+
+		try
+		{
+			if (task != null)
+			{
+				task.setStatus(Task.TaskStatus.FAILED);
+				getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn().update(task);
+			}
+			else
+			{
+				logger.warn("Leading Task null, unable update Task with failed state");
+			}
+		}
+		finally
+		{
+			execution.getProcessEngine().getRuntimeService().deleteProcessInstance(execution.getProcessInstanceId(),
+					exception.getMessage());
+		}
 	}
 
 	private Task.ParameterComponent getProjectIdentifierInput(String projectIdentifier)

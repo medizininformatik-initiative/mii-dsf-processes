@@ -207,7 +207,7 @@ public class CreateKdsReport extends AbstractServiceDelegate implements Initiali
 	private String storeResponseBundle(Bundle responseBundle, String taskId)
 	{
 		PreferReturnMinimal client = getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES,
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_6_TIMES,
 						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN);
 
 		IdType bundleIdType = client.updateConditionaly(responseBundle, Map.of("identifier", Collections.singletonList(

@@ -79,7 +79,8 @@ public class StoreReceipt extends AbstractServiceDelegate implements Initializin
 		// because it is an additional currentTask during the execution of the main process
 		currentTask.setStatus(Task.TaskStatus.COMPLETED);
 		getFhirWebserviceClientProvider().getLocalWebserviceClient().withMinimalReturn()
-				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_TIMES, ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN)
+				.withRetry(ConstantsKdsReport.DSF_CLIENT_RETRY_6_TIMES,
+						ConstantsKdsReport.DSF_CLIENT_RETRY_INTERVAL_5MIN)
 				.update(currentTask);
 	}
 
