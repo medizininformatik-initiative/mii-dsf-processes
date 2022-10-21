@@ -74,7 +74,7 @@ example starter class with name* `KdsReportSendExampleStarter` *in*
 
 ```sh
 curl -H "Accept: application/xml+fhir" -H "Content-Type: application/fhir+xml" \
--d @mii-dsf-process-kds-report/src/test/resources/fhir/Task/kds-report-send-start-demo.xml \
+-d @mii-dsf-process-kds-report/src/test/resources/fhir/Task/TaskSendStartKdsReport_Demo.xml \
 --ssl-no-revoke --cacert mii-dsf-processes-test-data-generator/cert/ca/testca_certificate.pem \
 --cert mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_certificate.pem \
 --key mii-dsf-processes-test-data-generator/cert/Webbrowser_Test_User/Webbrowser_Test_User_private-key.pem \

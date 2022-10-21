@@ -48,7 +48,7 @@
     </bpmn:eventBasedGateway>
     <bpmn:sequenceFlow id="Flow_14xdnlg" sourceRef="startSendKdsReport" targetRef="Gateway_129hw90" />
     <bpmn:sequenceFlow id="Flow_1p59yh5" sourceRef="Gateway_129hw90" targetRef="kdsReportTimerInterval" />
-    <bpmn:intermediateCatchEvent id="signalCatchStopKdsReportAutostart" name="signal send stop kds report autostart">
+    <bpmn:intermediateCatchEvent id="signalCatchStopKdsReportAutostart" name="signal receive stop kds report autostart">
       <bpmn:incoming>Flow_1wf477m</bpmn:incoming>
       <bpmn:outgoing>Flow_1lwuxwz</bpmn:outgoing>
       <bpmn:signalEventDefinition id="SignalEventDefinition_1uyxrsl" signalRef="Signal_0kck7nd" />
@@ -75,6 +75,18 @@
   <bpmn:signal id="Signal_0kck7nd" name="stop_medizininformatik-initiativede_kdsReportAutostart_#{version}" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_kdsReportAutostart">
+      <bpmndi:BPMNEdge id="Flow_12fz0w9_di" bpmnElement="Flow_12fz0w9">
+        <di:waypoint x="585" y="117" />
+        <di:waypoint x="652" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0taij7y_di" bpmnElement="Flow_0taij7y">
+        <di:waypoint x="480" y="117" />
+        <di:waypoint x="535" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05xmyck_di" bpmnElement="Flow_05xmyck">
+        <di:waypoint x="208" y="331" />
+        <di:waypoint x="292" y="331" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lwuxwz_di" bpmnElement="Flow_1lwuxwz">
         <di:waypoint x="652" y="330" />
         <di:waypoint x="578" y="330" />
@@ -105,18 +117,6 @@
       <bpmndi:BPMNEdge id="Flow_09o8bb5_di" bpmnElement="Flow_09o8bb5">
         <di:waypoint x="208" y="117" />
         <di:waypoint x="272" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05xmyck_di" bpmnElement="Flow_05xmyck">
-        <di:waypoint x="208" y="331" />
-        <di:waypoint x="292" y="331" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0taij7y_di" bpmnElement="Flow_0taij7y">
-        <di:waypoint x="480" y="117" />
-        <di:waypoint x="535" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12fz0w9_di" bpmnElement="Flow_12fz0w9">
-        <di:waypoint x="585" y="117" />
-        <di:waypoint x="652" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_1xqxerc_di" bpmnElement="Gateway_1xqxerc" isMarkerVisible="true">
         <dc:Bounds x="535" y="92" width="50" height="50" />
@@ -154,7 +154,7 @@
       <bpmndi:BPMNShape id="Event_1kq85bs_di" bpmnElement="signalCatchStopKdsReportAutostart">
         <dc:Bounds x="652" y="312" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="631" y="355" width="80" height="40" />
+          <dc:Bounds x="635" y="355" width="73" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_008atjq_di" bpmnElement="KdsReportAutostartStopEvent">
