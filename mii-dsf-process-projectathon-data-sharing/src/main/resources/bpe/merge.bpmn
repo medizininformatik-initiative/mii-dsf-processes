@@ -164,8 +164,8 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="instantiatesUri">http://medizininformatik-initiative.de/bpe/Process/coordinateDataSharing/#{version}</camunda:inputParameter>
-          <camunda:inputParameter name="messageName">sendReceivedDataSet</camunda:inputParameter>
-          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-received-data-set|#{version}</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">sendMergedDataSet</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://medizininformatik-initiative.de/fhir/StructureDefinition/task-send-merged-data-set|#{version}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1fqjwj9</bpmn:incoming>
@@ -195,6 +195,11 @@
   <bpmn:error id="Error_0xv0ohi" name="mergeReleaseDataSharingError" errorCode="mergeReleaseDataSharingError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="medizininformatik-initiativede_mergeDataSharing">
+      <bpmndi:BPMNEdge id="Flow_0q8yusg_di" bpmnElement="Flow_0q8yusg">
+        <di:waypoint x="2830" y="225" />
+        <di:waypoint x="2830" y="300" />
+        <di:waypoint x="2350" y="300" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qmpobl_di" bpmnElement="Flow_1qmpobl">
         <di:waypoint x="2830" y="167" />
         <di:waypoint x="2892" y="167" />
@@ -250,11 +255,6 @@
         <di:waypoint x="218" y="167" />
         <di:waypoint x="300" y="167" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0q8yusg_di" bpmnElement="Flow_0q8yusg">
-        <di:waypoint x="2830" y="225" />
-        <di:waypoint x="2830" y="300" />
-        <di:waypoint x="2350" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1li0zxy_di" bpmnElement="mergeDataSharingStartEvent">
         <dc:Bounds x="182" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -263,16 +263,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_162649g_di" bpmnElement="prepareMerging">
         <dc:Bounds x="300" y="127" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_030h1vo_di" bpmnElement="mergeDataSharingEndEvent">
-        <dc:Bounds x="2892" y="149" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2872" y="192" width="78" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1q6hi9d" bpmnElement="Activity_0ejt1f1">
-        <dc:Bounds x="2560" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SubProcess_0szmntn_di" bpmnElement="SubProcess_0szmntn" isExpanded="true">
@@ -390,6 +380,10 @@
         <dc:Bounds x="1930" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1q6hi9d" bpmnElement="Activity_0ejt1f1">
+        <dc:Bounds x="2560" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05s8gly_di" bpmnElement="releaseDataSet">
         <dc:Bounds x="2110" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -412,14 +406,20 @@
         <dc:Bounds x="2730" y="127" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_030h1vo_di" bpmnElement="mergeDataSharingEndEvent">
+        <dc:Bounds x="2892" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2872" y="192" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1up6q4m" bpmnElement="sendMergedDataSetError">
+        <dc:Bounds x="2812" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_04vx4i8" bpmnElement="questionnaireError">
         <dc:Bounds x="2472" y="189" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_0nix4ox_di" bpmnElement="timerBoundaryEvent">
         <dc:Bounds x="1722" y="332" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1up6q4m" bpmnElement="sendMergedDataSetError">
-        <dc:Bounds x="2812" y="189" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
