@@ -46,8 +46,6 @@ public class HandleErrorMergeReceive extends AbstractServiceDelegate implements 
 		Task task = getCurrentTaskFromExecutionVariables(execution);
 		String sendingOrganization = getSendingOrganization(task);
 
-		logger.warn(error);
-
 		task.setStatus(Task.TaskStatus.FAILED);
 		task.addOutput(getTaskHelper().createOutput(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
 				ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_ERROR, error));
@@ -61,6 +59,7 @@ public class HandleErrorMergeReceive extends AbstractServiceDelegate implements 
 				+ projectIdentifier + "' Manual communication with the sending organization '" + sendingOrganization
 				+ "' is needed to repair the error.\n\n" + "Error:\n" + error;
 
+		logger.warn(error);
 		mailService.send(subject, message);
 	}
 
