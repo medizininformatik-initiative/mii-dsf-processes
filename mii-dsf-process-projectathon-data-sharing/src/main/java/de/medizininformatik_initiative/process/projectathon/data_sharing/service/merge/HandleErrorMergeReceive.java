@@ -3,6 +3,7 @@ package de.medizininformatik_initiative.process.projectathon.data_sharing.servic
 import java.util.Objects;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.highmed.dsf.bpe.ConstantsBase;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
 import org.highmed.dsf.bpe.service.MailService;
 import org.highmed.dsf.fhir.authorization.read.ReadAccessHelper;
@@ -42,11 +43,15 @@ public class HandleErrorMergeReceive extends AbstractServiceDelegate implements 
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_DATA_SHARING_MERGE_RECEIVE_ERROR_MESSAGE);
 		String projectIdentifier = (String) execution
 				.getVariable(ConstantsDataSharing.BPMN_EXECUTION_VARIABLE_PROJECT_IDENTIFIER);
-
 		Task task = getCurrentTaskFromExecutionVariables(execution);
 		String sendingOrganization = getSendingOrganization(task);
 
 		logger.warn(error);
+
+		task.setStatus(Task.TaskStatus.FAILED);
+		task.addOutput(getTaskHelper().createOutput(ConstantsBase.CODESYSTEM_HIGHMED_BPMN,
+				ConstantsBase.CODESYSTEM_HIGHMED_BPMN_VALUE_ERROR, error));
+		updateCurrentTaskInExecutionVariables(execution, task);
 
 		String subject = "Error processing received data-set in process '"
 				+ ConstantsDataSharing.PROCESS_NAME_FULL_MERGE_DATA_SHARING + "' for data-sharing project '"
