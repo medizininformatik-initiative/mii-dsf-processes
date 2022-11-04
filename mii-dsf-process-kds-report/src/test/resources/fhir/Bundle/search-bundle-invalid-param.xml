@@ -1,7 +1,7 @@
 <Bundle xmlns="http://hl7.org/fhir">
   <meta>
     <versionId value="1"/>
-    <lastUpdated value="2022-08-01T10:00:00.000+01:00"/>
+    <lastUpdated value="2022-10-21T10:00:00.000+01:00"/>
     <profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle|0.3.0"/>
     <tag>
       <system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
