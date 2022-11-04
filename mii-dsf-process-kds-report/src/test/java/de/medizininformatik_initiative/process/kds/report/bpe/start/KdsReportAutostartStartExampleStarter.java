@@ -33,7 +33,7 @@ public class KdsReportAutostartStartExampleStarter
 		Task task = new Task();
 		task.setIdElement(new IdType("urn:uuid:" + UUID.randomUUID().toString()));
 
-		task.getMeta().addProfile(ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_START);
+		task.getMeta().addProfile(ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_START_AND_LATEST_VERSION);
 		task.setInstantiatesUri(
 				ConstantsKdsReport.PROFILE_MII_KDS_REPORT_TASK_AUTOSTART_START_PROCESS_URI_AND_LATEST_VERSION);
 		task.setStatus(Task.TaskStatus.REQUESTED);
