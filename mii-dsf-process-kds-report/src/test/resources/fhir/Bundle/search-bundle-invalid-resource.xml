@@ -1,7 +1,7 @@
 <Bundle xmlns="http://hl7.org/fhir">
   <meta>
     <versionId value="1"/>
-    <lastUpdated value="2022-10-21T10:00:00.000+01:00"/>
+    <lastUpdated value="2022-11-16T10:00:00.000+01:00"/>
     <profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle|0.3.1"/>
     <tag>
       <system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
@@ -26,7 +26,7 @@
         <status value="active"/>
         <kind value="identifier"/>
         <!-- date managed by bpe -->
-        <date value="2022-10-21"/>
+        <date value="2022-11-16"/>
         <publisher value="Medizininformatik-Initiative" />
         <responsible value="FDPG"/>
         <description value="KDS Report identification of data integration center"/>

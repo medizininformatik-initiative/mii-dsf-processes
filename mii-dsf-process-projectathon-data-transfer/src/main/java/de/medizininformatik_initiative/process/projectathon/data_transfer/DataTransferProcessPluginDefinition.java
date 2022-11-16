@@ -25,7 +25,7 @@ import de.medizininformatik_initiative.processes.kds.client.KdsClientFactory;
 public class DataTransferProcessPluginDefinition implements ProcessPluginDefinition
 {
 	public static final String VERSION = "0.3.1";
-	public static final LocalDate RELEASE_DATE = LocalDate.of(2022, 10, 21);
+	public static final LocalDate RELEASE_DATE = LocalDate.of(2022, 11, 16);
 
 	@Override
 	public String getName()
