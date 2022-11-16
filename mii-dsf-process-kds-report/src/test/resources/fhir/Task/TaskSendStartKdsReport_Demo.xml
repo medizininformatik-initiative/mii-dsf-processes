@@ -1,8 +1,8 @@
 <Task xmlns="http://hl7.org/fhir">
 	<meta>
-		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-kds-report-task-send-start|0.3.1"></profile>
+		<profile value="http://medizininformatik-initiative.de/fhir/StructureDefinition/mii-kds-report-task-send-start|0.4.0"></profile>
 	</meta>
-	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/kdsReportSend/0.3.1"></instantiatesUri>
+	<instantiatesUri value="http://medizininformatik-initiative.de/bpe/Process/kdsReportSend/0.4.0"></instantiatesUri>
 	<status value="requested"></status>
 	<intent value="order"></intent>
 	<authoredOn value="2022-11-16T17:49:15+01:00"></authoredOn>

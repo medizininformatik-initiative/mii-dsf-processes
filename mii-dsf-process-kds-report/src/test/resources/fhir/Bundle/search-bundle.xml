@@ -4,8 +4,9 @@
 		<lastUpdated value="2022-11-16T10:00:00.000+01:00"/>
 		<!--
 		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle|0.3.0"/>
-		-->
 		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle|0.3.1"/>
+		-->
+		<profile value="http://medizininformatik-initiative.de/fhir/Bundle/mii-kds-report-search-bundle|0.4.0"/>
 		<tag>
 			<system value="http://highmed.org/fhir/CodeSystem/read-access-tag" />
 			<code value="ALL" />
