@@ -1,3 +1,13 @@
+## Deprecation Notice
+
+This repository is no longer maintained. Development of the **Report**, **Data-Transfer** and **Data-Sharing**  process plugins has been moved to [medizininformatik-initiative/mii-process-report](https://github.com/medizininformatik-initiative/mii-process-report), [medizininformatik-initiative/mii-process-data-transfer](https://github.com/medizininformatik-initiative/mii-process-data-transfer) and [medizininformatik-initiative/mii-process-data-sharing](https://github.com/medizininformatik-initiative/mii-process-data-sharing) respectively.
+
+Further information on the Data Sharing Framework can be found on the new project website: https://dsf.dev
+
+We would like to thank everyone who has contributed to this repository with code contributions, issues or comments.
+
+---
+
 # MII DSF Processes
 
 [![Java CI Build with Maven](https://github.com/medizininformatik-initiative/mii-dsf-processes/actions/workflows/maven-build.yml/badge.svg)](https://github.com/medizininformatik-initiative/mii-dsf-processes/actions/workflows/maven-build.yml)
